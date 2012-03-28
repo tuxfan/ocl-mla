@@ -1,3 +1,5 @@
+build
+src/include
 Makefile.am
 Makefile.in
 aclocal.m4
