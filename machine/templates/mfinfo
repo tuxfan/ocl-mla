@@ -1,0 +1,248 @@
+#! /usr/bin/env bash
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision: 43 $
+# $Date: 2012-03-27 20:49:25 -0600 (Tue, 27 Mar 2012) $
+# $Author: bergen $
+################################################################################
+
+#------------------------------------------------------------------------------#
+# Check command-line arguements
+#------------------------------------------------------------------------------#
+
+if [ $# != 1 ] ; then
+	echo "Usage: $0 <file name>"
+	exit 1
+fi
+
+name=($(echo $1|sed  's/\(.\)/\1 /g'))
+
+if [ ${#name[@]} != 7 ] ; then
+	echo "ERROR: Bad File Name!!!"
+	exit 1
+fi
+
+echo "/*----------------------------------------------------------------------------*/"
+echo " * Machine File Information for $1"
+echo " *"
+
+#------------------------------------------------------------------------------#
+# Operating System
+#------------------------------------------------------------------------------#
+
+case ${name[0]} in
+
+	# linux
+	'L' | 'l')
+	echo " * Operating System: linux"
+	;;
+
+	# OS X
+	'O' | 'o')
+	echo " * Operating System: OS X"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized OS specifier!!!"
+		exit 1
+	;;
+esac
+
+echo " *"
+
+#------------------------------------------------------------------------------#
+# Performance Device Type
+#------------------------------------------------------------------------------#
+
+case ${name[1]} in
+
+	# Accelerator
+	'A' | 'a')
+	echo " * Performance Device Type: CL_DEVICE_TYPE_ACCELERATOR"
+	;;
+
+	# CPU
+	'C' | 'c')
+	echo " * Performance Device Type: CL_DEVICE_TYPE_CPU"
+	;;
+
+	# GPU
+	'G' | 'g')
+	echo " * Performance Device Type: CL_DEVICE_TYPE_GPU"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized performance device specifier!!!"
+		exit 1
+	;;
+esac
+
+#------------------------------------------------------------------------------#
+# Performance Device Platform
+#------------------------------------------------------------------------------#
+
+case ${name[2]} in
+
+	# Accelerator
+	'A' | 'a')
+	echo " * Performance Device Platform: AMD Accelerated Parallel Processing"
+	;;
+
+	# Accelerator
+	'D' | 'd')
+	echo " * Performance Device Platform: default"
+	;;
+
+	# CPU
+	'I' | 'i')
+	echo " * Performance Device Platform: Intel(R) OpenCL"
+	;;
+
+	# GPU
+	'O' | 'o')
+	echo " * Performance Device Platform: Apple"
+	;;
+
+	# GPU
+	'N' | 'n')
+	echo " * Performance Device Platform: NVIDIA CUDA"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized performance platform specifier!!!"
+		exit 1
+	;;
+esac
+
+echo " *"
+
+#------------------------------------------------------------------------------#
+# Auxiliary Device Type
+#------------------------------------------------------------------------------#
+
+case ${name[3]} in
+
+	# Accelerator
+	'A' | 'a')
+	echo " * Auxiliary Device Type: CL_DEVICE_TYPE_ACCELERATOR"
+	;;
+
+	# CPU
+	'C' | 'c')
+	echo " * Auxiliary Device Type: CL_DEVICE_TYPE_CPU"
+	;;
+
+	# GPU
+	'G' | 'g')
+	echo " * Auxiliary Device Type: CL_DEVICE_TYPE_GPU"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized auxiliary device specifier!!!"
+		exit 1
+	;;
+esac
+
+#------------------------------------------------------------------------------#
+# Auxiliary Device Platform
+#------------------------------------------------------------------------------#
+
+case ${name[4]} in
+
+	# Accelerator
+	'A' | 'a')
+	echo " * Auxiliary Device Platform: AMD Accelerated Parallel Processing"
+	;;
+
+	# Accelerator
+	'D' | 'd')
+	echo " * Auxiliary Device Platform: default"
+	;;
+
+	# CPU
+	'I' | 'i')
+	echo " * Auxiliary Device Platform: Intel(R) OpenCL"
+	;;
+
+	# GPU
+	'O' | 'o')
+	echo " * Auxiliary Device Platform: Apple"
+	;;
+
+	# GPU
+	'N' | 'n')
+	echo " * Auxiliary Device Platform: NVIDIA CUDA"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized auxiliary platform specifier!!!"
+		exit 1
+	;;
+esac
+
+echo " *"
+
+#------------------------------------------------------------------------------#
+# C compiler options
+#------------------------------------------------------------------------------#
+
+case ${name[5]} in
+
+	# gcc
+	'G' | 'g')
+		echo " * C compiler flags: gcc"
+	;;
+
+	# icc
+	'I' | 'i')
+		echo " * C compiler flags: icc"
+	;;
+
+	# pgcc
+	'P' | 'p')
+		echo " * C compiler flags: pgcc"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized C compiler flags specifier!!!"
+		exit 1
+	;;
+esac
+
+#------------------------------------------------------------------------------#
+# Fortran compiler options
+#------------------------------------------------------------------------------#
+
+case ${name[6]} in
+
+	# gcc
+	'G' | 'g')
+		echo " * Fortran compiler flags: gfortran"
+	;;
+
+	# icc
+	'I' | 'i')
+		echo " * Fortran compiler flags: ifort"
+	;;
+
+	# pgcc
+	'P' | 'p')
+		echo " * Fortran compiler flags: pgf95"
+	;;
+
+	# default
+	*)
+		echo "ERROR: Unrecognized Fortran compiler flags specifier!!!"
+		exit 1
+	;;
+esac
+
+echo " *----------------------------------------------------------------------------*/"

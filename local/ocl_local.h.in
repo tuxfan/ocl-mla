@@ -1,0 +1,24 @@
+/******************************************************************************\
+ * Copyright (c) 2012 Los Alamos National Security, LLC
+ * All rights reserved.
+ *
+ * $Revision: 43 $
+ * $Date: 2012-03-27 20:49:25 -0600 (Tue, 27 Mar 2012) $
+ * $Author: bergen $
+\******************************************************************************/
+
+/*----------------------------------------------------------------------------* 
+ * This file handles the differences in naming conventions used by different
+ * vendors for OpenCL headers.
+ *----------------------------------------------------------------------------*/
+
+#ifndef ocl_local_h
+#define ocl_local_h
+
+#if !defined(_ocl_source) && !defined(_include_ocl_h)
+#error "Error: do not include this file directly, use #include <ocl.h>"
+#endif
+
+#include <@OPENCL_HEADER@>
+
+#endif // ocl_local_h

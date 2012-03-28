@@ -1,0 +1,122 @@
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision: 44 $
+# $Date: 2012-03-28 09:38:36 -0600 (Wed, 28 Mar 2012) $
+# $Author: bergen $
+################################################################################
+
+#------------------------------------------------------------------------------#
+# Initialize autoconf
+#------------------------------------------------------------------------------#
+
+AC_INIT(ocl-mla, VERSION_TAG, bergen@lanl.gov)
+AC_CONFIG_AUX_DIR(config)
+
+VERSION_INFORMATION="VERSION_TAG"
+AC_SUBST(VERSION_INFORMATION)
+
+#------------------------------------------------------------------------------#
+# Initialize automake
+#------------------------------------------------------------------------------#
+
+AM_INIT_AUTOMAKE
+
+#------------------------------------------------------------------------------#
+# Machine file specification
+#------------------------------------------------------------------------------#
+
+CONFIG_WITH_MACHINE("$srcdir/machine")
+
+#------------------------------------------------------------------------------#
+# Configuration targets
+#------------------------------------------------------------------------------#
+
+AC_CONFIG_FILES([Makefile \
+	examples/Makefile \
+	lib/Makefile \
+	local/ocl_local.h \
+	test/Makefile \
+	test/c/Makefile \
+	test/c/atlocal \
+	test/fc/Makefile \
+	test/fc/atlocal \
+	doc/Makefile \
+	doc/doxygen.conf
+])
+
+#------------------------------------------------------------------------------#
+# Test harness
+#------------------------------------------------------------------------------#
+
+AC_CONFIG_TESTDIR([test/c])
+AC_CONFIG_TESTDIR([test/fc])
+
+#------------------------------------------------------------------------------#
+# Program options
+#------------------------------------------------------------------------------#
+AC_PROG_CC
+AC_PROG_FC
+AC_PROG_LIBTOOL
+CONFIG_PROG_DOXYGEN
+
+#------------------------------------------------------------------------------#
+# With options
+#------------------------------------------------------------------------------#
+CONFIG_GENERIC_WITH(ocl_platform_performance, OCL_PLATFORM_PERFORMANCE,
+	[default])
+CONFIG_GENERIC_WITH(ocl_performance_initialization,
+	OCL_PERFORMANCE_INITIALIZATION, [ocl_init_generic_cpu])
+
+CONFIG_GENERIC_WITH(ocl_platform_auxiliary, OCL_PLATFORM_AUXILIARY,
+	[default])
+CONFIG_GENERIC_WITH(ocl_auxiliary_initialization,
+	OCL_AUXILIARY_INITIALIZATION, [ocl_init_generic_cpu])
+
+CONFIG_GENERIC_WITH(fc_module_path_flag, FC_MODULE_PATH_FLAG, [-J])
+
+#------------------------------------------------------------------------------#
+# Enable options
+#------------------------------------------------------------------------------#
+CONFIG_GENERIC_ENABLE(opencl_profiling, OPENCL_PROFILING)
+CONFIG_GENERIC_ENABLE(ocl_verbose, OCL_VERBOSE)
+CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
+
+#------------------------------------------------------------------------------#
+# Check for strndup
+#------------------------------------------------------------------------------#
+
+CONFIG_TEST_STRNDUP()
+
+#------------------------------------------------------------------------------#
+# OpenCL
+#------------------------------------------------------------------------------#
+CONFIG_GENERIC_LIB(opencl, OPENCL, [clReleaseMemObject ((cl_mem) 0)], C)
+
+EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS $OPENCL_CPPFLAGS"
+EXTRA_LDFLAGS="$EXTRA_LDFLAGS $OPENCL_LDFLAGS"
+EXTRA_LIBS="$EXTRA_LIBS $OPENCL_LIBS"
+
+#------------------------------------------------------------------------------#
+# Set extras
+#------------------------------------------------------------------------------#
+AC_SUBST(EXTRA_CPPFLAGS)
+AC_SUBST(EXTRA_LDFLAGS)
+AC_SUBST(EXTRA_LIBS)
+
+#------------------------------------------------------------------------------#
+# Handle Doxygen
+#------------------------------------------------------------------------------#
+if test "$HAS_DOXYGEN" = "yes" ; then
+	AC_SUBST(DOC, [doc])
+	AC_CONFIG_COMMANDS([doc], [make doc])
+fi
+
+AC_CONFIG_COMMANDS([links], [make links])
+AC_CONFIG_COMMANDS([remind], [make reminder])
+
+#------------------------------------------------------------------------------#
+# Output
+#------------------------------------------------------------------------------#
+AC_OUTPUT

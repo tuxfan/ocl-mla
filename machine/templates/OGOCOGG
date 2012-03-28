@@ -1,0 +1,84 @@
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision: 43 $
+# $Date: 2012-03-27 20:49:25 -0600 (Tue, 27 Mar 2012) $
+# $Author: bergen $
+################################################################################
+
+#------------------------------------------------------------------------------#
+# O = OS X
+# G = CL_DEVICE_TYPE_GPU (performance)
+# O = Apple
+# C = CL_DEVICE_TYPE_CPU (auxiliary)
+# O = Apple
+# G = gcc
+# G = gfortran
+#------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------#
+# OCL preprocessor defines
+#
+# These control various attributes of the compiled library.  The values given
+# here are set to their defaults.  It is not necessary to define these unless
+# you would like to change the default behavior.
+#------------------------------------------------------------------------------#
+
+OCL_DEFINES="-DOCL_EVENT_LIST_BLOCK_SIZE=32"
+OCL_DEFINES+=" -DOCL_MAX_SOURCE_LENGTH=16*1024"
+OCL_DEFINES+=" -DOCL_MAX_PROGRAM_HASH_ENTRIES=8"
+OCL_DEFINES+=" -DOCL_MAX_KERNEL_HASH_ENTRIES=32"
+OCL_DEFINES+=" -DOCL_MAX_TIMER_HASH_ENTRIES=32"
+OCL_DEFINES+=" -DOCL_MAX_FORTRAN_ALLOCATIONS=1024"
+OCL_DEFINES+=" -DOCL_MAX_LOGICAL_DEVICES=10"
+OCL_DEFINES+=" -DOCL_MAX_PLATFORMS=10"
+OCL_DEFINES+=" -DOCL_MAX_PLATFORM_DEVICES=10"
+
+#------------------------------------------------------------------------------#
+# CFLAGS
+#------------------------------------------------------------------------------#
+
+CFLAGS="-g -O0 -m64 -std=c99 -pedantic -Werror -Wall -D_GNU_SOURCE -DOCL_BUILD ${OCL_DEFINES}"
+
+#------------------------------------------------------------------------------#
+# FFLAGS
+#------------------------------------------------------------------------------#
+
+FFLAGS="-g -O0 -m64 -std=gnu -pedantic-errors -Werror -Wall"
+
+#------------------------------------------------------------------------------#
+# Fortran module search path flag
+#------------------------------------------------------------------------------#
+
+FC_MODULE_PATH_FLAG="-J"
+
+#------------------------------------------------------------------------------#
+# Performance platform
+#------------------------------------------------------------------------------#
+
+OCL_PLATFORM_PERFORMANCE="Apple"
+OCL_PERFORMANCE_INITIALIZATION=ocl_init_generic_gpu
+
+#------------------------------------------------------------------------------#
+# Auxiliary platform
+#------------------------------------------------------------------------------#
+
+OCL_PLATFORM_AUXILIARY="Apple"
+OCL_AUXILIARY_INITIALIZATION=ocl_init_generic_cpu
+
+#------------------------------------------------------------------------------#
+# OpenCL library
+#------------------------------------------------------------------------------#
+
+OPENCL_CPPFLAGS=""
+OPENCL_FRAMEWORK="-framework OpenCL"
+OPENCL_CHECKHEADER="OpenCL/opencl.h"
+OPENCL_PROFILING=yes
+
+#------------------------------------------------------------------------------#
+# OpenCL options
+#------------------------------------------------------------------------------#
+
+OCL_VERBOSE=yes
+OCL_ASSERTIONS=yes

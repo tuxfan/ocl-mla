@@ -1,0 +1,69 @@
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision: 44 $
+# $Date: 2012-03-28 09:38:36 -0600 (Wed, 28 Mar 2012) $
+# $Author: bergen $
+################################################################################
+
+For the impatient, look at main.c and ocl_interface.h for C version, and look
+at main.f90 and ocl_interface.f90 for the Fortran 90 version.
+
+#------------------------------------------------------------------------------#
+# Abstractions
+#------------------------------------------------------------------------------#
+
+This interface abstracts the actual OpenCL devices by providing logical
+'performance' and 'auxiliary' devices.  The mappings of these logical devices
+is determined at compile time.  Associated contexts and queues are also
+created for each logical device.  See the examples in main.c and main.f90.
+
+The interface also provides a hash-based registration of programs and
+kernels.  OpenCL program source can be passed as a file name that will
+be opened and converted into a string.
+
+#------------------------------------------------------------------------------#
+# Building:
+#------------------------------------------------------------------------------#
+
+This project uses standard GNU Autoconf tools.  To list the supported
+configuration options, do:
+
+% ./configure --help
+
+Additionally, this project supports the selection of most configuration
+options through a 'machine' file that lists a set of AC_DEFINE-defined
+environment variables, which will override any options passed to the
+'configure' script.  A set of templates are provided in the top-level
+directory of this project under the 'machine' sub-directory.  To use a
+machine file, copy a template into the 'machine' directory, edit the
+parameters and then run 'configure' with:
+
+% ./configure --with-machine=your_machine_file_name
+
+#------------------------------------------------------------------------------#
+# Source examples
+#------------------------------------------------------------------------------#
+
+There are two examples, one in C and one in Fortran.  These are designed to
+correspond heavily and have been tagged with 'step' labels so that
+a line-by-line comparison is possible.
+
+# All C functions are of the form:
+
+err function_name(parameters)
+
+# All Fortran functions are of the form:
+
+function_name(parameters, err)
+
+This is meant to be similar to the MPI interface.
+
+#------------------------------------------------------------------------------#
+# Documentation
+#------------------------------------------------------------------------------#
+
+Doxygen style documentation will be generated if the Makefile variable
+'DOXYGEN' is defined and points to a valid doxygen executable is available.
+The current configuration generates html, latex and manpage documentation.

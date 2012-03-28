@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision: 43 $
+# $Date: 2012-03-27 20:49:25 -0600 (Tue, 27 Mar 2012) $
+# $Author: bergen $
+################################################################################
+
+major=rc
+minor=0
+build=`svn info | grep Revision | awk '{ print $2}'`
+
+echo $major"."$minor"."$build

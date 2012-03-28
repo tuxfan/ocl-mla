@@ -1,0 +1,77 @@
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+#
+# $Revision:$
+# $Date:$
+# $Author:$
+################################################################################
+
+Machine files are used to conveniently specify a set of configuration
+parameters by setting autoconf variables.
+
+The 'templates' sub-directory covers most permutations that are possible.
+These provide a good starting point for tailoring ocl-mla to your system.
+
+#------------------------------------------------------------------------------#
+# File naming conventions
+#------------------------------------------------------------------------------#
+
+The first letter of the machine file indicates the host OS:
+
+L = linux
+O = OS X
+
+The second letter of the machine file indicates the preferred OpenCL device
+type for the logical performance device.
+
+A = 'CL_DEVICE_TYPE_ACCELERATOR'
+C = 'CL_DEVICE_TYPE_CPU'
+G = 'CL_DEVICE_TYPE_GPU'
+
+The third letter of the machine file indicates the OpenCL platform used
+for the logical performance device:
+
+A = "AMD Accelerated Parallel Processing"
+D = "default"
+I = "Intel(R) OpenCL"
+O = "Apple"
+N = "NVIDIA CUDA"
+
+The fourth letter of the machine file indicates the preferred OpenCL device
+type for the logical auxiliary device.
+
+A = 'CL_DEVICE_TYPE_ACCELERATOR'
+C = 'CL_DEVICE_TYPE_CPU'
+G = 'CL_DEVICE_TYPE_GPU'
+
+The fifth letter of the machine file indicates the OpenCL platform used
+for the logical auxiliary device:
+
+A = "AMD Accelerated Parallel Processing"
+D = "default"
+I = "Intel(R) OpenCL"
+O = "Apple"
+N = "NVIDIA CUDA"
+
+The sixth letter of the machine file indicates the C compiler:
+
+G = gcc
+I = icc
+P = pgcc
+
+NOTE: These specifications only apply to the CFLAGS settings in the
+file.  Actual compiler selection should be set from the command line when
+the 'configure' script is run, e.g.:
+% CC=gcc ../configure --prefix=...
+
+The seventh letter of the machine file indicates the Fortran compiler:
+
+G = gfortran
+I = ifort
+P = pgf95
+
+NOTE: These specifications only apply to the FCFLAGS settings in the
+file.  Actual compiler selection should be set from the command line when
+the 'configure' script is run, e.g.:
+% FC=ifort ../configure --prefix=...
