@@ -8,8 +8,8 @@
 # $Author: bergen $
 ################################################################################
 
-major=rc
-minor=0
-build=`svn info | grep Revision | awk '{ print $2}'`
+major=`git tag -l | sed 's,\..*$,,g'`
+minor=`git tag -l | sed 's,^.*\.,,g'`
+build=`git log | grep commit | wc -l`
 
 echo $major"."$minor"."$build

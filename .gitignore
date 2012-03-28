@@ -1,0 +1,16 @@
+Makefile.am
+Makefile.in
+aclocal.m4
+autom4te.cache
+*.pyc
+atlocal.in
+testsuite.at
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
+version
+configure
+configure.ac
