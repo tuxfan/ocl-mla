@@ -8,8 +8,10 @@
 # $Author: bergen $
 ################################################################################
 
-major=`git tag -l | sed 's,\..*$,,g'`
-minor=`git tag -l | sed 's,^.*\.,,g'`
-build=`git log | grep commit | wc -l`
+tag=`git tag | head -n 1`
+
+major=`echo $tag| sed 's,\..*$,,g'`
+minor=`echo $tag | sed 's,^.*\.,,g'`
+build=`git log tags/$tag | grep commit | wc -l`
 
 echo $major"."$minor"."$build
