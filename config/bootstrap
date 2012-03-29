@@ -14,7 +14,7 @@ config/create_configure_ac > configure.ac
 # Generate Makefile.am in lib directory
 #------------------------------------------------------------------------------#
 echo "Generating lib/Makefile.am"
-[ ! -f lib ] && mkdir lib
+[ ! -d lib ] && mkdir lib
 config/create_lib_am > lib/Makefile.am
 
 #------------------------------------------------------------------------------#
