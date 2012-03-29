@@ -4,10 +4,10 @@
 # All rights reserved.
 ################################################################################
 
+# get the latest tag
 tag=`git tag | head -n 1`
 
-major=`echo $tag| sed 's,\..*$,,g'`
-minor=`echo $tag | sed 's,^.*\.,,g'`
+# build will count the number of commits since the tag
 build=`git log tags/$tag | grep commit | wc -l`
 
-echo $major"."$minor"."$build
+echo $tag"."$build
