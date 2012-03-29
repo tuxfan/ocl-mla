@@ -1,10 +1,6 @@
 ################################################################################
 # Copyright (c) 2012 Los Alamos National Security, LLC
 # All rights reserved.
-#
-# $Revision: 44 $
-# $Date: 2012-03-28 09:38:36 -0600 (Wed, 28 Mar 2012) $
-# $Author: bergen $
 ################################################################################
 
 For the impatient, look at main.c and ocl_interface.h for C version, and look

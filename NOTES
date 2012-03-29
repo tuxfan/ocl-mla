@@ -1,10 +1,6 @@
 ################################################################################
 # Copyright (c) 2012 Los Alamos National Security, LLC
 # All rights reserved.
-#
-# $Revision: 44 $
-# $Date: 2012-03-28 09:38:36 -0600 (Wed, 28 Mar 2012) $
-# $Author: bergen $
 ################################################################################
 
 CUDA 4.1 is extremley slow!  Need to check this.
