@@ -7,7 +7,7 @@
 # Recurse subdirs
 #------------------------------------------------------------------------------#
 
-SUBDIRS = lib examples
+SUBDIRS = lib examples test
 
 #------------------------------------------------------------------------------#
 # Create links
@@ -60,16 +60,6 @@ install-data-hook:
 	@([ -d ${datarootdir}/html ] || mkdir -p ${datarootdir}/html)
 	@(cp -r ${top_builddir}/doc/man/* ${mandir})
 	@(cp -r ${top_builddir}/doc/html/* ${datarootdir}/html)
-
-#------------------------------------------------------------------------------#
-# Unit tests
-#------------------------------------------------------------------------------#
-
-test: all
-	@(cd test; ${MAKE})
-
-check-local: test
-	@(cd test; ${MAKE} check)
 
 #------------------------------------------------------------------------------#
 # Extra clean
