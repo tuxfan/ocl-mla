@@ -5,10 +5,18 @@
 ################################################################################
 
 #------------------------------------------------------------------------------#
+# Usage: bootstrap <version>
+#
+# version (optional) specifies the version that will be built into the
+# configuration.  If version is not defined, a version will be generated
+# automatically by 'make_version'.
+#------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------#
 # Generate configure.ac file
 #------------------------------------------------------------------------------#
 echo "Generating configure.ac"
-config/create_configure_ac > configure.ac
+config/create_configure_ac $1 > configure.ac
 
 #------------------------------------------------------------------------------#
 # Generate Makefile.am in lib directory
@@ -16,12 +24,6 @@ config/create_configure_ac > configure.ac
 echo "Generating lib/Makefile.am"
 [ ! -d lib ] && mkdir lib
 config/create_lib_am > lib/Makefile.am
-
-#------------------------------------------------------------------------------#
-# Create symbolic links in project include directory
-#------------------------------------------------------------------------------#
-#echo "Creating links"
-#config/create_links
 
 #------------------------------------------------------------------------------#
 # Call libtoolize
