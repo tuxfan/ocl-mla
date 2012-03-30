@@ -3,8 +3,5 @@
 # All rights reserved.
 ################################################################################
 
-- finish event interface
-	- need Fortran bindings
-	- need to test
-
-- Fix test cleanup with 'make clean'
+- Add native kernel and task execution
+- Update documentation
