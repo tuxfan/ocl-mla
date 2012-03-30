@@ -4,10 +4,17 @@
 # All rights reserved.
 ################################################################################
 
-# get the latest tag
-tag=`git tag | head -n 1`
+# get the previous tag
+taglast=`git tag | tail -n 2 | head -n 1`
 
-# build will count the number of commits since the tag
-build=`git log tags/$tag | grep commit | wc -l`
+# get the short date for the previous tag
+since=`git show --date=short $taglast | head -n 3 | tail -n 1 | \
+	awk '{print $2}'`
+
+# get the current tag
+tag=`git tag | tail -n 1`
+
+# build will count the number of commits since the current tag was created
+build=`git log tags/$tag --before=$since | grep commit | wc -l`
 
 echo $tag"."$build
