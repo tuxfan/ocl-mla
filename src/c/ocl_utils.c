@@ -568,10 +568,6 @@ int32_t ocl_add_from_string(const char * string, char ** source,
 	return ierr;
 } // ocl_append_from_string
 
-const char * ocl_platform_defines(uint32_t device_id) {
-	return ocl.devices[device_id].info.platform_defines;
-} // ocl_platform_defines
-
 /*******************************************************************************
  * Host-side timer interface
  ******************************************************************************/

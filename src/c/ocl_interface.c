@@ -412,8 +412,19 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 		CL_ABORTerr(clCreateProgramWithSource, err);
 	} // if
 
+	// add ocl preprocessor defines
+	char _compile_options[OCL_MAX_SOURCE_LENGTH];
+
+	if(strlen(compile_options) > 0) {
+		sprintf(_compile_options, "%s %s", instance->info.platform_defines,
+			compile_options);
+	}
+	else {
+		sprintf(_compile_options, "%s", instance->info.platform_defines);
+	} // if
+
 	// build the program source
-	err = clBuildProgram(token, 1, &instance->id, compile_options, NULL, NULL);
+	err = clBuildProgram(token, 1, &instance->id, _compile_options, NULL, NULL);
 
 	// capture failed output, print to stdout and exit
 	if(err == CL_BUILD_PROGRAM_FAILURE) {
@@ -423,7 +434,7 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 		clGetProgramBuildInfo(token, instance->id,
 			CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &length);
 
-		message("clBuildProgram failed:\n%s\n%s\n", buffer, compile_options);
+		message("clBuildProgram failed:\n%s\n%s\n", buffer, _compile_options);
 		exit(1);
 	} // if
 

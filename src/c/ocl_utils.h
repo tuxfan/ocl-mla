@@ -171,9 +171,6 @@ This function appends or prepends OpenCL C source code from \b string to \b sour
 int32_t ocl_add_from_string(const char * string, char ** source,
 	int32_t prepend);
 
-#define OCL_MAX_PREPROCESSOR_SIZE 256
-const char * ocl_platform_defines(uint32_t device_id);
-
 /*******************************************************************************
  * Host-side timer interface
  ******************************************************************************/

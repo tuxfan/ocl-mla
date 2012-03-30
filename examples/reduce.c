@@ -76,17 +76,13 @@ int main(int argc, char ** argv) {
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	char performance_compile_options[256 + OCL_MAX_PREPROCESSOR_SIZE];
-	char auxiliary_compile_options[256 + OCL_MAX_PREPROCESSOR_SIZE];
-	sprintf(performance_compile_options, "%s -DOCL_MAX_WGSIZE=%d",
-		ocl_platform_defines(OCL_PERFORMANCE_DEVICE), (int)max_work_group_size);
-	sprintf(auxiliary_compile_options, "%s -DOCL_MAX_WGSIZE=%d",
-		ocl_platform_defines(OCL_AUXILIARY_DEVICE), (int)max_work_group_size);
+	char compile_options[1024];
+	sprintf(compile_options, "%d", (int)max_work_group_size);
 
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", performance_source,
-		performance_compile_options);
+		compile_options);
 	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source,
-		auxiliary_compile_options);
+		compile_options);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels
