@@ -51,6 +51,8 @@ Set the maximum number of hash entries that can be used for storing timer object
 Set the maximum number of memory allocations that can be mananged automatically for Fortran garbage collection.
 */
 
+#ifndef DOXYGEN_SKIP
+
 #ifndef OCL_MAX_LOGICAL_DEVICES
 #define OCL_MAX_LOGICAL_DEVICES 10
 #endif
@@ -223,5 +225,7 @@ typedef struct ocl_data_ {
 } ocl_data_t;
 
 ocl_device_instance_t * ocl_device_instance(uint32_t id);
+
+#endif // DOXYGEN_SKIP
 
 #endif // ocl_data_h

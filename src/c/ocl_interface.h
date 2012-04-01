@@ -208,19 +208,25 @@ This subroutine sets the \b event data structure's wait list to \b list.  When t
 int32_t ocl_set_event_list(ocl_event_t * event, ocl_event_wait_list_t * list);
 
 /*----------------------------------------------------------------------------*\
+ * ocl_clear_event_wait_list
 \*----------------------------------------------------------------------------*/
 
 /*!
-\page
+\page ocl_clear_event_wait_list
 
 \par C Version:
+ierr ocl_clear_event_wait_list(list)
 
 \par Fortran Version:
+ocl_clear_event_wait_list(list, ierr)
 
-@param BLURB \n
-TYPES \n
+@param list Event wait list data structure \n
+ocl_event_wait_list_t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param ierr Error status \n
+int32_t (\b C), integer(int32_t) (\b Fortran)
 
 \par Description:
+This subroutine clears the provided wait list.
 
 \sa SEE_ALSO
 */
