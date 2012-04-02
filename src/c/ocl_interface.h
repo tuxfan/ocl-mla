@@ -41,6 +41,26 @@ the global state data.
 
 int32_t ocl_init();
 
+/*!
+\page ocl_init_threaded
+Initialize the OpenCL runtime layer for multiple threads.
+
+\par C Version:
+ierr ocl_init_threaded(thread)
+
+\par Fortran Version:
+ocl_init_threaded(thread, ierr)
+
+@param thread The zero-based thread id of the calling thread.\n
+size_t (\b C), integer(int32_t) (\b Fortran)
+@param ierr Error status \n int32_t (\b C), integer(int32_t) (\b Fortran)
+
+\par Description:
+This subroutine initializes the OpenCL runtime layer using the setup method defined by the build environment and creates logical devices with associated contexts and queues suitable for executing OpenCL kernels.  Additionally, this function will attempt to evenly subscribe device resources using the thread information provided in \b thread.  If the user oversubscribes the hardware, a round-robin approach will be used.
+*/
+
+int32_t ocl_init_threaded(size_t thread);
+
 /*----------------------------------------------------------------------------*\
  * Global shutdown of OpenCL layer.
 \*----------------------------------------------------------------------------*/

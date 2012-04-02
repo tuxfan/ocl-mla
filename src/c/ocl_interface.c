@@ -52,6 +52,14 @@ extern int32_t ocl_warning;
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_init() {
+	return ocl_init_threaded(0);
+} // ocl_init
+
+/*----------------------------------------------------------------------------*\
+ * ocl_init
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_init_threaded(size_t thread) {
 	int32_t ierr = 0;
 
 	ocl_warning = 1;
@@ -62,7 +70,7 @@ int32_t ocl_init() {
 
 	// initialize the performance device
 	if(OCL_PERFORMANCE_INITIALIZATION(&ocl.devices[OCL_PERFORMANCE_DEVICE],
-		ocl_platform_performance) != 0) {
+		ocl_platform_performance, thread) != 0) {
 		message("Initialization of performance device failed!\n");
 		exit(1);
 	} // if
@@ -74,7 +82,7 @@ int32_t ocl_init() {
 
 	// initialize the auxiliary device
 	if(OCL_AUXILIARY_INITIALIZATION(&ocl.devices[OCL_AUXILIARY_DEVICE],
-		ocl_platform_auxiliary) != 0) {
+		ocl_platform_auxiliary, thread) != 0) {
 		message("Initialization of auxiliary device failed!\n");
 		exit(1);
 	} // if

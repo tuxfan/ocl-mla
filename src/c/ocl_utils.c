@@ -501,7 +501,8 @@ int32_t ocl_add_from_file(const char * file, char ** source, int32_t prepend) {
 	}
 	else {
 		// try appending the kernel path
-		char * _paths = strdup(getenv("OCL_KERNEL_PATH"));
+		char * _paths = getenv("OCL_KERNEL_PATH") == NULL ? NULL :
+			strdup(getenv("OCL_KERNEL_PATH"));
 		char * _free_chars = _paths;
 		char * _path = NULL;
 		int32_t found = 0;

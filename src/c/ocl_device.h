@@ -17,21 +17,21 @@
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_cpu(ocl_device_instance_t * instance,
-	const char * platform);
+	const char * platform, size_t thread);
 
 /*------------------------------------------------------------------------------
  * This function initializes a generic GPU device.
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_gpu(ocl_device_instance_t * instance,
-	const char * platform);
+	const char * platform, size_t thread);
 
 /*------------------------------------------------------------------------------
  * This function initializes a device instance as an generic multicore CPU.
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
-	const char * platform, cl_uint device_type);
+	const char * platform, cl_uint device_type, size_t thread);
 
 /*------------------------------------------------------------------------------
  * This function finalizes a device instance.

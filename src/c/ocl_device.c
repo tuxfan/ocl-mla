@@ -27,8 +27,9 @@ const char * platform_defines[OCL_KNOWN_PLATFORMS][2] = {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_cpu(ocl_device_instance_t * instance,
-	const char * platform) {
-	return ocl_init_generic_device(instance, platform, CL_DEVICE_TYPE_CPU);
+	const char * platform, size_t thread) {
+	return ocl_init_generic_device(instance, platform, CL_DEVICE_TYPE_CPU,
+		thread);
 } // ocl_init_generic_cpu
 
 /*------------------------------------------------------------------------------
@@ -36,8 +37,9 @@ int32_t ocl_init_generic_cpu(ocl_device_instance_t * instance,
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_gpu(ocl_device_instance_t * instance,
-	const char * platform) {
-	return ocl_init_generic_device(instance, platform, CL_DEVICE_TYPE_GPU);
+	const char * platform, size_t thread) {
+	return ocl_init_generic_device(instance, platform, CL_DEVICE_TYPE_GPU,
+		thread);
 } // ocl_init_generic_gpu
 
 /*------------------------------------------------------------------------------
@@ -45,7 +47,7 @@ int32_t ocl_init_generic_gpu(ocl_device_instance_t * instance,
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
-	const char * platform, cl_uint device_type) {
+	const char * platform, cl_uint device_type, size_t thread) {
 	CALLER_SELF
 	cl_uint num_platforms;
 	cl_platform_id platforms[OCL_MAX_PLATFORMS];
@@ -113,10 +115,17 @@ int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
 			CL_CHECKerr(clGetDeviceIDs, platforms[pi], device_type,
 				num_devices, devices, &num_devices);
 
-			instance->id = devices[0];
+			if(thread+1 > num_devices) {
+				warning("Requested thread id exceeds the number of actual "
+					"hardware devices: using round robin...\n");
+			} // if
+
+			size_t device_id = num_devices > 1 ? thread%num_devices : 0;
+
+			instance->id = devices[device_id];
 
 			// get device information
-			CL_CHECKerr(clGetDeviceInfo, devices[0], CL_DEVICE_NAME,
+			CL_CHECKerr(clGetDeviceInfo, devices[device_id], CL_DEVICE_NAME,
 				sizeof(instance->info.name), instance->info.name, NULL);
 
 			// save platform name
@@ -130,31 +139,32 @@ int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
 
 			instance->info.type = device_type;
 			
-			CL_CHECKerr(clGetDeviceInfo, devices[0], CL_DEVICE_VENDOR_ID,
+			CL_CHECKerr(clGetDeviceInfo, devices[device_id], CL_DEVICE_VENDOR_ID,
 				sizeof(instance->info.vendor_id), &instance->info.vendor_id, NULL); 
-			CL_CHECKerr(clGetDeviceInfo, devices[0], CL_DEVICE_MAX_COMPUTE_UNITS,
-				sizeof(cl_uint),
+
+			CL_CHECKerr(clGetDeviceInfo, devices[device_id],
+				CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint),
 				&instance->info.max_compute_units, NULL);
 			
 			CL_CHECKerr(clGetDeviceInfo,
-				devices[0], CL_DEVICE_MAX_CLOCK_FREQUENCY,
+				devices[device_id], CL_DEVICE_MAX_CLOCK_FREQUENCY,
 				sizeof(cl_uint), &instance->info.max_clock_frequency, NULL);
 
 			CL_CHECKerr(clGetDeviceInfo,
-				devices[0], CL_DEVICE_MAX_WORK_GROUP_SIZE,
+				devices[device_id], CL_DEVICE_MAX_WORK_GROUP_SIZE,
 				sizeof(size_t), &instance->info.max_work_group_size, NULL);
 
 			CL_CHECKerr(clGetDeviceInfo,
-				devices[0], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
+				devices[device_id], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
 				sizeof(cl_uint), &instance->info.max_work_item_dimensions, NULL);
 
 			CL_CHECKerr(clGetDeviceInfo,
-				devices[0], CL_DEVICE_MAX_WORK_ITEM_SIZES,
+				devices[device_id], CL_DEVICE_MAX_WORK_ITEM_SIZES,
 				instance->info.max_work_item_dimensions*sizeof(size_t),
 				instance->info.max_work_item_sizes, NULL);
 
 			CL_CHECKerr(clGetDeviceInfo,
-				devices[0], CL_DEVICE_LOCAL_MEM_SIZE,
+				devices[device_id], CL_DEVICE_LOCAL_MEM_SIZE,
 				sizeof(cl_ulong), &instance->info.local_mem_size, NULL);
 		}
 		else {
