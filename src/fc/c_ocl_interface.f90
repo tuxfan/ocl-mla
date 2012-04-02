@@ -323,7 +323,7 @@ module ocl_interface
       integer(c_size_t) :: arg_size
       integer(int32_t) :: ierr
 
-      arg_size = sizeof(c_int)
+      arg_size = sizeof(arg_value)
 
       ierr = ocl_set_kernel_arg_f90(program_name, kernel_name, &
          arg_index, arg_size, c_loc(arg_value))
