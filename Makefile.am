@@ -58,8 +58,10 @@ install-data-hook:
 	@([ -d ${datarootdir} ] || mkdir -p ${datarootdir})
 	@([ -d ${mandir} ] || mkdir -p ${mandir})
 	@([ -d ${datarootdir}/html ] || mkdir -p ${datarootdir}/html)
-	@(cp -r ${top_builddir}/doc/man/* ${mandir})
-	@(cp -r ${top_builddir}/doc/html/* ${datarootdir}/html)
+	@([ -d ${top_builddir}/doc/man ] && \
+		cp -r ${top_builddir}/doc/man/* ${mandir})
+	@([ -d ${top_builddir}/doc/html ] && \
+		cp -r ${top_builddir}/doc/html/* ${datarootdir}/html)
 
 #------------------------------------------------------------------------------#
 # Extra clean
