@@ -61,7 +61,7 @@ int main(int argc, char ** argv) {
 
 	// step (9)
 	// invoke kernel
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program",
+	ocl_enqueue_kernel_ndrange_hashed(OCL_PERFORMANCE_DEVICE, "program",
 		"my test", 1, &global_offset, &global_size, &local_size, &event);
 
 	// step (10)

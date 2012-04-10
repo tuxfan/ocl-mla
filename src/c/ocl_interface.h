@@ -145,7 +145,7 @@ int32_t ocl_release_event(ocl_event_t * event);
 Initialize an ocl_event_wait_list_t structure.
 
 \par C Version:
-ierr ocl_initialzie_event_wait_list(list)
+ierr ocl_initialize_event_wait_list(list)
 
 \par Fortran Version:
 ocl_initialize_event_wait_list(list, ierr)
@@ -500,6 +500,9 @@ This subroutine creates a kernel on the given device.  The \b kernel_source_name
 int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	const char * kernel_source_name, const char * kernel_name);
 
+int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
+	ocl_kernel_t * token);
+
 /*----------------------------------------------------------------------------*\
  * Set kernel argument.
 \*----------------------------------------------------------------------------*/
@@ -644,9 +647,13 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 This subroutine enqueues an OpenCL NDRange kernel with the execution topology defined by the input parameters: \b dim, \b global_offset, \b global_size and \b local_size.  OpenCL supports execution topologies of up to three dimensions.  The offset and size parameters are each arrays of size \b dim.  Users should query their specific hardware to determine what ranges are supported.
 */
 
-int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange_hashed(uint32_t device_id,
 	const char * program_name, const char * kernel_name, cl_uint dim,
 	const size_t * global_offset, const size_t * global_size,
+	const size_t * local_size, ocl_event_t * event);
+
+int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id, ocl_kernel_t * kernel,
+	cl_uint dim, const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_event_t * event);
 
 /*----------------------------------------------------------------------------*\

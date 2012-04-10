@@ -364,12 +364,12 @@ module ocl_interface
    end subroutine ocl_ndrange_hints
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_kernel_ndrange
+   ! ocl_enqueue_kernel_ndrange_hashed
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_kernel_ndrange(device_id, program_name, &
-      kernel_name, kernel_dim, global_offset, global_size, &
-      local_size, event, ierr)
+   subroutine ocl_enqueue_kernel_ndrange_hashed(device_id, program_name, &
+      kernel_name, kernel_dim, global_offset, global_size, local_size, &
+      event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t) :: device_id
@@ -382,9 +382,58 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_kernel_ndrange_f90(device_id, program_name, &
-         kernel_name, kernel_dim, c_loc(global_offset), &
-         c_loc(global_size), c_loc(local_size), event)
+      ierr = ocl_enqueue_kernel_ndrange_hashed_f90(device_id, program_name, &
+         kernel_name, kernel_dim, c_loc(global_offset), c_loc(global_size), &
+         c_loc(local_size), event)
+   end subroutine ocl_enqueue_kernel_ndrange_hashed
+
+   !---------------------------------------------------------------------------!
+   ! ocl_initialize_kernel_token
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_initialize_kernel_token(token)
+      use :: ocl_data
+      implicit none
+      type(ocl_allocation_t) :: token
+      integer(int32_t) :: ierr
+
+      ierr = ocl_initialize_kernel_token_f90(token)
+   end subroutine ocl_initialize_kernel_token
+
+   !---------------------------------------------------------------------------!
+   ! ocl_kernel_token
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_kernel_token(program_name, kernel_name, token, ierr)
+      use :: ocl_data
+      implicit none
+      character(kind=c_char), dimension(*) :: program_name
+      character(kind=c_char), dimension(*) :: kernel_name
+      type(ocl_allocation_t) :: token
+      integer(int32_t) :: ierr
+
+      ierr = ocl_kernel_token_f90(program_name, kernel_name, token)
+   end subroutine ocl_kernel_token
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_kernel_ndrange
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_kernel_ndrange(device_id, kernel, &
+      kernel_dim, global_offset, global_size, local_size, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      type(ocl_allocation_t) :: kernel
+      integer(int32_t) :: kernel_dim
+      integer(c_size_t), target :: global_offset
+      integer(c_size_t), target :: global_size
+      integer(c_size_t), target :: local_size
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_kernel_ndrange_f90(device_id, kernel, kernel_dim, &
+         c_loc(global_offset), c_loc(global_size), c_loc(local_size), event)
    end subroutine ocl_enqueue_kernel_ndrange
 
    !---------------------------------------------------------------------------!

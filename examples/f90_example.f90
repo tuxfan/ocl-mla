@@ -76,7 +76,7 @@ program main
 
    ! step (9)
    ! invoke kernel
-   call ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, &
+   call ocl_enqueue_kernel_ndrange_hashed(OCL_PERFORMANCE_DEVICE, &
       'program' // C_NULL_CHAR, 'my test' // C_NULL_CHAR, &
       1, global_offset, global_size, local_size, event, ierr)
 

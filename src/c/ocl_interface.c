@@ -532,6 +532,37 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	return ierr;
 } // ocl_add_kernel
 
+int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
+	ocl_kernel_t * token) {
+	ENTRY *ep = NULL;
+	int32_t ierr = 0;
+
+	// check that the program exists
+	ep = ocl_hash_find_program(program_name);
+
+	if(ep == NULL) {
+		message("Error: hash entry \"%s\" does not exist!\n", program_name);
+		exit(1);
+	} // if
+
+	// check that the kernel exists
+	ep = ocl_hash_find_kernel(program_name, kernel_name);
+
+	if(ep == NULL) {
+		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
+		exit(1);
+	} // if
+
+	token = (ocl_kernel_t *)ep->data;
+
+	if(token == NULL) {
+		message("Error: NULL kernel token!\n", kernel_name);
+		exit(1);
+	} // if
+
+	return ierr;
+} // ocl_kernel_token
+
 /*----------------------------------------------------------------------------*\
  * ocl_set_kernel_arg
 \*----------------------------------------------------------------------------*/
@@ -636,10 +667,10 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 } // ocl_ndrange_hints
 
 /*----------------------------------------------------------------------------*\
- * ocl_enqueue_kernel_ndrange
+ * ocl_enqueue_kernel_ndrange_hashed
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange_hashed(uint32_t device_id,
 	const char * program_name, const char * kernel_name, cl_uint dim,
 	const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_event_t * event) {
@@ -683,8 +714,37 @@ int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
 	} // if
 
 	return ierr;
-} // ocl_enqueue_kernel_ndrange
+} // ocl_enqueue_kernel_ndrange_hashed
 
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_kernel_ndrange
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id, ocl_kernel_t * kernel,
+	cl_uint dim, const size_t * global_offset, const size_t * global_size,
+	const size_t * local_size, ocl_event_t * event) {
+	CALLER_SELF
+	int32_t ierr = 0;
+
+	ocl_device_instance_t * instance = ocl_device_instance(device_id);
+
+	if(event != NULL) {
+		ierr = clEnqueueNDRangeKernel(instance->queue, kernel->token,
+			dim, global_offset, global_size, local_size,
+			event->num_events_in_wait_list, event->event_wait_list,
+			&event->event);
+	}
+	else {
+		ierr = clEnqueueNDRangeKernel(instance->queue, kernel->token,
+			dim, global_offset, global_size, local_size, 0, NULL, NULL);
+	} // if
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clEnqueueNDRangeKernel, ierr);
+	} // if
+
+	return ierr;
+} // ocl_enqueue_kernel_ndrange_hashed
 /*----------------------------------------------------------------------------*\
  * ocl_finish
 \*----------------------------------------------------------------------------*/
@@ -982,14 +1042,62 @@ int32_t ocl_ndrange_hints_f90(const size_t * indeces,
 } // ocl_ndrange_hints_f90
 
 /*----------------------------------------------------------------------------*\
+ * ocl_enqueue_kernel_ndrange_hashed_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_kernel_ndrange_hashed_f90(uint32_t device_id,
+	const char * program_name, const char * kernel_name, cl_uint dim,
+	const size_t * global_offset, const size_t * global_size,
+	const size_t * local_size, ocl_allocation_t * event) {
+	return ocl_enqueue_kernel_ndrange_hashed(device_id, program_name,
+		kernel_name, dim, global_offset, global_size, local_size,
+		(ocl_event_t *)event->data);
+} // ocl_enqueue_kernel_ndrange
+
+/*----------------------------------------------------------------------------*\
+ * ocl_initialize_kernel_token_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_initialize_kernel_token_f90(ocl_allocation_t * token) {
+	int32_t ierr = 0;
+
+	ocl_kernel_t * _kernel = (ocl_kernel_t *)malloc(sizeof(ocl_kernel_t));
+
+	token->data = (void *)_kernel;
+
+	// try to use existing slots
+	if(ocl.slots > 0) {
+		token->index = ocl.open_slots[--ocl.slots];
+		ocl.free_allocations[ocl.slots] = (void *)_kernel;
+	}
+	else {
+		token->index = ocl.allocations;
+		ocl.free_allocations[ocl.allocations++] = (void *)_kernel;
+	} // if
+
+	return ierr;
+} // ocl_initialize_kernel_token_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_kernel_token_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_kernel_token_f90(const char * program_name,
+	const char * kernel_name, ocl_allocation_t * token) {
+
+	return ocl_kernel_token(program_name, kernel_name,
+		(ocl_kernel_t *)token->data);
+} // ocl_kernel_token
+
+/*----------------------------------------------------------------------------*\
  * ocl_enqueue_kernel_ndrange_f90
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_kernel_ndrange_f90(uint32_t device_id,
-	const char * program_name, const char * kernel_name, cl_uint dim,
-	const size_t * global_offset, const size_t * global_size,
-	const size_t * local_size, ocl_allocation_t * event) {
-	return ocl_enqueue_kernel_ndrange(device_id, program_name, kernel_name,
+	ocl_allocation_t * kernel, cl_uint dim, const size_t * global_offset,
+	const size_t * global_size, const size_t * local_size,
+	ocl_allocation_t * event) {
+	return ocl_enqueue_kernel_ndrange(device_id, (ocl_kernel_t *)kernel->data,
 		dim, global_offset, global_size, local_size, (ocl_event_t *)event->data);
 } // ocl_enqueue_kernel_ndrange
 

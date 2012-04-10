@@ -323,19 +323,67 @@ interface
    end function ocl_ndrange_hints_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_kernel_ndrange_f90
+   ! ocl_enqueue_kernel_ndrange_hashed_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_kernel_ndrange_f90(device_id, program_name, &
+   function ocl_enqueue_kernel_ndrange_hashed_f90(device_id, program_name, &
       kernel_name, kernel_dim, global_offset, global_size, &
       local_size, event) &
-      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_f90")
+      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_hashed_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       integer(int32_t), value :: device_id
       character(kind=c_char), dimension(*) :: program_name
       character(kind=c_char), dimension(*) :: kernel_name
+      integer(int32_t), value :: kernel_dim
+      type(c_ptr), value :: global_offset
+      type(c_ptr), value :: global_size
+      type(c_ptr), value :: local_size
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+   end function ocl_enqueue_kernel_ndrange_hashed_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_intialize_kernel_token_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_initialize_kernel_token_f90(token) &
+      result(ierr) bind(C, name="ocl_initialize_kernel_token_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      type(ocl_allocation_t) :: token
+      integer(int32_t) :: ierr
+   end function ocl_initialize_kernel_token_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_kernel_token_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_kernel_token_f90(program_name, kernel_name, token) &
+      result(ierr) bind(C, name="ocl_kernel_token_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      character(kind=c_char), dimension(*) :: program_name
+      character(kind=c_char), dimension(*) :: kernel_name
+      type(ocl_allocation_t) :: token
+      integer(int32_t) :: ierr
+   end function ocl_kernel_token_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_kernel_ndrange_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_kernel_ndrange_f90(device_id, kernel, &
+      kernel_dim, global_offset, global_size, local_size, event) &
+      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      type(ocl_allocation_t) :: kernel
       integer(int32_t), value :: kernel_dim
       type(c_ptr), value :: global_offset
       type(c_ptr), value :: global_size
