@@ -323,13 +323,13 @@ interface
    end function ocl_ndrange_hints_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_kernel_ndrange_hashed_f90
+   ! ocl_enqueue_kernel_ndrange_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_kernel_ndrange_hashed_f90(device_id, program_name, &
+   function ocl_enqueue_kernel_ndrange_f90(device_id, program_name, &
       kernel_name, kernel_dim, global_offset, global_size, &
       local_size, event) &
-      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_hashed_f90")
+      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
@@ -342,7 +342,7 @@ interface
       type(c_ptr), value :: local_size
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
-   end function ocl_enqueue_kernel_ndrange_hashed_f90
+   end function ocl_enqueue_kernel_ndrange_f90
 
    !---------------------------------------------------------------------------!
    ! ocl_intialize_kernel_token_f90
@@ -373,12 +373,12 @@ interface
    end function ocl_kernel_token_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_kernel_ndrange_f90
+   ! ocl_enqueue_kernel_ndrange_token_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_kernel_ndrange_f90(device_id, kernel, &
+   function ocl_enqueue_kernel_ndrange_token_f90(device_id, kernel, &
       kernel_dim, global_offset, global_size, local_size, event) &
-      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_f90")
+      result(ierr) bind(C, name="ocl_enqueue_kernel_ndrange_token_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
@@ -390,7 +390,7 @@ interface
       type(c_ptr), value :: local_size
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
-   end function ocl_enqueue_kernel_ndrange_f90
+   end function ocl_enqueue_kernel_ndrange_token_f90
 
    !---------------------------------------------------------------------------!
    ! ocl_finish_f90

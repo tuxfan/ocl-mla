@@ -156,7 +156,7 @@ int main(int argc, char ** argv) {
 
 	// invoke kernel using preferred work group size
 	if(work_group_elements > 0) {
-		ocl_enqueue_kernel_ndrange_hashed(OCL_PERFORMANCE_DEVICE, "program",
+		ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program",
 			"reduce", 1, &global_offset, &work_group_elements,
 			&work_group_size, &event);
 	} // if
@@ -189,7 +189,7 @@ int main(int argc, char ** argv) {
 
 	global_offset = 0;
 	global_size = 1;
-	ocl_enqueue_kernel_ndrange_hashed(OCL_AUXILIARY_DEVICE, "aux",
+	ocl_enqueue_kernel_ndrange(OCL_AUXILIARY_DEVICE, "aux",
 		"reduce", 1, &global_offset, &global_size,
 		&work_group_single, &event);
 

@@ -253,6 +253,8 @@ This subroutine clears the provided wait list.
 
 int32_t ocl_clear_event_wait_list(ocl_event_wait_list_t * list);
 
+// FIXME: man pages and headings
+
 /*----------------------------------------------------------------------------*\
  *
 \*----------------------------------------------------------------------------*/
@@ -500,6 +502,7 @@ This subroutine creates a kernel on the given device.  The \b kernel_source_name
 int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	const char * kernel_source_name, const char * kernel_name);
 
+// FIXME: need man page
 int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 	ocl_kernel_t * token);
 
@@ -537,6 +540,10 @@ Add a kernel argument to the kernel specified by \b kernel_name in \b program_na
 int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
 	cl_uint index, size_t size, const void * value);
 
+/*----------------------------------------------------------------------------*\
+ * Get kernel hint.
+\*----------------------------------------------------------------------------*/
+
 /*!
 \page ocl_kernel_hint
 Get the preferred/maximum workgroup size.
@@ -561,6 +568,10 @@ This subroutine fills \b hint with the preferred/maximum \b local_size to use in
 int32_t ocl_kernel_hint(const char * program_name,
 	const char * kernel_name, size_t * hint);
 
+/*----------------------------------------------------------------------------*\
+ * Get maximum work group size
+\*----------------------------------------------------------------------------*/
+
 /*!
 \page ocl_max_work_group_size
 Get the device maximum work group size.
@@ -582,6 +593,10 @@ This function returns the maximum work group size supported by the device specif
 
 int32_t ocl_max_work_group_size(uint32_t device_id,
 	size_t * max_work_group_size);
+
+/*----------------------------------------------------------------------------*\
+ * Get ndrange hints.
+\*----------------------------------------------------------------------------*/
 
 /*!
 \page ocl_ndrange_hints
@@ -647,14 +662,14 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 This subroutine enqueues an OpenCL NDRange kernel with the execution topology defined by the input parameters: \b dim, \b global_offset, \b global_size and \b local_size.  OpenCL supports execution topologies of up to three dimensions.  The offset and size parameters are each arrays of size \b dim.  Users should query their specific hardware to determine what ranges are supported.
 */
 
-int32_t ocl_enqueue_kernel_ndrange_hashed(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
 	const char * program_name, const char * kernel_name, cl_uint dim,
 	const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_event_t * event);
 
-int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id, ocl_kernel_t * kernel,
-	cl_uint dim, const size_t * global_offset, const size_t * global_size,
-	const size_t * local_size, ocl_event_t * event);
+int32_t ocl_enqueue_kernel_ndrange_token(uint32_t device_id,
+	ocl_kernel_t * kernel, cl_uint dim, const size_t * global_offset,
+	const size_t * global_size, const size_t * local_size, ocl_event_t * event);
 
 /*----------------------------------------------------------------------------*\
  * Block for pending events on a queue.

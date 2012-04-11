@@ -532,13 +532,14 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	return ierr;
 } // ocl_add_kernel
 
+/*----------------------------------------------------------------------------*\
+ * ocl_kernel_token
+\*----------------------------------------------------------------------------*/
+
 int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 	ocl_kernel_t * token) {
 	ENTRY *ep = NULL;
 	int32_t ierr = 0;
-
-ocl_host_initialize_timer("hash");
-ocl_host_start_timer("hash");
 
 	// check that the program exists
 	ep = ocl_hash_find_program(program_name);
@@ -555,9 +556,6 @@ ocl_host_start_timer("hash");
 		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
 		exit(1);
 	} // if
-
-ocl_host_stop_timer("hash");
-ocl_host_report_timer("hash");
 
 	*token = *((ocl_kernel_t *)ep->data);
 
@@ -673,10 +671,10 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 } // ocl_ndrange_hints
 
 /*----------------------------------------------------------------------------*\
- * ocl_enqueue_kernel_ndrange_hashed
+ * ocl_enqueue_kernel_ndrange
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_enqueue_kernel_ndrange_hashed(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
 	const char * program_name, const char * kernel_name, cl_uint dim,
 	const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_event_t * event) {
@@ -720,15 +718,16 @@ int32_t ocl_enqueue_kernel_ndrange_hashed(uint32_t device_id,
 	} // if
 
 	return ierr;
-} // ocl_enqueue_kernel_ndrange_hashed
+} // ocl_enqueue_kernel_ndrange
 
 /*----------------------------------------------------------------------------*\
- * ocl_enqueue_kernel_ndrange
+ * ocl_enqueue_kernel_ndrange_token
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id, ocl_kernel_t * kernel,
-	cl_uint dim, const size_t * global_offset, const size_t * global_size,
-	const size_t * local_size, ocl_event_t * event) {
+int32_t ocl_enqueue_kernel_ndrange_token(uint32_t device_id,
+	ocl_kernel_t * kernel, cl_uint dim, const size_t * global_offset,
+	const size_t * global_size, const size_t * local_size,
+	ocl_event_t * event) {
 	CALLER_SELF
 	int32_t ierr = 0;
 
@@ -750,7 +749,8 @@ int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id, ocl_kernel_t * kernel,
 	} // if
 
 	return ierr;
-} // ocl_enqueue_kernel_ndrange_hashed
+} // ocl_enqueue_kernel_ndrange_token
+
 /*----------------------------------------------------------------------------*\
  * ocl_finish
 \*----------------------------------------------------------------------------*/
@@ -1048,14 +1048,14 @@ int32_t ocl_ndrange_hints_f90(const size_t * indeces,
 } // ocl_ndrange_hints_f90
 
 /*----------------------------------------------------------------------------*\
- * ocl_enqueue_kernel_ndrange_hashed_f90
+ * ocl_enqueue_kernel_ndrange_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_enqueue_kernel_ndrange_hashed_f90(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange_f90(uint32_t device_id,
 	const char * program_name, const char * kernel_name, cl_uint dim,
 	const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_allocation_t * event) {
-	return ocl_enqueue_kernel_ndrange_hashed(device_id, program_name,
+	return ocl_enqueue_kernel_ndrange(device_id, program_name,
 		kernel_name, dim, global_offset, global_size, local_size,
 		(ocl_event_t *)event->data);
 } // ocl_enqueue_kernel_ndrange
@@ -1099,13 +1099,14 @@ int32_t ocl_kernel_token_f90(const char * program_name,
  * ocl_enqueue_kernel_ndrange_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_enqueue_kernel_ndrange_f90(uint32_t device_id,
+int32_t ocl_enqueue_kernel_ndrange_token_f90(uint32_t device_id,
 	ocl_allocation_t * kernel, cl_uint dim, const size_t * global_offset,
 	const size_t * global_size, const size_t * local_size,
 	ocl_allocation_t * event) {
-	return ocl_enqueue_kernel_ndrange(device_id, (ocl_kernel_t *)kernel->data,
-		dim, global_offset, global_size, local_size, (ocl_event_t *)event->data);
-} // ocl_enqueue_kernel_ndrange
+	return ocl_enqueue_kernel_ndrange_token(device_id,
+		(ocl_kernel_t *)kernel->data, dim, global_offset, global_size,
+		local_size, (ocl_event_t *)event->data);
+} // ocl_enqueue_kernel_ndrange_token
 
 /*----------------------------------------------------------------------------*\
  * ocl_finish_f90

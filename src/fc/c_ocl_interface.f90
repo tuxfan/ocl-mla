@@ -364,10 +364,10 @@ module ocl_interface
    end subroutine ocl_ndrange_hints
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_kernel_ndrange_hashed
+   ! ocl_enqueue_kernel_ndrange
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_kernel_ndrange_hashed(device_id, program_name, &
+   subroutine ocl_enqueue_kernel_ndrange(device_id, program_name, &
       kernel_name, kernel_dim, global_offset, global_size, local_size, &
       event, ierr)
       use :: ocl_data
@@ -382,10 +382,10 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_kernel_ndrange_hashed_f90(device_id, program_name, &
+      ierr = ocl_enqueue_kernel_ndrange_f90(device_id, program_name, &
          kernel_name, kernel_dim, c_loc(global_offset), c_loc(global_size), &
          c_loc(local_size), event)
-   end subroutine ocl_enqueue_kernel_ndrange_hashed
+   end subroutine ocl_enqueue_kernel_ndrange
 
    !---------------------------------------------------------------------------!
    ! ocl_initialize_kernel_token
@@ -419,7 +419,7 @@ module ocl_interface
    ! ocl_enqueue_kernel_ndrange
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_kernel_ndrange(device_id, kernel, &
+   subroutine ocl_enqueue_kernel_ndrange_token(device_id, kernel, &
       kernel_dim, global_offset, global_size, local_size, event, ierr)
       use :: ocl_data
       implicit none
@@ -432,9 +432,10 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_kernel_ndrange_f90(device_id, kernel, kernel_dim, &
-         c_loc(global_offset), c_loc(global_size), c_loc(local_size), event)
-   end subroutine ocl_enqueue_kernel_ndrange
+      ierr = ocl_enqueue_kernel_ndrange_token_f90(device_id, kernel, &
+         kernel_dim, c_loc(global_offset), c_loc(global_size), &
+         c_loc(local_size), event)
+   end subroutine ocl_enqueue_kernel_ndrange_token
 
    !---------------------------------------------------------------------------!
    ! ocl_finish
