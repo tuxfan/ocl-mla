@@ -537,6 +537,9 @@ int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 
+ocl_host_initialize_timer("hash");
+ocl_host_start_timer("hash");
+
 	// check that the program exists
 	ep = ocl_hash_find_program(program_name);
 
@@ -553,7 +556,10 @@ int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 		exit(1);
 	} // if
 
-	token = (ocl_kernel_t *)ep->data;
+ocl_host_stop_timer("hash");
+ocl_host_report_timer("hash");
+
+	*token = *((ocl_kernel_t *)ep->data);
 
 	if(token == NULL) {
 		message("Error: NULL kernel token!\n", kernel_name);
