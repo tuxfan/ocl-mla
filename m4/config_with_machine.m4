@@ -41,10 +41,18 @@ AC_DEFUN([CONFIG_WITH_MACHINE], [
 		elif test -f "$1/$MACHINE_FILE" ; then
 			. "$1/$MACHINE_FILE"
 			AC_MSG_RESULT($1/$MACHINE_FILE)
+		elif test -f "./machine" ; then
+			. "./machine"
+			AC_MSG_RESULT(./machine)
 		else
 			AC_MSG_RESULT(using config options)
 		fi
 	else
-		AC_MSG_RESULT(using config options)
+		if test -f "./machine" ; then
+			. "./machine"
+			AC_MSG_RESULT(./machine)
+		else
+			AC_MSG_RESULT(using config options)
+		fi
 	fi
 ])
