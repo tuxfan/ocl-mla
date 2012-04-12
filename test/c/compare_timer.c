@@ -9,6 +9,7 @@
 #define SIMD_SIZE 4
 
 const size_t ELEMENTS = 1024*1024*SIMD_SIZE;
+//const size_t ELEMENTS = 1024*SIMD_SIZE;
 
 int main(int argc, char ** argv) {
 
