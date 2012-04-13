@@ -8,7 +8,8 @@
 
 #define SIMD_SIZE 4
 
-const size_t ELEMENTS = 1024*1024*SIMD_SIZE;
+//const size_t ELEMENTS = 1024*1024*SIMD_SIZE;
+const size_t ELEMENTS = 4*1024*SIMD_SIZE;
 
 int main(int argc, char ** argv) {
 
@@ -22,7 +23,7 @@ int main(int argc, char ** argv) {
 	size_t max_work_group_size = 0;
 	size_t offset = 0;
 
-	float h_array[ELEMENTS];
+	float * h_array = (float *)malloc(ELEMENTS*sizeof(float));
 	float * h_acc_wg = NULL;
 
 	/*-------------------------------------------------------------------------*
@@ -72,13 +73,9 @@ int main(int argc, char ** argv) {
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	char compile_options[1024];
-	sprintf(compile_options, "%d", (int)max_work_group_size);
-
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", performance_source,
-		compile_options);
-	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source,
-		compile_options);
+		NULL);
+	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source, NULL);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels
@@ -177,6 +174,10 @@ int main(int argc, char ** argv) {
 
 	ocl_finish(OCL_PERFORMANCE_DEVICE);
 
+for(i=0; i<work_groups; ++i) {
+	printf("%f\n", h_acc_wg[i]);
+} // for
+
 	ocl_enqueue_write_buffer(OCL_AUXILIARY_DEVICE, a_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
 		h_acc_wg, &event);	
@@ -224,6 +225,7 @@ int main(int argc, char ** argv) {
 	free(h_acc_wg);
 	free(performance_source);
 	free(auxiliary_source);
+	free(h_array);
 
 	/*-------------------------------------------------------------------------*
 	 * Shutdown the OpenCL layer

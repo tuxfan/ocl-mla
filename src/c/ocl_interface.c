@@ -423,7 +423,7 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 	// add ocl preprocessor defines
 	char _compile_options[OCL_MAX_SOURCE_LENGTH];
 
-	if(strlen(compile_options) > 0) {
+	if(compile_options != NULL && strlen(compile_options) > 0) {
 		sprintf(_compile_options, "%s %s", instance->info.platform_defines,
 			compile_options);
 	}
