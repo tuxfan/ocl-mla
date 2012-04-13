@@ -42,7 +42,7 @@ program main
    ! step (5)
    ! add program and build
    call ocl_add_program(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
-      'test.cl' // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
+      'T_T.cl' // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
 
    ! step (6)
    ! add kernel

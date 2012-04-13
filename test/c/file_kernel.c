@@ -44,7 +44,7 @@ int main(int argc, char ** argv) {
 
 	// step (5)
 	// add program and build
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", "test.cl", "");
+	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", "T_T.cl", "");
 
 	// step (6)
 	// add kernel

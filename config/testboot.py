@@ -140,7 +140,7 @@ for dir in subdirs:
 		m.write("\techo '# Signature of the current package.' ; \\\n")
 		m.write("\techo 'm4_define([AT_PACKAGE_NAME], [%s])' && \\\n" % testdir)
 		m.write("\techo 'm4_define([AT_PACKAGE_STRING], [%s])' ; \\\n" % testdir)
-		m.write("\techo 'm4_define([AT_PACKAGE_BUGREPORT], [wohlbier@lanl.gov])'; \\\n")
+		m.write("\techo 'm4_define([AT_PACKAGE_BUGREPORT], [bergen@lanl.gov])'; \\\n")
 		m.write("\t} > package.m4\n")
 		m.close()
 

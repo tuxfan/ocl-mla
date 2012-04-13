@@ -4,23 +4,14 @@
 \******************************************************************************/
 
 /*------------------------------------------------------------------------------
- * Reduction kernel
+ * Trivial kernel
  *----------------------------------------------------------------------------*/
 
-#pragma OPENCL EXTENSION cl_amd_printf : enable
+__kernel void test(__global float * data) {
+	size_t gid = get_global_id(0);
 
-__kernel void reduce_serial(__global const int * elements,
-	__global const float * a, __global float * acc) {
-	int i;
-
-	__local float _acc = 0.0f;
-
-	for(i=0; i<(*elements); ++i) {
-		_acc += a[i];
-	} // for
-
-	*acc = _acc;
-} // reduce_serial
+	data[gid] = (float)gid;
+} // test
 
 /*
  * Local Variables:

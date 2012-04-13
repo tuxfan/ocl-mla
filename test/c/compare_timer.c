@@ -64,24 +64,21 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	char * performance_source = NULL;
-	ocl_add_from_file("utils.cl", &performance_source, 0);
-	ocl_add_from_file("reduce_data_parallel.cl", &performance_source, 0);
+	ocl_add_from_file("T_U.cl", &performance_source, 0);
+	ocl_add_from_file("T_RDP.cl", &performance_source, 0);
 
 	char * auxiliary_source = NULL;
-	ocl_add_from_file("utils.cl", &auxiliary_source, 0);
-	ocl_add_from_file("reduce_serial.cl", &auxiliary_source, 0);
+	ocl_add_from_file("T_U.cl", &auxiliary_source, 0);
+	ocl_add_from_file("T_RS.cl", &auxiliary_source, 0);
 
 	/*-------------------------------------------------------------------------*
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	char compile_options[1024];
-	sprintf(compile_options, "%d", (int)max_work_group_size);
-
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", performance_source,
-		compile_options);
+		NULL);
 	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source,
-		compile_options);
+		NULL);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels

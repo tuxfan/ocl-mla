@@ -8,5 +8,6 @@ bld.test('inline_kernel', 'inline_kernel.c')
 bld.test('host_timer', 'host_timer.c')
 bld.test('device_timer', 'device_timer.c')
 bld.test('compare_timer', 'compare_timer.c')
+bld.test('serial_reduction', 'serial_reduction.c')
 
-bld.test_input_files('test.cl reduce_serial.cl reduce_data_parallel.cl utils.cl')
+bld.test_input_files('T_RDP.cl T_RS.cl T_T.cl T_U.cl')

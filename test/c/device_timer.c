@@ -62,12 +62,12 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	char * performance_source = NULL;
-	ocl_add_from_file("utils.cl", &performance_source, 0);
-	ocl_add_from_file("reduce_data_parallel.cl", &performance_source, 0);
+	ocl_add_from_file("T_U.cl", &performance_source, 0);
+	ocl_add_from_file("T_RDP.cl", &performance_source, 0);
 
 	char * auxiliary_source = NULL;
-	ocl_add_from_file("utils.cl", &auxiliary_source, 0);
-	ocl_add_from_file("reduce_serial.cl", &auxiliary_source, 0);
+	ocl_add_from_file("T_U.cl", &auxiliary_source, 0);
+	ocl_add_from_file("T_RS.cl", &auxiliary_source, 0);
 
 	/*-------------------------------------------------------------------------*
 	 * Add programs and compile
@@ -173,10 +173,6 @@ int main(int argc, char ** argv) {
 		h_acc_wg, &event);	
 
 	ocl_finish(OCL_PERFORMANCE_DEVICE);
-
-for(i=0; i<work_groups; ++i) {
-	printf("%f\n", h_acc_wg[i]);
-} // for
 
 	ocl_enqueue_write_buffer(OCL_AUXILIARY_DEVICE, a_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
