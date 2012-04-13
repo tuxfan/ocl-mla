@@ -13,15 +13,11 @@ __kernel void reduce_serial(__global const int * elements,
 	__global const float * a, __global float * acc) {
 	int i;
 	
-	__local float _acc;
-
-	_acc = 0.0f;
+	*acc = 0.0f;
 
 	for(i=0; i<(*elements); ++i) {
-		_acc += a[i];
+		*acc += a[i];
 	} // for
-
-	*acc = _acc;
 } // reduce_serial
 
 //		*acc = _acc;
