@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include "ocl.h"
+#include <kernel_strings.h>
 
 #define SIMD_SIZE 4
 
@@ -65,12 +66,12 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	char * performance_source = NULL;
-	ocl_add_from_file("utils.cl", &performance_source, 0);
-	ocl_add_from_file("reduce_data_parallel.cl", &performance_source, 0);
+	ocl_add_from_string(utils, &performance_source, 0);
+	ocl_add_from_string(reduce_data_parallel, &performance_source, 0);
 
 	char * auxiliary_source = NULL;
-	ocl_add_from_file("utils.cl", &auxiliary_source, 0);
-	ocl_add_from_file("reduce_serial.cl", &auxiliary_source, 0);
+	ocl_add_from_string(utils, &auxiliary_source, 0);
+	ocl_add_from_string(reduce_serial, &auxiliary_source, 0);
 
 	/*-------------------------------------------------------------------------*
 	 * Add programs and compile

@@ -12,7 +12,13 @@ INCLUDES = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
 	@EXTRA_CPPFLAGS@
 
-AM_FCFLAGS = @FC_MODULE_PATH_FLAG@${top_builddir}/lib
+AM_FCFLAGS = -I${top_builddir}/local @FC_MODULE_PATH_FLAG@${top_builddir}/lib
+
+BUILT_SOURCES = ${top_builddir}/local/kernel_strings.h
+
+${top_builddir}/local/kernel_strings.h : ${top_srcdir}/examples/kernels/*.cl
+	${top_srcdir}/utils/stringify_kernel_files ${top_srcdir}/examples/kernels \
+		${top_builddir}/local/kernel_strings.h
 
 c_example_SOURCES = @top_srcdir@/examples/c_example.c
 c_example_LDFLAGS = @EXTRA_LDFLAGS@

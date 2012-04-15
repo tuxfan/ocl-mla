@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include "ocl.h"
+#include <kernel_strings.h>
 
 int main(int argc, char ** argv) {
 
@@ -44,8 +45,10 @@ int main(int argc, char ** argv) {
 
 	// step (5)
 	// add program and build
+//	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
+//		"test.cl", "-DMY_DEFINE");
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
-		"test.cl", "-DMY_DEFINE");
+		test, "-DMY_DEFINE");
 
 	// step (6)
 	// add kernel
