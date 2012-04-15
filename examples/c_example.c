@@ -48,7 +48,7 @@ int main(int argc, char ** argv) {
 //	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
 //		"test.cl", "-DMY_DEFINE");
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
-		test, "-DMY_DEFINE");
+		test_PPSTR, "-DMY_DEFINE");
 
 	// step (6)
 	// add kernel

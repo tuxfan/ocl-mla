@@ -66,12 +66,12 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	char * performance_source = NULL;
-	ocl_add_from_string(utils, &performance_source, 0);
-	ocl_add_from_string(reduce_data_parallel, &performance_source, 0);
+	ocl_add_from_string(utils_PPSTR, &performance_source, 0);
+	ocl_add_from_string(reduce_data_parallel_PPSTR, &performance_source, 0);
 
 	char * auxiliary_source = NULL;
-	ocl_add_from_string(utils, &auxiliary_source, 0);
-	ocl_add_from_string(reduce_serial, &auxiliary_source, 0);
+	ocl_add_from_string(utils_PPSTR, &auxiliary_source, 0);
+	ocl_add_from_string(reduce_serial_PPSTR, &auxiliary_source, 0);
 
 	/*-------------------------------------------------------------------------*
 	 * Add programs and compile
