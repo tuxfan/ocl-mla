@@ -5,6 +5,7 @@
 
 program main
    use ocl
+   use kernel_strings
    implicit none
 
    integer :: i
@@ -44,10 +45,14 @@ program main
    call ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes, &
       CL_MEM_READ_ONLY + CL_MEM_COPY_HOST_PTR, c_loc(h_array), d_array, ierr) 
 
+   print *, test_PPSTR
+
    ! step (5)
    ! add program and build
    call ocl_add_program(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
-      'test.cl' // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
+      test_PPSTR // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
+   !call ocl_add_program(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
+   !   'test.cl' // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
 
    ! step (6)
    ! add kernel
