@@ -46,10 +46,6 @@ int main(int argc, char ** argv) {
 
 	// step (5)
 	// add program and build
-//	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
-//		"test.cl", "-DMY_DEFINE");
-	printf("%d", (int)strlen(test_PPSTR));
-
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
 		test_PPSTR, "-DMY_DEFINE");
 
