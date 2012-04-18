@@ -27,11 +27,6 @@ module ocl_data
    ! Dynamically initialized variables
    integer(c_size_t) :: cl_mem_size
 
-   ! Reference type for C pointers
-   type, bind(C) :: ocl_reference_t
-      type(c_ptr) :: void
-   end type ocl_reference_t
-
    ! OpenCL logical devices
    integer(int32_t), parameter :: OCL_PERFORMANCE_DEVICE = 0
    integer(int32_t), parameter :: OCL_AUXILIARY_DEVICE = 1

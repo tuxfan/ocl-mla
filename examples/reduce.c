@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include "ocl.h"
-#include <kernel_strings.h>
+#include <example_strings.h>
 
 #define SIMD_SIZE 4
 

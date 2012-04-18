@@ -4,8 +4,9 @@
 \******************************************************************************/
 
 #include <stdio.h>
+#include <string.h>
 #include "ocl.h"
-#include <kernel_strings.h>
+#include <example_strings.h>
 
 int main(int argc, char ** argv) {
 
@@ -47,6 +48,8 @@ int main(int argc, char ** argv) {
 	// add program and build
 //	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
 //		"test.cl", "-DMY_DEFINE");
+	printf("%d", (int)strlen(test_PPSTR));
+
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
 		test_PPSTR, "-DMY_DEFINE");
 
