@@ -4,4 +4,4 @@
 ################################################################################
 
 bld.test('file_kernel', 'file_kernel.f90')
-bld.test_input_files('T_T.cl')
+bld.test_input_files('fT_T.cl')
