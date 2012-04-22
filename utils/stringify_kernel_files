@@ -56,8 +56,10 @@ def write_c(name, sp0):
 
 		charname = re.sub('^.*\/', '', re.sub('\.cl', '', inputname.rstrip()))
 
+		fd_h.write('/* ' + inputname.rstrip() + ' */\n')
 		fd_h.write('extern const char * ' + charname + '_PPSTR;\n')
 
+		fd_c.write('/* ' + inputname.rstrip() + ' */\n')
 		fd_c.write('const char * ' + charname + '_PPSTR = \n')
 
 		for line in sp1.stdout.readlines():
