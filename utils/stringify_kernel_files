@@ -65,7 +65,12 @@ def write_c(name, sp0):
 				continue
 
 			line = re.sub('\"', '\\"', re.sub('\\\\', '\\\\\\\\', line.rstrip()))
-			fd_c.write('\"' + line + ' \\n\"\n')
+
+			if len('\"' + line + ' \\n\"\n') > 70:
+				fd_c.write('\"' + line[0:40] + '\"\n')
+				fd_c.write('\"' + line[41:len(line)] + ' \\n\"\n')
+			else:
+				fd_c.write('\"' + line + ' \\n\"\n')
 		# for
 
 		fd_h.write('\n')
