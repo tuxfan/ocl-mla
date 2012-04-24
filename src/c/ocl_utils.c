@@ -385,6 +385,7 @@ void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	*_token = token;
 	e.data = (void *)_token;
 
+	// set data to free
 	add_allocation(e.data, NULL);
 
 #if defined(__APPLE__)
@@ -616,6 +617,9 @@ int32_t ocl_host_initialize_timer(const char * label) {
 	e.key = strdup(label);
 	e.data = (void *)data;
 
+	// add data to free
+	add_allocation(e.data, NULL);
+
 #if defined(__APPLE__)
 	ep = hsearch(e, ENTER);
 #else
@@ -824,6 +828,9 @@ int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
 
 		// set the data
 		e.data = (void *)timer_event;
+
+		// add data to free
+		add_allocation(e.data, NULL);
 
 		// add event to hash
 #if defined(__APPLE__)
