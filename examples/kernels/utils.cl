@@ -3,11 +3,19 @@
  * All rights reserved.
 \******************************************************************************/
 
+/*----------------------------------------------------------------------------*
+ * Apple complains about invalid address space cast without (const char *)
+ *----------------------------------------------------------------------------*/
+
 #if defined(__OCL_APPLE__)
 	#define FORMAT_STR(f) (const char *)((f))
 #else
 	#define FORMAT_STR(f) ((f))
 #endif
+
+/*----------------------------------------------------------------------------*
+ * Some platforms don't like static
+ *----------------------------------------------------------------------------*/
 
 #if defined(__OCL_INTEL__) || defined(__OCL_AMD__)
 	#define STATIC

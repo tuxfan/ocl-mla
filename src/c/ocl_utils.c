@@ -295,9 +295,6 @@ void ocl_hash_add_program(const char * name, cl_program token) {
 		exit(1);
 	} // if
 
-	// set the key
-	e.key = strdup(name);
-
 	// allocate memory for hash data (this will be freed by
 	// hdestroy or hdestroy_r)
 	ocl_program_t * program = (ocl_program_t *)malloc(sizeof(ocl_program_t));
@@ -321,10 +318,16 @@ void ocl_hash_add_program(const char * name, cl_program token) {
 	ocl.free_tables[ocl.tables++] = &program->kernels;
 #endif
 
+	// set the key
+	e.key = strdup(name);
+
 	// set hash data
 	e.data = (void *)program;
 
 	// set data to free
+#if ! defined(__APPLE__)
+	add_allocation(e.key, NULL);
+#endif
 	add_allocation(e.data, NULL);
 
 	// add program entry
@@ -386,6 +389,9 @@ void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	e.data = (void *)_token;
 
 	// set data to free
+#if ! defined(__APPLE__)
+	add_allocation(e.key, NULL);
+#endif
 	add_allocation(e.data, NULL);
 
 #if defined(__APPLE__)
@@ -618,6 +624,9 @@ int32_t ocl_host_initialize_timer(const char * label) {
 	e.data = (void *)data;
 
 	// add data to free
+#if ! defined(__APPLE__)
+	add_allocation(e.key, NULL);
+#endif
 	add_allocation(e.data, NULL);
 
 #if defined(__APPLE__)
@@ -830,6 +839,9 @@ int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
 		e.data = (void *)timer_event;
 
 		// add data to free
+#if ! defined(__APPLE__)
+		add_allocation(e.key, NULL);
+#endif
 		add_allocation(e.data, NULL);
 
 		// add event to hash
