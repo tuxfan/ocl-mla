@@ -175,18 +175,25 @@ void print_device_info(ocl_device_info_t * info, const char * label) {
 } // print_device_info
 
 /*------------------------------------------------------------------------------
- * add_free_allocation
+ * Add to free allocations.
  *----------------------------------------------------------------------------*/
 
-void add_free_allocation(void * data) {
-	if((ocl.allocations + 1) > OCL_MAX_FORTRAN_ALLOCATIONS) {
-		message("Error: maximum number of Fortran allocations"
-			" exceeded (%d)\n", OCL_MAX_FORTRAN_ALLOCATIONS);
-		exit(1);
-	} // if
+void add_allocation(void * data, int32_t * index) {
+	int32_t _index = ocl.slots > 0 ? ocl.open_slots[--ocl.slots] :
+		ocl.allocations++;
+	ocl.free_allocations[_index] = data;
 
-	ocl.free_allocations[ocl.allocations++] = data;
-} // add_free_allocation
+	if(index != NULL) {
+		*index = _index;
+	} // if
+} // add_allocation
+
+/*------------------------------------------------------------------------------
+ * Remove from free allocations.
+ *----------------------------------------------------------------------------*/
+
+void free_allocation(void * data, int32_t * index) {
+} // free_allocation
 
 /*------------------------------------------------------------------------------
  * default_hint
@@ -317,6 +324,9 @@ void ocl_hash_add_program(const char * name, cl_program token) {
 	// set hash data
 	e.data = (void *)program;
 
+	// set data to free
+	add_allocation(e.data, NULL);
+
 	// add program entry
 #if defined(__APPLE__)
 	ep = hsearch(e, ENTER);
@@ -374,6 +384,8 @@ void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	ocl_kernel_t * _token = (ocl_kernel_t *)malloc(sizeof(ocl_kernel_t));
 	*_token = token;
 	e.data = (void *)_token;
+
+	add_allocation(e.data, NULL);
 
 #if defined(__APPLE__)
 	ep = hsearch(e, ENTER);
@@ -455,6 +467,8 @@ ENTRY * ocl_hash_find_kernel(const char * program_name,
 	e.key = strdup(kernel_name);
 	hsearch_r(e, FIND, &ep, &program->kernels);
 #endif
+
+	free(e.key);
 
 	return ep;
 } // ocl_hash_find_kernel
