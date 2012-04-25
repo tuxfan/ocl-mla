@@ -3,8 +3,8 @@
 # All rights reserved.
 ################################################################################
 
-For the impatient, look at main.c and ocl_interface.h for C version, and look
-at main.f90 and ocl_interface.f90 for the Fortran 90 version.
+For the impatient, look at c_example.c and ocl_interface.h for C version, and
+look at f90_example.f90 and c_ocl_interface.f90 for the Fortran 90 version.
 
 #------------------------------------------------------------------------------#
 # Abstractions
