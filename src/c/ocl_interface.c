@@ -665,12 +665,8 @@ int32_t ocl_max_work_group_size(uint32_t device_id,
  * ocl_ndrange_hints
 \*----------------------------------------------------------------------------*/
 
-// these need to be handled at compile time or added to the interface
-const double w0 = 0.5;
-const double w1 = 0.5;
-const size_t min_work_group_size = 8;
-
 int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
+	double work_group_weight, double single_element_weight,
 	size_t * work_group_size, size_t * work_group_elements,
 	size_t * single_elements) {
 	int32_t ierr = 0;
@@ -683,7 +679,7 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 	size_t tests = 1;
 	size_t factor = 2;
 
-	while((*work_group_size)/factor >= min_work_group_size) {
+	while((*work_group_size)/factor >= OCL_MIN_WORK_GROUP_SIZE) {
 		++tests;
 		factor *= 2;
 	} // while
@@ -695,7 +691,8 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define MIN(a, b) (a) < (b) ? (a) : (b)
-#define SIZE(a, s, sa, sb) (a) == (s) ? (sa) : (sb);
+#define SIZE(m, s, r, rl, wgs, sz) \
+	(m) == (s) ? (r) > (rl) ? (wgs) : (wgs)*2 : (sz);
 
 	size_t wgsize = *work_group_size;
 	for(i = 0; i<tests; ++i) {
@@ -717,6 +714,12 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 	double score = 0.0;
 	size_t size = 0;
+	double wg_ratio_last = 0.0;
+	double s_ratio_last = 0.0;
+
+#if defined(ENABLE_OCL_VERBOSE)
+	message("NDRange Hints\n");
+#endif
 
 	wgsize = *work_group_size;
 	for(i = 0; i<tests; ++i) {
@@ -727,14 +730,41 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 		const double s_ratio = (((d.quot*wgsize)/(double)elements)-s_ratio_min)/
 			s_ratio_max;
 
-		score = MAX((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score);
-		size = SIZE((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score, wgsize, size);
+#if defined(ENABLE_OCL_VERBOSE)
+		message("\ttrying %d\n", (int)wgsize);
+		message("\twg_ratio: %lf s_ratio: %lf\n", wg_ratio, s_ratio);
+#endif
+
+		const double mean =
+			(work_group_weight*wg_ratio + single_element_weight*s_ratio)/
+			(work_group_weight + single_element_weight);
+
+#if defined(ENABLE_OCL_VERBOSE)
+		message("\tscore: %lf\n", (int)wgsize, mean);
+		message("\twork group elements: %d\n", d.quot*wgsize);
+		message("\tsingle elements: %d\n\n", d.rem);
+#endif
+
+		score = MAX(mean, score);
+
+#if OCL_PREFER_LARGE_WORK_GROUP_SIZE == 1
+		size = SIZE(mean, score, wg_ratio, wg_ratio_last, wgsize, size);
+#else
+		size = SIZE(mean, score, s_ratio, s_ratio_last, wgsize, size);
+#endif
 
 		wgsize /= 2;
+		wg_ratio_last = wg_ratio;
+		s_ratio_last = s_ratio;
 	} // for
 
 #undef MAX
 #undef MIN
+#undef SIZE
+
+#if defined(ENABLE_OCL_VERBOSE)
+		message("\tpicked %d\n", (int)size);
+#endif
 
 	*work_group_size = size;
 
@@ -1159,9 +1189,11 @@ int32_t ocl_kernel_hint_f90(const char * program_name,
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_ndrange_hints_f90(const size_t * indeces,
-	const size_t * max_work_group_size, size_t * work_group_size,
+	const size_t * max_work_group_size, double * work_group_weight,
+	double * single_element_weight, size_t * work_group_size,
 	size_t * work_group_indeces, size_t * single_indeces) {
-	return ocl_ndrange_hints(*indeces, *max_work_group_size, work_group_size,
+	return ocl_ndrange_hints(*indeces, *max_work_group_size,
+		*work_group_weight, *single_element_weight, work_group_size,
 		work_group_indeces, single_indeces);
 } // ocl_ndrange_hints_f90
 

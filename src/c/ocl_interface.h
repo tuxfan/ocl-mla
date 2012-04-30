@@ -617,11 +617,14 @@ size_t * (\b C), integer(c_size_t) (\b Fortran)
 @param single_indeces Number of indeces that must be processed with the a work group size of 1.
 size_t * (\b C), integer(c_size_t) (\b Fortran)
 
+/FIXME: add documentation
+
 \par Description:
 This function determines a work group size to process the given number of \b indeces.  The function returns the maximum number of work items that can be processed in blocks of \b work_group_size in \b work_group_indeces and the remainder that must be processed with a work group size of 1 in \b single_indeces.
 */
 
 int32_t ocl_ndrange_hints(size_t indeces, size_t max_work_group_size,
+	double work_group_weight, double single_element_weight,
 	size_t * work_group_size, size_t * work_group_indeces,
 	size_t * single_indeces);
 

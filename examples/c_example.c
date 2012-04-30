@@ -65,7 +65,7 @@ int main(int argc, char ** argv) {
 	size_t single_indeces;
 
 	ocl_kernel_hint("program", "my test", &hint);
-	ocl_ndrange_hints(global_size, hint, &local_size,
+	ocl_ndrange_hints(global_size, hint, 0.5, 0.5, &local_size,
 		&work_group_indeces, &single_indeces);
 
 	if(single_indeces != 0) {

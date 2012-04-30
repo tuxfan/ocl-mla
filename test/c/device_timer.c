@@ -95,8 +95,8 @@ int main(int argc, char ** argv) {
 	// get a tighter bound on the max work group size
 	ocl_kernel_hint("program", "reduce", &max_work_group_size);
 
-	ocl_ndrange_hints(global_size, max_work_group_size, &work_group_size,
-		&work_group_elements, &single_elements);
+	ocl_ndrange_hints(global_size, max_work_group_size, 0.5, 0.5,
+		&work_group_size, &work_group_elements, &single_elements);
 
 	// check size
 	if(single_elements > 0) {

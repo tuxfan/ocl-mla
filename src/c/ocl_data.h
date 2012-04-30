@@ -49,6 +49,12 @@ Set the maximum number of hash entries that can be used for storing timer object
 
 \par OCL_MAX_FORTRAN_ALLOCATIONS (default: 1024)
 Set the maximum number of memory allocations that can be mananged automatically for Fortran garbage collection.
+
+\par OCL_MIN_WORK_GROUP_SIZE (default: 8)
+Specifiy the minimum work group size that is allowed as output from \b ocl_ndrange_hints.
+
+\par OCL_PREFER_LARGE_WORK_GROUP_SIZE (default: 0)
+Specifiy whether or not \b ocl_ndrange_hints should favor larger work groups or fewer single elements.
 */
 
 #ifndef DOXYGEN_SKIP
@@ -87,6 +93,14 @@ Set the maximum number of memory allocations that can be mananged automatically 
 
 #ifndef OCL_MAX_FORTRAN_ALLOCATIONS
 #define OCL_MAX_FORTRAN_ALLOCATIONS 1024
+#endif
+
+#ifndef OCL_MIN_WORK_GROUP_SIZE
+#define OCL_MIN_WORK_GROUP_SIZE 8
+#endif
+
+#ifndef OCL_PREFER_LARGE_WORK_GROUP_SIZE
+#define OCL_PREFER_LARGE_WORK_GROUP_SIZE 0
 #endif
 
 /*------------------------------------------------------------------------------
