@@ -77,13 +77,9 @@ int main(int argc, char ** argv) {
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	char compile_options[1024];
-	sprintf(compile_options, "%d", (int)max_work_group_size);
-
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", performance_source,
-		compile_options);
-	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source,
-		compile_options);
+		NULL);
+	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source, NULL);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels

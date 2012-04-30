@@ -677,12 +677,13 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 	int i;
 
 	// find nearest power of 2
+	*work_group_size = max_work_group_size;
 	while(*work_group_size > elements) { *work_group_size /= 2; }
 
 	size_t tests = 1;
 	size_t factor = 2;
 
-	while(max_work_group_size/factor >= min_work_group_size) {
+	while((*work_group_size)/factor >= min_work_group_size) {
 		++tests;
 		factor *= 2;
 	} // while
@@ -694,16 +695,17 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define MIN(a, b) (a) < (b) ? (a) : (b)
-#define SZ_MAX(a, b, sa, sb) (a) > (b) ? (sa) : (sb);
+#define SIZE(a, s, sa, sb) (a) == (s) ? (sa) : (sb);
 
-	size_t wgsize = max_work_group_size;
+	size_t wgsize = *work_group_size;
 	for(i = 0; i<tests; ++i) {
 		wg_ratio_max = MAX(wg_ratio_max, wgsize/(double)elements);
 		wg_ratio_min = MIN(wg_ratio_min, wgsize/(double)elements);
 
 		div_t d = div(elements, wgsize);
-		s_ratio_max = MAX(s_ratio_max, (d.quot*wgsize)/(double)elements);
-		s_ratio_min = MIN(s_ratio_min, (d.quot*wgsize)/(double)elements);
+		const double s_ratio = (d.quot*wgsize)/(double)elements;
+		s_ratio_max = MAX(s_ratio_max, s_ratio);
+		s_ratio_min = MIN(s_ratio_min, s_ratio);
 
 		wgsize /= 2;
 	} // for
@@ -716,7 +718,7 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 	double score = 0.0;
 	size_t size = 0;
 
-	wgsize = max_work_group_size;
+	wgsize = *work_group_size;
 	for(i = 0; i<tests; ++i) {
 		const double wg_ratio = ((wgsize/(double)elements)-wg_ratio_min)/
 			wg_ratio_max;
@@ -726,11 +728,20 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 			s_ratio_max;
 
 		score = MAX((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score);
-		size = SZ_MAX((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score, wgsize, size);
+		size = SIZE((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score, wgsize, size);
+
+		wgsize /= 2;
 	} // for
 
 #undef MAX
 #undef MIN
+
+	*work_group_size = size;
+
+	div_t q = div(elements, *work_group_size);
+
+	*work_group_elements = q.quot*(*work_group_size);
+	*single_elements = q.rem;
 
 #if 0
 	*work_group_size = max_work_group_size;

@@ -46,8 +46,15 @@ int main(int argc, char ** argv) {
 
 	// step (5)
 	// add program and build
+	char * source = NULL;
+	ocl_add_from_string(utils_PPSTR, &source, 0);
+	ocl_add_from_string(test_PPSTR, &source, 0);
+//	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
+//		test_PPSTR, "-DMY_DEFINE");
+	printf("%s", source);
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
-		test_PPSTR, "-DMY_DEFINE");
+		source, "-DMY_DEFINE");
+	free(source);
 
 	// step (6)
 	// add kernel
