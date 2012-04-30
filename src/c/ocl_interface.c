@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <float.h>
 
 #include "ocl_interface.h"
 #include "ocl_device.h"
@@ -664,11 +665,74 @@ int32_t ocl_max_work_group_size(uint32_t device_id,
  * ocl_ndrange_hints
 \*----------------------------------------------------------------------------*/
 
+// these need to be handled at compile time or added to the interface
+const double w0 = 0.5;
+const double w1 = 0.5;
+const size_t min_work_group_size = 8;
+
 int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 	size_t * work_group_size, size_t * work_group_elements,
 	size_t * single_elements) {
 	int32_t ierr = 0;
+	int i;
 
+	// find nearest power of 2
+	while(*work_group_size > elements) { *work_group_size /= 2; }
+
+	size_t tests = 1;
+	size_t factor = 2;
+
+	while(max_work_group_size/factor >= min_work_group_size) {
+		++tests;
+		factor *= 2;
+	} // while
+
+	double wg_ratio_max = -DBL_MAX;
+	double wg_ratio_min = DBL_MAX;
+	double s_ratio_max = -DBL_MAX;
+	double s_ratio_min = DBL_MAX;
+
+#define MAX(a, b) (a) > (b) ? (a) : (b)
+#define MIN(a, b) (a) < (b) ? (a) : (b)
+#define SZ_MAX(a, b, sa, sb) (a) > (b) ? (sa) : (sb);
+
+	size_t wgsize = max_work_group_size;
+	for(i = 0; i<tests; ++i) {
+		wg_ratio_max = MAX(wg_ratio_max, wgsize/(double)elements);
+		wg_ratio_min = MIN(wg_ratio_min, wgsize/(double)elements);
+
+		div_t d = div(elements, wgsize);
+		s_ratio_max = MAX(s_ratio_max, (d.quot*wgsize)/(double)elements);
+		s_ratio_min = MIN(s_ratio_min, (d.quot*wgsize)/(double)elements);
+
+		wgsize /= 2;
+	} // for
+
+	wg_ratio_max -= wg_ratio_min;
+	s_ratio_max -= s_ratio_min;
+	wg_ratio_max = MAX(1.0, wg_ratio_max);
+	s_ratio_max = MAX(1.0, s_ratio_max);
+
+	double score = 0.0;
+	size_t size = 0;
+
+	wgsize = max_work_group_size;
+	for(i = 0; i<tests; ++i) {
+		const double wg_ratio = ((wgsize/(double)elements)-wg_ratio_min)/
+			wg_ratio_max;
+
+		div_t d = div(elements, wgsize);
+		const double s_ratio = (((d.quot*wgsize)/(double)elements)-s_ratio_min)/
+			s_ratio_max;
+
+		score = MAX((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score);
+		size = SZ_MAX((w0*wg_ratio + w1*s_ratio)/(w0 + w1), score, wgsize, size);
+	} // for
+
+#undef MAX
+#undef MIN
+
+#if 0
 	*work_group_size = max_work_group_size;
 
 	// find nearest power of 2
@@ -678,6 +742,7 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 	*work_group_elements = q.quot*(*work_group_size);
 	*single_elements = q.rem;
+#endif
 
 	return ierr;
 } // ocl_ndrange_hints
