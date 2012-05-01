@@ -714,8 +714,11 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 	double score = 0.0;
 	size_t size = 0;
+#if OCL_PREFER_LARGE_WORK_GROUP_SIZE == 1
 	double wg_ratio_last = 0.0;
+#else
 	double s_ratio_last = 0.0;
+#endif
 
 #if defined(ENABLE_OCL_VERBOSE)
 	message("NDRange Hints\n");
@@ -749,13 +752,13 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 #if OCL_PREFER_LARGE_WORK_GROUP_SIZE == 1
 		size = SIZE(mean, score, wg_ratio, wg_ratio_last, wgsize, size);
+		wg_ratio_last = wg_ratio;
 #else
 		size = SIZE(mean, score, s_ratio, s_ratio_last, wgsize, size);
+		s_ratio_last = s_ratio;
 #endif
 
 		wgsize /= 2;
-		wg_ratio_last = wg_ratio;
-		s_ratio_last = s_ratio;
 	} // for
 
 #undef MAX
@@ -772,18 +775,6 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 	*work_group_elements = q.quot*(*work_group_size);
 	*single_elements = q.rem;
-
-#if 0
-	*work_group_size = max_work_group_size;
-
-	// find nearest power of 2
-	while(*work_group_size > elements) { *work_group_size /= 2; }
-
-	div_t q = div(elements, *work_group_size);
-
-	*work_group_elements = q.quot*(*work_group_size);
-	*single_elements = q.rem;
-#endif
 
 	return ierr;
 } // ocl_ndrange_hints
