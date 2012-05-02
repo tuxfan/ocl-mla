@@ -196,6 +196,9 @@ int32_t ocl_host_read_timer(const char * label, double * value);
  * OpenCL timer interface
  ******************************************************************************/
 
+int32_t ocl_add_timer_list(const char * label,
+	const ocl_event_wait_list_t * list);
+
 /*------------------------------------------------------------------------------
  * Add a timer event.
  *----------------------------------------------------------------------------*/

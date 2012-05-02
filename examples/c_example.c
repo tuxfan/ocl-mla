@@ -49,9 +49,7 @@ int main(int argc, char ** argv) {
 	char * source = NULL;
 	ocl_add_from_string(utils_PPSTR, &source, 0);
 	ocl_add_from_string(test_PPSTR, &source, 0);
-//	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
-//		test_PPSTR, "-DMY_DEFINE");
-	printf("%s", source);
+
 	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
 		source, "-DMY_DEFINE");
 	free(source);

@@ -209,32 +209,11 @@ int32_t ocl_add_event_to_wait_list(ocl_event_wait_list_t * list,
 			ocl.free_allocations[list->index] = data;
 		}
 		else {
-
-
-			add_allocation(data, &list->index);
-
-#if 0
-			// set up garbage collection
-			if(ocl.slots > 0) {
-				// use existing slot
-				list->index = ocl.open_slots[--ocl.slots];
-				ocl.free_allocations[list->index] = data;
-			}
-			else {
-				list->index = ocl.allocations;
-				ocl.free_allocations[ocl.allocations++] = data;
-			} // if
-#endif
-
-
-
-
-
-
-
 			// set the list data
 			list->event_wait_list = (cl_event *)data;
 		} // if
+
+		add_allocation(data, &list->index);
 
 		list->allocated += OCL_EVENT_LIST_BLOCK_SIZE;
 	} // if
@@ -692,7 +671,7 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 #define MAX(a, b) (a) > (b) ? (a) : (b)
 #define MIN(a, b) (a) < (b) ? (a) : (b)
 #define SIZE(m, s, r, rl, wgs, sz) \
-	(m) == (s) ? (r) > (rl) ? (wgs) : (wgs)*2 : (sz);
+	(m) == (s) ? (r) > (rl) ? (wgs) : (wgs)*2 : (sz)
 
 	size_t wgsize = *work_group_size;
 	for(i = 0; i<tests; ++i) {
@@ -751,10 +730,12 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 		score = MAX(mean, score);
 
 #if OCL_PREFER_LARGE_WORK_GROUP_SIZE == 1
-		size = SIZE(mean, score, wg_ratio, wg_ratio_last, wgsize, size);
+		size = i > 0 ? SIZE(mean, score, wg_ratio, wg_ratio_last, wgsize, size) :
+			wgsize;
 		wg_ratio_last = wg_ratio;
 #else
-		size = SIZE(mean, score, s_ratio, s_ratio_last, wgsize, size);
+		size = i > 0 ? SIZE(mean, score, s_ratio, s_ratio_last, wgsize, size) :
+			wgsize;
 		s_ratio_last = s_ratio;
 #endif
 
@@ -912,27 +893,7 @@ int32_t ocl_initialize_event_f90(ocl_allocation_t * event) {
 
 	event->data = (void *)_event;
 
-
-
-
-
 	add_allocation((void *)_event, &event->index);
-
-#if 0
-	// try to use existing slots
-	if(ocl.slots > 0) {
-		event->index = ocl.open_slots[--ocl.slots];
-		ocl.free_allocations[ocl.slots] = (void *)_event;
-	}
-	else {
-		event->index = ocl.allocations;
-		ocl.free_allocations[ocl.allocations++] = (void *)_event;
-	} // if
-#endif
-
-
-
-
 
 	ierr = ocl_initialize_event(_event);
 
@@ -967,26 +928,7 @@ int32_t ocl_initialize_event_wait_list_f90(ocl_allocation_t * list) {
 
 	list->data = (void *)_list;
 
-
-
-
 	add_allocation((void *)_list, &list->index);
-
-#if 0
-	// try to use existing slots
-	if(ocl.slots > 0) {
-		list->index = ocl.open_slots[--ocl.slots];
-		ocl.free_allocations[ocl.slots] = (void *)_list;
-	}
-	else {
-		list->index = ocl.allocations;
-		ocl.free_allocations[ocl.allocations++] = (void *)_list;
-	} // if
-#endif
-
-
-
-
 
 	ierr = ocl_initialize_event_wait_list(_list);
 
@@ -1063,22 +1005,7 @@ int32_t ocl_create_buffer_f90(uint32_t device_id, size_t size,
 
 	buffer->data = (void *)_buffer;
 
-
-
-
 	add_allocation((void *)_buffer, &buffer->index);
-
-#if 0
-	// try to use existing slots
-	if(ocl.slots > 0) {
-		buffer->index = ocl.open_slots[--ocl.slots];
-		ocl.free_allocations[buffer->index] = (void *)_buffer;
-	}
-	else {
-		buffer->index = ocl.allocations;
-		ocl.free_allocations[ocl.allocations++] = (void *)_buffer;
-	} // if
-#endif
 
 	if(err != CL_SUCCESS) {
 		CL_ABORTerr(clCreateBuffer, err);
@@ -1213,18 +1140,6 @@ int32_t ocl_initialize_kernel_token_f90(ocl_allocation_t * token) {
 	token->data = (void *)_kernel;
 
 	add_allocation((void *)_kernel, &token->index);
-
-#if 0
-	// try to use existing slots
-	if(ocl.slots > 0) {
-		token->index = ocl.open_slots[--ocl.slots];
-		ocl.free_allocations[ocl.slots] = (void *)_kernel;
-	}
-	else {
-		token->index = ocl.allocations;
-		ocl.free_allocations[ocl.allocations++] = (void *)_kernel;
-	} // if
-#endif
 
 	return ierr;
 } // ocl_initialize_kernel_token_f90

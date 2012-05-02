@@ -256,20 +256,25 @@ int32_t ocl_clear_event_wait_list(ocl_event_wait_list_t * list);
 // FIXME: man pages and headings
 
 /*----------------------------------------------------------------------------*\
- *
+ * Clear an event.
 \*----------------------------------------------------------------------------*/
 
 /*!
-\page
+\page ocl_clear_event
 
 \par C Version:
+ierr ocl_clear_event(event)
 
 \par Fortran Version:
+ocl_clear_event(event, ierr)
 
-@param BLURB \n
-TYPES \n
+@param event Event data structure\n
+ocl_event__t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param ierr Error status \n
+int32_t (\b C), integer(int32_t) (\b Fortran)
 
 \par Description:
+This subroutine clears the provided event.
 
 \sa SEE_ALSO
 */
@@ -277,19 +282,23 @@ TYPES \n
 int32_t ocl_clear_event(ocl_event_t * event);
 
 /*----------------------------------------------------------------------------*\
+ *
 \*----------------------------------------------------------------------------*/
 
 /*!
-\page
+\page ocl_wait_for_events
 
 \par C Version:
+ierr ocl_wait_for_events(list)
 
 \par Fortran Version:
+ocl_wait_for_events(list, ierr)
 
-@param BLURB \n
-TYPES \n
+@param list Event wait list data structure \n
+ocl_event_wait_list_t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
 
 \par Description:
+Wait for the events specified in the list.
 
 \sa SEE_ALSO
 */
