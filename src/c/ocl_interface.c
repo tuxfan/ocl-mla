@@ -728,6 +728,10 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 
 		score = MAX(mean, score);
 
+		// FIXME: This is probably broken for the case that two sizes
+		// have the same score but are seperated by one that has
+		// a different score.  In that case, the most recent high score
+		// would be selected.
 #if OCL_PREFER_LARGE_WORK_GROUP_SIZE == 1
 		size = i > 0 ? SIZE(mean, score, wg_ratio, wg_ratio_last, wgsize, size) :
 			wgsize;
