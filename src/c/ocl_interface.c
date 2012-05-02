@@ -686,10 +686,9 @@ int32_t ocl_ndrange_hints(size_t elements, size_t max_work_group_size,
 		wgsize /= 2;
 	} // for
 
-	wg_ratio_max -= wg_ratio_min;
-	s_ratio_max -= s_ratio_min;
-	wg_ratio_max = MAX(1.0, wg_ratio_max);
-	s_ratio_max = MAX(1.0, s_ratio_max);
+	// scale values into [0,1] range
+	wg_ratio_max -= wg_ratio_max == wg_ratio_min ? 0.0 : wg_ratio_min;
+	s_ratio_max -= s_ratio_max == s_ratio_min ? 0.0 : s_ratio_min;
 
 	double score = 0.0;
 	size_t size = 0;
