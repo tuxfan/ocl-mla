@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 
+#include "ocl_interface.h"
 #include "ocl_utils.h"
 
 extern ocl_data_t ocl;
@@ -193,8 +194,16 @@ void add_allocation(void * data, int32_t * index) {
  * Remove from free allocations.
  *----------------------------------------------------------------------------*/
 
-void free_allocation(void * data, int32_t * index) {
+void free_allocation(int32_t * index) {
+	ASSERT(index != NULL, "Bad index!");	
+	free(ocl.free_allocations[*index]);
+	ocl.open_slots[ocl.slots++] = *index;
+	*index = -1;
 } // free_allocation
+
+size_t num_allocations() {
+	return ocl.allocations;
+} // num_allocations
 
 /*----------------------------------------------------------------------------*
  * default_hint
@@ -785,8 +794,12 @@ int32_t ocl_add_timer_list(const char * label,
 	size_t i;
 	int32_t ierr = 0;
 
+	ocl_event_t e;
+	ocl_initialize_event(&e);
+
 	for(i=0; i<list->num_events_in_wait_list; ++i) {
-		ocl_add_timer(label, (const ocl_event_t *)list->event_wait_list[i]);
+		e.event = list->event_wait_list[i];
+		ocl_add_timer(label, &e);
 	} // for
 
 	return ierr;
@@ -846,6 +859,7 @@ int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
 		((ocl_timer_event_t *)ep->data)->invocation += timer_event->invocation;
 		((ocl_timer_event_t *)ep->data)->duration += timer_event->duration;
 		((ocl_timer_event_t *)ep->data)->aggregate += timer_event->aggregate;
+		free(timer_event);
 	}
 	// add new label
 	else {

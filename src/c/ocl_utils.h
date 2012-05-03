@@ -95,7 +95,9 @@ void add_allocation(void * data, int32_t * index);
  * Remove from free allocations.
  *----------------------------------------------------------------------------*/
 
-void free_allocation(void * data, int32_t * index);
+void free_allocation(int32_t * index);
+
+size_t num_allocations();
 
 /*------------------------------------------------------------------------------
  * Convert the contents of a file into a string, allocating memory for the

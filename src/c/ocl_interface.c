@@ -211,9 +211,8 @@ int32_t ocl_add_event_to_wait_list(ocl_event_wait_list_t * list,
 		else {
 			// set the list data
 			list->event_wait_list = (cl_event *)data;
+			add_allocation(data, &list->index);
 		} // if
-
-		add_allocation(data, &list->index);
 
 		list->allocated += OCL_EVENT_LIST_BLOCK_SIZE;
 	} // if

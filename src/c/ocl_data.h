@@ -47,7 +47,7 @@ Set the maximum number of hash entries that can be used for storing kernel objec
 \par OCL_MAX_TIMER_HASH_ENTRIES (default: 32)
 Set the maximum number of hash entries that can be used for storing timer objects
 
-\par OCL_MAX_FORTRAN_ALLOCATIONS (default: 1024)
+\par OCL_MAX_ALLOCATIONS (default: 1024)
 Set the maximum number of memory allocations that can be mananged automatically for Fortran garbage collection.
 
 \par OCL_MIN_WORK_GROUP_SIZE (default: 8)
@@ -91,8 +91,8 @@ Specifiy whether or not \b ocl_ndrange_hints should favor larger work groups or 
 #define OCL_MAX_TIMER_HASH_ENTRIES 32
 #endif
 
-#ifndef OCL_MAX_FORTRAN_ALLOCATIONS
-#define OCL_MAX_FORTRAN_ALLOCATIONS 1024
+#ifndef OCL_MAX_ALLOCATIONS
+#define OCL_MAX_ALLOCATIONS 1024
 #endif
 
 #ifndef OCL_MIN_WORK_GROUP_SIZE
@@ -233,9 +233,9 @@ typedef struct ocl_data_ {
 #endif
 	
 	int32_t slots;
-	int32_t open_slots[OCL_MAX_FORTRAN_ALLOCATIONS];
+	int32_t open_slots[OCL_MAX_ALLOCATIONS];
 	int32_t allocations;
-	void * free_allocations[OCL_MAX_FORTRAN_ALLOCATIONS];
+	void * free_allocations[OCL_MAX_ALLOCATIONS];
 } ocl_data_t;
 
 ocl_device_instance_t * ocl_device_instance(uint32_t id);
