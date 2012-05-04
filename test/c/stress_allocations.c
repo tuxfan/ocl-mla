@@ -6,14 +6,13 @@
 #include <stdio.h>
 #include "ocl.h"
 
-const size_t ITERATIONS = 100000;
-//const size_t ITERATIONS = 10;
+const size_t ITERATIONS = 50000;
 
 // must be power of 2
 const size_t ELEMENTS = 1024;
 
 // message frequency
-const size_t OUTPUT = 1000;
+const size_t OUTPUT = 10000;
 
 const char * kernel =
 "__kernel void test(__global float * d0, __global float * d1,\n"
