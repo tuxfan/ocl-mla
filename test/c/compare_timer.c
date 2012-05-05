@@ -158,7 +158,7 @@ int main(int argc, char ** argv) {
 	ocl_initialize_event(&event);
 
 	// initialize wait list
-	ocl_initialize_event_wait_list(&list);
+	ocl_initialize_event_wait_list(&list, NULL, 0);
 
 	// initizize host-side timer
 	ocl_host_initialize_timer("host_kernel");

@@ -164,13 +164,15 @@ int32_t ocl_release_event(ocl_event_t * event) {
  * ocl_initialize_event_wait_list
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_initialize_event_wait_list(ocl_event_wait_list_t * list) {
+int32_t ocl_initialize_event_wait_list(ocl_event_wait_list_t * list,
+	cl_event * events, size_t num_events) {
 	int32_t ierr = 0;
 
-	list->index = -1;
-	list->event_wait_list = NULL;
+	list->event_wait_list = events;
 	list->num_events_in_wait_list = 0;
 	list->allocated = 0;
+	list->fixed_size = events == NULL ? 0 : num_events;
+	list->index = -1;
 
 	return ierr;
 } // ocl_initialize_event_wait_list
@@ -182,39 +184,47 @@ int32_t ocl_initialize_event_wait_list(ocl_event_wait_list_t * list) {
 int32_t ocl_add_event_to_wait_list(ocl_event_wait_list_t * list,
  	ocl_event_t * event) {
 	int32_t ierr = 0;
-	
-	if(list->num_events_in_wait_list+1 > list->allocated) {
-		
-		// allocate data
-		void * data = (cl_event *)malloc(
-			(list->allocated + OCL_EVENT_LIST_BLOCK_SIZE)*sizeof(cl_event));
 
-		if(data == NULL) {
-			message("Memory allocation failed for event list!\n");
+	if(list->fixed_size) {
+		if(list->num_events_in_wait_list+1 > list->fixed_size) {
+			message("Number of events exceeds list size!!!\n");
 			exit(1);
 		} // if
+	}
+	else {
+		if(list->num_events_in_wait_list+1 > list->allocated) {
+			
+			// allocate data
+			void * data = (cl_event *)malloc(
+				(list->allocated + OCL_EVENT_LIST_BLOCK_SIZE)*sizeof(cl_event));
 
-		if(list->index != -1) {
-			if(list->event_wait_list != NULL) {
-				// copy existing data to the new allocation
-				memcpy(data, list->event_wait_list,
-					list->allocated*sizeof(cl_event));
-
-				// free existing allocation
-				free(ocl.free_allocations[list->index]);
-				ocl.free_allocations[list->index] = NULL;
+			if(data == NULL) {
+				message("Memory allocation failed for event list!\n");
+				exit(1);
 			} // if
 
-			// set new data
-			ocl.free_allocations[list->index] = data;
-		}
-		else {
-			// set the list data
-			list->event_wait_list = (cl_event *)data;
-			add_allocation(data, &list->index);
-		} // if
+			if(list->index != -1) {
+				if(list->event_wait_list != NULL) {
+					// copy existing data to the new allocation
+					memcpy(data, list->event_wait_list,
+						list->allocated*sizeof(cl_event));
 
-		list->allocated += OCL_EVENT_LIST_BLOCK_SIZE;
+					// free existing allocation
+					free(ocl.free_allocations[list->index]);
+					ocl.free_allocations[list->index] = NULL;
+				} // if
+
+				// set new data
+				ocl.free_allocations[list->index] = data;
+			}
+			else {
+				// set the list data
+				list->event_wait_list = (cl_event *)data;
+				add_allocation(data, &list->index);
+			} // if
+
+			list->allocated += OCL_EVENT_LIST_BLOCK_SIZE;
+		} // if
 	} // if
 
 	list->event_wait_list[list->num_events_in_wait_list++] = event->event;
@@ -258,13 +268,16 @@ int32_t ocl_clear_event_wait_list(ocl_event_wait_list_t * list) {
 	int32_t ierr = 0;
 
 	// free allocated memory
-	if(list->index != -1 && list->event_wait_list != NULL) {
+	if(list->fixed_size == 0 && list->index != -1 &&
+		list->event_wait_list != NULL) {
 		free(ocl.free_allocations[list->index]);
+		list->event_wait_list = NULL;
 		ocl.free_allocations[list->index] = NULL;
 		ocl.open_slots[ocl.slots++] = list->index;
 	} // if
 
-	ocl_initialize_event_wait_list(list);
+	ocl_initialize_event_wait_list(list, list->event_wait_list,
+		list->fixed_size);
 
 	return ierr;
 } // ocl_clear_event_wait_list
@@ -932,7 +945,7 @@ int32_t ocl_initialize_event_wait_list_f90(ocl_allocation_t * list) {
 
 	add_allocation((void *)_list, &list->index);
 
-	ierr = ocl_initialize_event_wait_list(_list);
+	ierr = ocl_initialize_event_wait_list(_list, NULL, 0);
 
 	return ierr;
 

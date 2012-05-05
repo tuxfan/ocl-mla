@@ -24,6 +24,7 @@ int main(int argc, char ** argv) {
 	cl_mem d_array;
 	ocl_event_t event;
 	ocl_event_wait_list_t wait_list;
+	cl_event events[10];
 
 	// step (1)
 	// data size for buffer copying
@@ -78,7 +79,7 @@ int main(int argc, char ** argv) {
 	// step (8)
 	// initialize event for timings
 	ocl_initialize_event(&event);
-	ocl_initialize_event_wait_list(&wait_list);
+	ocl_initialize_event_wait_list(&wait_list, events, 10);
 
 	// step (9)
 	// invoke kernel

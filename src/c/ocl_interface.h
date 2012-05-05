@@ -145,26 +145,31 @@ int32_t ocl_release_event(ocl_event_t * event);
 Initialize an ocl_event_wait_list_t structure.
 
 \par C Version:
-ierr ocl_initialize_event_wait_list(list)
+ierr ocl_initialize_event_wait_list(list, events, num_events)
 
 \par Fortran Version:
 ocl_initialize_event_wait_list(list, ierr)
 
-@param event Event wait list data structure to initialize \n
+@param list Event wait list data structure to initialize \n
 ocl_event_wait_list_t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param events Array of cl_event to use to store events. \n
+cl_event * (\b C) \n
 @param ierr Error status \n
-int32_t (\b C), integer(int32_t) (\b Fortran)
+int32_t (\b C), integer(int32_t) (\b Fortran) \n
+
 
 \par Description:
 This subroutine initializes an ocl_event_wait_list_t data structure for use
 in collecting timing information.  The Fortran version additionally allocates
 a C-side data structure.  This memory is automatically free'd when it is no
-longer in use.
+longer in use.  If \b events is non-NULL, no data will be allocated.  If
+\b events is NULL, num_events is ignored.
 
 \sa ocl_clear_event_wait_list
 */
 
-int32_t ocl_initialize_event_wait_list(ocl_event_wait_list_t * list);
+int32_t ocl_initialize_event_wait_list(ocl_event_wait_list_t * list,
+	cl_event * events, size_t num_events);
 
 /*----------------------------------------------------------------------------*\
  * Add an event to a wait list

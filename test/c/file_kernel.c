@@ -57,7 +57,7 @@ int main(int argc, char ** argv) {
 	// step (8)
 	// initialize event for timings
 	ocl_initialize_event(&event);
-	ocl_initialize_event_wait_list(&wait_list);
+	ocl_initialize_event_wait_list(&wait_list, NULL, 0);
 
 	// step (9)
 	// invoke kernel

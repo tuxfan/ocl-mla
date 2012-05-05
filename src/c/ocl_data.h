@@ -169,6 +169,7 @@ typedef struct ocl_event_wait_list_ {
 	cl_uint num_events_in_wait_list;
 	cl_event * event_wait_list;
 	size_t allocated;
+	size_t fixed_size;
 	int32_t index;
 } ocl_event_wait_list_t;
 

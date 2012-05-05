@@ -84,7 +84,7 @@ int main(int argc, char ** argv) {
 		} // for
 
 		ocl_initialize_event(&event);
-		ocl_initialize_event_wait_list(&wait_list);
+		ocl_initialize_event_wait_list(&wait_list, NULL, 0);
 
 		// write
 		ocl_enqueue_write_buffer(OCL_PERFORMANCE_DEVICE, d0_array,
