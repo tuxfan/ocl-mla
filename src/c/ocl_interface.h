@@ -10,6 +10,12 @@
 #ifndef ocl_interface_h
 #define ocl_interface_h
 
+#if defined(HAVE_CONFIG_H)
+	#include <ocl_config.h>
+#endif
+
+#define _GNU_SOURCE
+#define __USE_GNU
 #include <search.h>
 
 #include "ocl_local.h"

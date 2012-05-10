@@ -10,6 +10,10 @@
 #ifndef ocl_device_h
 #define ocl_device_h
 
+#if defined(HAVE_CONFIG_H)
+	#include <ocl_config.h>
+#endif
+
 #include "ocl_data.h"
 
 /*------------------------------------------------------------------------------

@@ -13,6 +13,8 @@ AC_CONFIG_AUX_DIR(config)
 VERSION_INFORMATION="VERSION_TAG"
 AC_SUBST(VERSION_INFORMATION)
 
+AC_CONFIG_HEADERS([local/ocl_config.h:local/ocl_config.h.in])
+
 #------------------------------------------------------------------------------#
 # Initialize automake
 #------------------------------------------------------------------------------#
@@ -87,7 +89,7 @@ CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
 # Check for strndup
 #------------------------------------------------------------------------------#
 
-CONFIG_TEST_STRNDUP()
+#CONFIG_TEST_STRNDUP()
 
 #------------------------------------------------------------------------------#
 # OpenCL

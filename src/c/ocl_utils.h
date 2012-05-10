@@ -10,6 +10,10 @@
 #ifndef ocl_utils_h
 #define ocl_utils_h
 
+#if defined(HAVE_CONFIG_H)
+	#include <ocl_config.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -46,7 +50,7 @@
  * P.O.S. OS X Snow Leopard
  *----------------------------------------------------------------------------*/
 
-#if !defined(HAVE_STRNDUP)
+#if !defined(HAVE_DECL_STRNDUP)
 char * strndup(const char * s, size_t n);
 #endif
 
