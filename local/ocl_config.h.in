@@ -1,0 +1,77 @@
+#ifndef config_h
+#define config_h
+
+/* define for using standard hash functions: man hsearch */
+#define _GNU_SOURCE
+
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_URL
+#undef PACKAGE
+#undef VERSION
+
+//STDC_HEADERS
+//HAVE_SYS_TYPES_H
+//HAVE_SYS_STAT_H
+//HAVE_STDLIB_H
+//HAVE_STRING_H
+//HAVE_MEMORY_H
+//HAVE_STRINGS_H
+//HAVE_INTTYPES_H
+//HAVE_STDINT_H
+//HAVE_UNISTD_H
+//HAVE_DLFCN_H
+//LT_OBJDIR
+
+/*----------------------------------------------------------------------------*
+ * Configured values: These should be set by the configure script.
+ *----------------------------------------------------------------------------*/
+
+#undef OCL_PLATFORM_PERFORMANCE
+#undef OCL_PERFORMANCE_INITIALIZATION
+#undef OCL_PLATFORM_AUXILIARY
+#undef OCL_AUXILIARY_INITIALIZATION
+#undef FC_MODULE_PATH_FLAG
+#undef ENABLE_OPENCL_PROFILING
+#undef ENABLE_OCL_VERBOSE
+#undef ENABLE_OCL_ASSERTIONS
+#undef HAVE_DECL_STRNDU
+#undef HAVE_STRNDUP
+#undef HAVE_OPENCL
+
+/*----------------------------------------------------------------------------*
+ * Defaulted values: These do not need to be set unless you want to
+ * override them.
+ *----------------------------------------------------------------------------*/
+
+/* granularity of event list block allocation */
+#undef OCL_EVENT_LIST_BLOCK_SIZE
+
+/* maximum source length allowed for kernel sources */
+#undef OCL_MAX_SOURCE_LENGTH
+
+/* maximum number of hash entries for programs */
+#undef OCL_MAX_PROGRAM_HASH_ENTRIES
+
+/* maximum number of hash entries for kernels */
+#undef OCL_MAX_KERNEL_HASH_ENTRIES
+
+/* maximum number of hash entries for timers */
+#undef OCL_MAX_TIMER_HASH_ENTRIES
+
+/* maximum number of memory allocations for garbage collection */
+#undef OCL_MAX_ALLOCATIONS
+
+/* maximum number of logical devices */
+#undef OCL_MAX_LOGICAL_DEVICES
+
+/* maximum number of platforms */
+#undef OCL_MAX_PLATFORMS
+
+/* maximum number of devices per platform */
+#undef OCL_MAX_PLATFORM_DEVICES
+
+#endif // config_h

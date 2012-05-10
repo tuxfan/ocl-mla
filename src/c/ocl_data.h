@@ -10,10 +10,14 @@
 #ifndef ocl_data_h
 #define ocl_data_h
 
+#if defined(HAVE_CONFIG_H)
+	#include <ocl_config.h>
+#endif
+
 #include <search.h>
 #include <sys/time.h>
 
-#include "ocl_local.h"
+#include <ocl_local.h>
 
 /*------------------------------------------------------------------------------
  * Preprocessor defines
