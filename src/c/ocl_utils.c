@@ -181,6 +181,9 @@ void print_device_info(ocl_device_info_t * info, const char * label) {
  *----------------------------------------------------------------------------*/
 
 void add_allocation(void * data, int32_t * index) {
+	ASSERT(ocl.allocations+1 <= OCL_MAX_ALLOCATIONS,
+		"Maximum allocations exceeded!!!");
+
 	int32_t _index = ocl.slots > 0 ? ocl.open_slots[--ocl.slots] :
 		ocl.allocations++;
 	ocl.free_allocations[_index] = data;

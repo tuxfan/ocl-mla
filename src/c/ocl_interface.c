@@ -239,7 +239,7 @@ int32_t ocl_add_event_to_wait_list(ocl_event_wait_list_t * list,
 int32_t ocl_set_event_list(ocl_event_t * event, ocl_event_wait_list_t * list) {
 	int32_t ierr = 0;
 
-	ASSERT(list->event_wait_list != NULL, "Invalid event list")
+	ASSERT(list->event_wait_list != NULL, "Invalid event list!")
 
 	event->event_wait_list = list->event_wait_list;
 	event->num_events_in_wait_list = list->num_events_in_wait_list;
@@ -290,7 +290,7 @@ int32_t ocl_wait_for_events(ocl_event_wait_list_t * list) {
 	int32_t ierr = 0;
 	CALLER_SELF
 
-	ASSERT(list->event_wait_list != NULL, "Invalid event list")
+	ASSERT(list->event_wait_list != NULL, "Invalid event list!")
 
 	ierr = clWaitForEvents(list->num_events_in_wait_list,
 		list->event_wait_list);
