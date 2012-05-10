@@ -50,7 +50,7 @@
  * P.O.S. OS X Snow Leopard
  *----------------------------------------------------------------------------*/
 
-#if !defined(HAVE_STRNDUP)
+#if !defined(HAVE_DECL_STRNDUP)
 char * strndup(const char * s, size_t n);
 #endif
 

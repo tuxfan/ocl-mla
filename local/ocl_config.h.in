@@ -1,9 +1,6 @@
 #ifndef config_h
 #define config_h
 
-/* define for using standard hash functions: man hsearch */
-#define _GNU_SOURCE
-
 #undef PACKAGE_NAME
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
@@ -13,18 +10,18 @@
 #undef PACKAGE
 #undef VERSION
 
-//STDC_HEADERS
-//HAVE_SYS_TYPES_H
-//HAVE_SYS_STAT_H
-//HAVE_STDLIB_H
-//HAVE_STRING_H
-//HAVE_MEMORY_H
-//HAVE_STRINGS_H
-//HAVE_INTTYPES_H
-//HAVE_STDINT_H
-//HAVE_UNISTD_H
-//HAVE_DLFCN_H
-//LT_OBJDIR
+#undef STDC_HEADERS
+#undef HAVE_SYS_TYPES_H
+#undef HAVE_SYS_STAT_H
+#undef HAVE_STDLIB_H
+#undef HAVE_STRING_H
+#undef HAVE_MEMORY_H
+#undef HAVE_STRINGS_H
+#undef HAVE_INTTYPES_H
+#undef HAVE_STDINT_H
+#undef HAVE_UNISTD_H
+#undef HAVE_DLFCN_H
+#undef LT_OBJDIR
 
 /*----------------------------------------------------------------------------*
  * Configured values: These should be set by the configure script.
@@ -38,7 +35,7 @@
 #undef ENABLE_OPENCL_PROFILING
 #undef ENABLE_OCL_VERBOSE
 #undef ENABLE_OCL_ASSERTIONS
-#undef HAVE_DECL_STRNDU
+#undef HAVE_DECL_STRNDUP
 #undef HAVE_STRNDUP
 #undef HAVE_OPENCL
 
