@@ -14,8 +14,6 @@
 	#include <ocl_config.h>
 #endif
 
-#define _GNU_SOURCE
-#define __USE_GNU
 #include <search.h>
 
 #include "ocl_local.h"

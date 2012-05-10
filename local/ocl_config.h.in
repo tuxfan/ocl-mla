@@ -36,7 +36,6 @@
 #undef ENABLE_OCL_VERBOSE
 #undef ENABLE_OCL_ASSERTIONS
 #undef HAVE_DECL_STRNDUP
-#undef HAVE_STRNDUP
 #undef HAVE_OPENCL
 
 /*----------------------------------------------------------------------------*
