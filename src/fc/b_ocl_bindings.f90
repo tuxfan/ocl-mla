@@ -290,19 +290,19 @@ interface
    end function ocl_set_kernel_arg_allocation_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_kernel_hint_f90
+   ! ocl_kernel_hints_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_kernel_hint_f90(program_name, kernel_name, hint) &
-      result(ierr) bind(C, name="ocl_kernel_hint_f90")
+   function ocl_kernel_hints_f90(program_name, kernel_name, hints) &
+      result(ierr) bind(C, name="ocl_kernel_hints_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       character(kind=c_char), dimension(*) :: program_name
       character(kind=c_char), dimension(*) :: kernel_name
-      integer(c_size_t) :: hint
+      type(ocl_kernel_hints_t) :: hints
       integer(int32_t) :: ierr
-   end function ocl_kernel_hint_f90
+   end function ocl_kernel_hints_f90
 
    !---------------------------------------------------------------------------!
    ! ocl_ndrange_hints_f90

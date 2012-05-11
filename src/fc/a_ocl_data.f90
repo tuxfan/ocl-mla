@@ -37,4 +37,10 @@ module ocl_data
       type(c_ptr) :: void
    end type ocl_allocation_t
 
+   ! Type for kernel hints
+   type, bind(C) :: ocl_kernel_hints_t
+      integer(c_size_t) :: max_work_group_size
+      integer(c_size_t) :: local_mem_size
+   end type ocl_kernel_hints_t
+
 end module ocl_data

@@ -330,19 +330,19 @@ module ocl_interface
    end subroutine ocl_set_kernel_arg_int
 
    !---------------------------------------------------------------------------!
-   ! ocl_kernel_hint
+   ! ocl_kernel_hints
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_kernel_hint(program_name, kernel_name, hint, ierr)
+   subroutine ocl_kernel_hints(program_name, kernel_name, hints, ierr)
       use :: ocl_data
       implicit none
       character(kind=c_char), dimension(*) :: program_name
       character(kind=c_char), dimension(*) :: kernel_name
-      integer(c_size_t) :: hint
+      type(ocl_kernel_hints_t) :: hints
       integer(int32_t) :: ierr
 
-      ierr = ocl_kernel_hint_f90(program_name, kernel_name, hint)
-   end subroutine ocl_kernel_hint
+      ierr = ocl_kernel_hints_f90(program_name, kernel_name, hints)
+   end subroutine ocl_kernel_hints
 
    !---------------------------------------------------------------------------!
    ! ocl_ndrange_hints

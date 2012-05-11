@@ -1113,13 +1113,10 @@ int32_t ocl_set_kernel_arg_allocation_f90(const char * program_name,
  * ocl_kernel_hint_f90
 \*----------------------------------------------------------------------------*/
 
-// FIXME: changed interface
-#if 0
 int32_t ocl_kernel_hints_f90(const char * program_name,
-	const char * kernel_name, size_t * hint) {
-	return ocl_kernel_hints(program_name, kernel_name, hint);
+	const char * kernel_name, ocl_kernel_hints_t * hints) {
+	return ocl_kernel_hints(program_name, kernel_name, hints);
 } // ocl_kernel_hint_f90
-#endif
 
 /*----------------------------------------------------------------------------*\
  * ocl_ndrange_hints_f90

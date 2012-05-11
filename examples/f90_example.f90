@@ -20,7 +20,7 @@ program main
    integer(c_size_t) :: single_indeces
    integer(c_size_t) :: work_group_size
    integer(c_size_t) :: bytes
-   integer(c_size_t) :: hint
+   type(ocl_kernel_hints_t) :: hints
 
    real(c_float), target, dimension(ELEMENTS) :: h_array
 
@@ -57,15 +57,15 @@ program main
    call ocl_add_kernel(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
       'test' // C_NULL_CHAR, 'my test' // C_NULL_CHAR, ierr)
  
-   call ocl_kernel_hint('program' // C_NULL_CHAR, &
-      'my test' // C_NULL_CHAR, hint, ierr)
+   call ocl_kernel_hints('program' // C_NULL_CHAR, &
+      'my test' // C_NULL_CHAR, hints, ierr)
 
    work_group_size = 0
    work_group_indeces = 0
    single_indeces = 0
 
-   call ocl_ndrange_hints(global_size, hint, work_group_size, &
-      work_group_indeces, single_indeces)
+   call ocl_ndrange_hints(global_size, hints%max_work_group_size, &
+      work_group_size, work_group_indeces, single_indeces)
 
    ! step (7)
    ! Set kernel argument
