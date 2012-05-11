@@ -586,6 +586,8 @@ This subroutine fills \b hint with the preferred/maximum \b local_size to use in
 int32_t ocl_kernel_hints(const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints);
 
+int32_t ocl_device_info(uint32_t device_id, ocl_device_info_t * info);
+
 /*----------------------------------------------------------------------------*\
  * Get maximum work group size
 \*----------------------------------------------------------------------------*/
