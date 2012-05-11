@@ -146,13 +146,15 @@ args = parser.parse_args()
 # find kernel files (.cl)
 #------------------------------------------------------------------------------#
 
+devnull = open(os.devnull, 'w')
+
 sp0 = subprocess.Popen(["find " + str(args.directory) + " -regex '.*\.cl'"],
-	stdout=subprocess.PIPE, shell=True)
+	stdout=subprocess.PIPE, stderr=devnull, shell=True)
 
 write_c(args.output, sp0)
 
 sp0 = subprocess.Popen(["find " + str(args.directory) + " -regex '.*\.cl'"],
-	stdout=subprocess.PIPE, shell=True)
+	stdout=subprocess.PIPE, stderr=devnull, shell=True)
 
 if args.fortran:
 	write_fortran(args.output, sp0)
