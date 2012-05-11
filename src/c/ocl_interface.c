@@ -638,7 +638,16 @@ int32_t ocl_kernel_hints(const char * program_name,
 	hints->local_mem_size = kernel->info.local_mem_size;
 
 	return ierr;
-} // ocl_kernel_hint
+} // ocl_kernel_hints
+
+int32_t ocl_device_info(uint32_t device_id, ocl_device_info_t * info) {
+	int32_t ierr = 0;
+
+	ocl_device_instance_t * instance = ocl_device_instance(device_id);
+	*info = instance->info;
+
+	return ierr;
+} // ocl_device_info
 
 /*----------------------------------------------------------------------------*\
  * ocl_max_work_group_size
