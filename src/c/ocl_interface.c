@@ -492,7 +492,7 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	size_t param_value_size = sizeof(size_t);
 	ierr = clGetKernelWorkGroupInfo(kernel.token, ocl.devices[device_id].id,
 		CL_KERNEL_WORK_GROUP_SIZE, param_value_size,
-		(void *)&kernel.hint.work_group_size, NULL);
+		(void *)&kernel.info.work_group_size, NULL);
 
 	if(ierr != CL_SUCCESS) {
 		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
@@ -501,7 +501,7 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	param_value_size = sizeof(cl_ulong);
 	ierr = clGetKernelWorkGroupInfo(kernel.token, ocl.devices[device_id].id,
 		CL_KERNEL_LOCAL_MEM_SIZE, param_value_size,
-		(void *)&kernel.hint.local_mem_size, NULL);
+		(void *)&kernel.info.local_mem_size, NULL);
 
 	if(ierr != CL_SUCCESS) {
 		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
@@ -517,18 +517,15 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 		param_value_size = sizeof(size_t);
 		ierr = clGetKernelWorkGroupInfo(kernel.token, ocl.devices[device_id].id,
 			CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, param_value_size,
-			(void *)&kernel.hint.preferred_multiple, NULL);
+			(void *)&kernel.info.preferred_multiple, NULL);
 
 		if(ierr != CL_SUCCESS) {
 			CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
 		} // if
 	}
 	else {
-		kernel.hint.preferred_multiple = 1;
+		kernel.info.preferred_multiple = 1;
 	} // if
-
-	// compute hint
-	KERNEL_HINT_FUNCTION(&kernel.hint);
 
 	// add kernel to hash table
 	ocl_hash_add_kernel(program_name, kernel_name, kernel);
@@ -609,11 +606,11 @@ int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
 } // ocl_set_kernel_arg
 
 /*----------------------------------------------------------------------------*\
- * ocl_kernel_hint
+ * ocl_kernel_hints
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_kernel_hint(const char * program_name,
-	const char * kernel_name, size_t * hint) {
+int32_t ocl_kernel_hints(const char * program_name,
+	const char * kernel_name, ocl_kernel_hints_t * hints) {
 	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 	
@@ -634,7 +631,11 @@ int32_t ocl_kernel_hint(const char * program_name,
 	} // if
 
 	ocl_kernel_t * kernel = (ocl_kernel_t *)ep->data;
-	*hint = kernel->hint.local_size;
+
+	// compute hint
+	KERNEL_HINT_FUNCTION(&kernel->info, hints);
+
+	hints->local_mem_size = kernel->info.local_mem_size;
 
 	return ierr;
 } // ocl_kernel_hint
@@ -1112,10 +1113,13 @@ int32_t ocl_set_kernel_arg_allocation_f90(const char * program_name,
  * ocl_kernel_hint_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_kernel_hint_f90(const char * program_name,
+// FIXME: changed interface
+#if 0
+int32_t ocl_kernel_hints_f90(const char * program_name,
 	const char * kernel_name, size_t * hint) {
-	return ocl_kernel_hint(program_name, kernel_name, hint);
+	return ocl_kernel_hints(program_name, kernel_name, hint);
 } // ocl_kernel_hint_f90
+#endif
 
 /*----------------------------------------------------------------------------*\
  * ocl_ndrange_hints_f90

@@ -59,13 +59,13 @@ int main(int argc, char ** argv) {
 	// add kernel
 	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "program", "test", "my test");
 
-	size_t hint = 0;
+	ocl_kernel_hints_t hints;
 	size_t work_group_indeces;
 	size_t single_indeces;
 
-	ocl_kernel_hint("program", "my test", &hint);
-	ocl_ndrange_hints(global_size, hint, 0.5, 0.5, &local_size,
-		&work_group_indeces, &single_indeces);
+	ocl_kernel_hints("program", "my test", &hints);
+	ocl_ndrange_hints(global_size, hints.max_work_group_size,
+		0.5, 0.5, &local_size, &work_group_indeces, &single_indeces);
 
 	if(single_indeces != 0) {
 		error("ELEMENTS must be an even multiple of work group size %d\n",

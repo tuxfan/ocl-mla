@@ -29,7 +29,6 @@ int main(int argc, char ** argv) {
 	size_t global_offset = 0;
 	size_t global_size = ELEMENTS;
 	size_t local_size;
-	size_t max_work_group_size;
 	size_t work_group_elements;
 	size_t single_elements;
 
@@ -44,6 +43,7 @@ int main(int argc, char ** argv) {
 	cl_mem d3_array;
 	ocl_event_t event;
 	ocl_event_wait_list_t wait_list;
+	ocl_kernel_hints_t hints;
 
 	ocl_init();
 
@@ -65,8 +65,8 @@ int main(int argc, char ** argv) {
 	ocl_set_kernel_arg("program", "test", 2, sizeof(cl_mem), &d2_array);
 	ocl_set_kernel_arg("program", "test", 3, sizeof(cl_mem), &d3_array);
 
-	ocl_kernel_hint("program", "test", &max_work_group_size);
-	ocl_ndrange_hints(global_size, max_work_group_size, 0.5, 0.5,
+	ocl_kernel_hints("program", "test", &hints);
+	ocl_ndrange_hints(global_size, hints.max_work_group_size, 0.5, 0.5,
 		&local_size, &work_group_elements, &single_elements);
 
 	for(i=0; i<ITERATIONS; ++i) {

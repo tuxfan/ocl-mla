@@ -20,7 +20,6 @@ int main(int argc, char ** argv) {
 	size_t i;
 	size_t global_offset = 0;
 	size_t global_size = ELEMENTS/SIMD_SIZE;
-	size_t max_work_group_size = 0;
 	size_t offset = 0;
 
 //	const size_t zero_offset = 0;
@@ -56,12 +55,6 @@ int main(int argc, char ** argv) {
 	ocl_init();
 
 	/*-------------------------------------------------------------------------*
-	 * Get maximum workgroup size for the performance device
-	 *-------------------------------------------------------------------------*/
-
-	ocl_max_work_group_size(OCL_PERFORMANCE_DEVICE, &max_work_group_size);
-
-	/*-------------------------------------------------------------------------*
 	 * Assemble program source
 	 *-------------------------------------------------------------------------*/
 
@@ -93,13 +86,14 @@ int main(int argc, char ** argv) {
 	 * Get hints on executing data parallel kernel
 	 *-------------------------------------------------------------------------*/
 
+	ocl_kernel_hints_t hints;
 	size_t work_group_size = 0, work_group_elements = 0, single_elements = 0;
 	const size_t work_group_single = 1;
 
 	// get a tighter bound on the max work group size
-	ocl_kernel_hint("program", "reduce", &max_work_group_size);
+	ocl_kernel_hints("program", "reduce", &hints);
 
-	ocl_ndrange_hints(global_size, max_work_group_size, 0.5, 0.5,
+	ocl_ndrange_hints(global_size, hints.max_work_group_size, 0.5, 0.5,
 		&work_group_size, &work_group_elements, &single_elements);
 
 #if 0

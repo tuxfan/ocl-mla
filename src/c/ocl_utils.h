@@ -118,7 +118,7 @@ char * file_to_string(const char * filename);
 #define KERNEL_HINT_FUNCTION default_hint
 #endif
 
-void default_hint(ocl_kernel_hint_t * hint);
+void default_hint(const ocl_kernel_info_t * info, ocl_kernel_hints_t * hints);
 
 /*------------------------------------------------------------------------------
  * Hash functions

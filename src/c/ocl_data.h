@@ -193,16 +193,22 @@ typedef struct ocl_timer_event_ {
  * OpenCL kernel information.
  *----------------------------------------------------------------------------*/
 
-typedef struct ocl_kernel_hint_ {
+typedef struct ocl_kernel_hints_ {
+	size_t max_work_group_size;
+	size_t local_mem_size;
+} ocl_kernel_hints_t; 
+
+typedef struct ocl_kernel_info_ {
 	size_t local_size;
 	size_t work_group_size;
 	cl_ulong local_mem_size;
 	size_t preferred_multiple;
-} ocl_kernel_hint_t; 
+} ocl_kernel_info_t;
 
 typedef struct ocl_kernel_ {
 	cl_kernel token;
-	ocl_kernel_hint_t hint;
+	ocl_kernel_info_t info;
+	ocl_kernel_hints_t hints;
 } ocl_kernel_t;
 
 /*------------------------------------------------------------------------------

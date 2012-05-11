@@ -212,8 +212,9 @@ size_t num_allocations() {
  * default_hint
  *----------------------------------------------------------------------------*/
 
-void default_hint(ocl_kernel_hint_t * hint) {
-	hint->local_size = hint->work_group_size;
+void default_hint(const ocl_kernel_info_t * info,
+	ocl_kernel_hints_t * hints) {
+	hints->max_work_group_size = info->work_group_size;
 } // default_hint
 
 /*----------------------------------------------------------------------------*
