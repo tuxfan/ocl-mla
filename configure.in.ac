@@ -102,6 +102,17 @@ EXTRA_LDFLAGS="$EXTRA_LDFLAGS $OPENCL_LDFLAGS"
 EXTRA_LIBS="$EXTRA_LIBS $OPENCL_LIBS"
 
 #------------------------------------------------------------------------------#
+# HashMark
+#------------------------------------------------------------------------------#
+
+CONFIG_GENERIC_LIB(hm, HM,
+	[hm_add ((size_t) 0, (const char *) 0, (void *) 0)], C)
+
+EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS $HM_CPPFLAGS"
+EXTRA_LDFLAGS="$EXTRA_LDFLAGS $HM_LDFLAGS"
+EXTRA_LIBS="$EXTRA_LIBS $HM_LIBS"
+
+#------------------------------------------------------------------------------#
 # Set extras
 #------------------------------------------------------------------------------#
 

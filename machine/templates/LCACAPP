@@ -23,10 +23,7 @@
 
 OCL_DEFINES="-DOCL_EVENT_LIST_BLOCK_SIZE=32"
 OCL_DEFINES+=" -DOCL_MAX_SOURCE_LENGTH=16*1024"
-OCL_DEFINES+=" -DOCL_MAX_PROGRAM_HASH_ENTRIES=8"
-OCL_DEFINES+=" -DOCL_MAX_KERNEL_HASH_ENTRIES=32"
-OCL_DEFINES+=" -DOCL_MAX_TIMER_HASH_ENTRIES=32"
-OCL_DEFINES+=" -DOCL_MAX_FORTRAN_ALLOCATIONS=1024"
+OCL_DEFINES+=" -DOCL_MAX_ALLOCATIONS=1024"
 OCL_DEFINES+=" -DOCL_MAX_LOGICAL_DEVICES=10"
 OCL_DEFINES+=" -DOCL_MAX_PLATFORMS=10"
 OCL_DEFINES+=" -DOCL_MAX_PLATFORM_DEVICES=10"
@@ -35,7 +32,7 @@ OCL_DEFINES+=" -DOCL_MAX_PLATFORM_DEVICES=10"
 # CFLAGS
 #------------------------------------------------------------------------------#
 
-CFLAGS="-g -O0 -m64 -c99 -Minform=inform -D_GNU_SOURCE -DOCL_BUILD ${OCL_DEFINES}"
+CFLAGS="-g -O0 -m64 -c99 -Minform=inform ${OCL_DEFINES}"
 
 #------------------------------------------------------------------------------#
 # FFLAGS
@@ -62,6 +59,15 @@ OCL_PERFORMANCE_INITIALIZATION=ocl_init_generic_cpu
 
 OCL_PLATFORM_AUXILIARY="AMD Accelerated Parallel Processing"
 OCL_AUXILIARY_INITIALIZATION=ocl_init_generic_cpu
+
+#------------------------------------------------------------------------------#
+# HashMark library
+#------------------------------------------------------------------------------#
+
+HM_CPPFLAGS="-I__SET_THIS_TO_THE_INCLUDE_PATH__/include"
+HM_LDFLAGS="-L__SET_THIS_TO_THE_LIB_PATH__/lib"
+HM_LIBS="-lhm"
+HM_CHECKHEADER="hash_mark.h"
 
 #------------------------------------------------------------------------------#
 # OpenCL library

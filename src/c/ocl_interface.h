@@ -14,8 +14,6 @@
 	#include <ocl_config.h>
 #endif
 
-#include <search.h>
-
 #include "ocl_local.h"
 #include "ocl_data.h"
 

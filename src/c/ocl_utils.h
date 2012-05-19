@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#include <hash_mark.h>
+
 #include "ocl_data.h"
 
 /*------------------------------------------------------------------------------
@@ -122,21 +124,16 @@ void default_hint(const ocl_kernel_info_t * info, ocl_kernel_hints_t * hints);
 
 /*------------------------------------------------------------------------------
  * Hash functions
- *
- * This interface is necessary because OS X does not support the renetrant
- * version of the hsearch interface.  We could lose this if they fix it.
- *
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_hash_init();
 void ocl_hash_add_program(const char * program_name, cl_program token);
 void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	ocl_kernel_t token);
-ENTRY * ocl_hash_find_event(const char * event_name);
-ENTRY * ocl_hash_find_program(const char * program_name);
-ENTRY * ocl_hash_find_kernel(const char * program_name,
+ocl_program_t * ocl_hash_find_program(const char * program_name);
+ocl_kernel_t * ocl_hash_find_kernel(const char * program_name,
 	const char * kernel_name);
-void ocl_hash_destroy();
+void ocl_hash_finalize();
 
 /*******************************************************************************
  * OpenCL kernel source interface

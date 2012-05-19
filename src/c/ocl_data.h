@@ -14,7 +14,6 @@
 	#include <ocl_config.h>
 #endif
 
-#include <search.h>
 #include <sys/time.h>
 
 #include <ocl_local.h>
@@ -41,15 +40,6 @@ Set the granularity at which data are allocated for storing events in an event l
 
 \par OCL_MAX_SOURCE_LENGTH (default: 16*1024)
 Set the maximum length that will be allocated for source assembly functions (see \b ocl_add_from_file and \b ocl_add_from_string)
-
-\par OCL_MAX_PROGRAM_HASH_ENTRIES (default: 8)
-Set the maximum number of hash entries that can be used for storing program objects
-
-\par OCL_MAX_KERNEL_HASH_ENTRIES (default: 32)
-Set the maximum number of hash entries that can be used for storing kernel objects.  This is on a \b per-program basis, i.e., the total memory allocated will be \b OCL_MAX_PROGRAM_HASH_ENTRIES \b * \b OCL_MAX_KERNEL_HASH_ENTRIES
-
-\par OCL_MAX_TIMER_HASH_ENTRIES (default: 32)
-Set the maximum number of hash entries that can be used for storing timer objects
 
 \par OCL_MAX_ALLOCATIONS (default: 1024)
 Set the maximum number of memory allocations that can be mananged automatically for Fortran garbage collection.
@@ -81,18 +71,6 @@ Specifiy whether or not \b ocl_ndrange_hints should favor larger work groups or 
 
 #ifndef OCL_MAX_SOURCE_LENGTH
 #define OCL_MAX_SOURCE_LENGTH 16*1024
-#endif
-
-#ifndef OCL_MAX_PROGRAM_HASH_ENTRIES
-#define OCL_MAX_PROGRAM_HASH_ENTRIES 8
-#endif
-
-#ifndef OCL_MAX_KERNEL_HASH_ENTRIES
-#define OCL_MAX_KERNEL_HASH_ENTRIES 32
-#endif
-
-#ifndef OCL_MAX_TIMER_HASH_ENTRIES
-#define OCL_MAX_TIMER_HASH_ENTRIES 32
 #endif
 
 #ifndef OCL_MAX_ALLOCATIONS
@@ -217,10 +195,7 @@ typedef struct ocl_kernel_ {
 
 typedef struct ocl_program_ {
 	cl_program token;
-
-#if !defined(__APPLE__)
-	struct hsearch_data kernels;
-#endif
+	size_t kernel_hash;
 } ocl_program_t;
 
 /*------------------------------------------------------------------------------
@@ -233,15 +208,9 @@ static const uint32_t OCL_AUXILIARY_DEVICE = 1;
 typedef struct ocl_data_ {
 	ocl_device_instance_t devices[OCL_MAX_LOGICAL_DEVICES+2];
 
-#if !defined(__APPLE__)
-	// timer hash
-	struct hsearch_data events;
-
-	// program hash
-	struct hsearch_data programs;
-	int32_t tables;
-	struct hsearch_data * free_tables[OCL_MAX_PROGRAM_HASH_ENTRIES];
-#endif
+	size_t program_hash;
+	size_t host_event_hash;
+	size_t device_event_hash;
 	
 	int32_t slots;
 	int32_t open_slots[OCL_MAX_ALLOCATIONS];

@@ -264,33 +264,22 @@ static struct hsearch_data ocl_htab_init = {0};
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_hash_init() {
-	// pad for hash efficiency as per manpage recommendation
-	float pad = 1.25;
+	int32_t ierr = 0;
 
-#if defined(__APPLE__)
-	pad *= (OCL_MAX_PROGRAM_HASH_ENTRIES*OCL_MAX_KERNEL_HASH_ENTRIES +
-		OCL_MAX_TIMER_HASH_ENTRIES);
-	return !hcreate((size_t)pad);	
-#else
+	// free data at exit
+	hm_set_property(hm_free_data);
 
-#if defined(ENABLE_OPENCL_PROFILING)
-	// initialize timer hash
-	ocl.events = ocl_htab_init;
-	int32_t err = !hcreate_r((size_t)(pad*OCL_MAX_TIMER_HASH_ENTRIES),
-		&ocl.events);
+	// print error and exit if something goes wrong
+	hm_set_property(hm_exit_on_error);
 
-	if(err != 0) { return 1; }
-#endif
+	// program hash table
+	hm_add_table(&ocl.program_hash);
 
-	// initialize table counter
-	ocl.tables = 0;
+	// event hash tables
+	hm_add_table(&ocl.host_event_hash);
+	hm_add_table(&ocl.device_event_hash);
 
-	// zero program hash struct entries
-	ocl.programs = ocl_htab_init;
-
-	// return program hash creation
-	return !hcreate_r(pad*OCL_MAX_PROGRAM_HASH_ENTRIES, &ocl.programs);
-#endif
+	return ierr;
 } // ocl_hash_init
 
 /*----------------------------------------------------------------------------*
@@ -298,64 +287,17 @@ int32_t ocl_hash_init() {
  *----------------------------------------------------------------------------*/
 
 void ocl_hash_add_program(const char * name, cl_program token) {
-	ENTRY e, * ep = NULL;
-	int32_t err = 0;
+	// allocate storage for the program
+	ocl_program_t * _program = (ocl_program_t *)malloc(sizeof(ocl_program_t));
 
-	// make sure the program doesn't already exist in the hash
-	ep = ocl_hash_find_program(name);
+	// initialize a kernel hash table for this program
+	hm_add_table(&_program->kernel_hash);
 
-	if(ep != NULL) {
-		message("Error: hash entry \"%s\" already exists!\n", name);
-		exit(1);
-	} // if
+	// set the program token
+	_program->token = token;
 
-	// allocate memory for hash data (this will be freed by
-	// hdestroy or hdestroy_r)
-	ocl_program_t * program = (ocl_program_t *)malloc(sizeof(ocl_program_t));
-
-#if !defined(__APPLE__)
-	// zero hash struct entries
-	program->kernels = ocl_htab_init;
-#endif
-
-	// set ocl data
-	program->token = token;
-
-	// reentrant version needs to allocate hash table for each program
-#if !defined(__APPLE__)
-	// initialize kernel hash data for this program
-	if(!hcreate_r(OCL_MAX_KERNEL_HASH_ENTRIES, &program->kernels) != 0) {
-		message("Kernel hash initialization failed for %s\n", name);
-		exit(1);
-	} // if
-
-	ocl.free_tables[ocl.tables++] = &program->kernels;
-#endif
-
-	// set the key
-	e.key = strdup(name);
-
-	// set hash data
-	e.data = (void *)program;
-
-	// set data to free
-#if ! defined(__APPLE__)
-	add_allocation(e.key, NULL);
-#endif
-	add_allocation(e.data, NULL);
-
-	// add program entry
-#if defined(__APPLE__)
-	ep = hsearch(e, ENTER);
-#else
-	err = !hsearch_r(e, ENTER, &ep, &ocl.programs);
-#endif
-
-	// check errors
-	if(err != 0 || ep == NULL) {
-		message("Hash entry failed for %s\n", name);
-		exit(1);
-	} // if
+	// add program to hash
+	hm_add(ocl.program_hash, name, (void *)_program);
 } // ocl_hash_add_program
 
 /*----------------------------------------------------------------------------*
@@ -364,159 +306,40 @@ void ocl_hash_add_program(const char * name, cl_program token) {
 
 void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	ocl_kernel_t token) {
-	ENTRY e, * ep = NULL;
-	int32_t err = 0;
+	// find the program
+	ocl_program_t * _program = hm_find(ocl.program_hash, program_name);
 
-	// make sure that the program exists
-	ep = ocl_hash_find_program(program_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-#if !defined(__APPLE__)
-	// get the program hash data
-	ocl_program_t * program = (ocl_program_t *)ep->data;
-#endif
-
-	// make sure that this kernel name does not already exist in the hash table
-	ep = ocl_hash_find_kernel(program_name, kernel_name);
-
-	if(ep != NULL) {
-		message("Error: hash entry \"%s\" already exists!\n", kernel_name);
-		exit(1);
-	} // if
-
-	// set the key
-#if defined(__APPLE__)
-	char buffer[1024];
-	sprintf(buffer, "%s%s", program_name, kernel_name);
-	e.key = strdup(buffer);
-#else
-	e.key = strdup(kernel_name);
-#endif
-
-	// set the data
+	// allocate memory for the kernel token
 	ocl_kernel_t * _token = (ocl_kernel_t *)malloc(sizeof(ocl_kernel_t));
 	*_token = token;
-	e.data = (void *)_token;
 
-	// set data to free
-#if ! defined(__APPLE__)
-	add_allocation(e.key, NULL);
-#endif
-	add_allocation(e.data, NULL);
-
-#if defined(__APPLE__)
-	ep = hsearch(e, ENTER);
-#else
-	err = !hsearch_r(e, ENTER, &ep, &program->kernels);
-#endif
-
-	// check errors
-	if(err != 0 || ep == NULL) {
-		message("Hash entry failed for %s\n", kernel_name);
-		exit(1);
-	} // if
+	// add to the kernel hash of this program
+	hm_add(_program->kernel_hash, kernel_name, (void *)_token);
 } // ocl_hash_add_kernel
 
 /*----------------------------------------------------------------------------*
  * ocl_hash_find_program
  *----------------------------------------------------------------------------*/
 
-ENTRY * ocl_hash_find_event(const char * event_name) {
-	ENTRY e, * ep = NULL;
-
-	e.key = strdup(event_name);
-
-#if defined(__APPLE__)
-	ep = hsearch(e, FIND);
-#else
-	hsearch_r(e, FIND, &ep, &ocl.events);
-#endif
-
-	free(e.key);
-
-	return ep;
-} // ocl_hash_find_event
-
-/*----------------------------------------------------------------------------*
- * ocl_hash_find_program
- *----------------------------------------------------------------------------*/
-
-ENTRY * ocl_hash_find_program(const char * program_name) {
-	ENTRY e, * ep = NULL;
-
-	e.key = strdup(program_name);
-
-#if defined(__APPLE__)
-	ep = hsearch(e, FIND);
-#else
-	hsearch_r(e, FIND, &ep, &ocl.programs);
-#endif
-
-	free(e.key);
-
-	return ep;
+ocl_program_t * ocl_hash_find_program(const char * program_name) {
+	return hm_find(ocl.program_hash, program_name);
 } // ocl_hash_find_program
 
 /*----------------------------------------------------------------------------*
  * ocl_hash_find_kernel
  *----------------------------------------------------------------------------*/
 
-ENTRY * ocl_hash_find_kernel(const char * program_name,
+ocl_kernel_t * ocl_hash_find_kernel(const char * program_name,
 	const char * kernel_name) {
-	ENTRY e, * ep = NULL;
-
-	// get the program (this is just a sanity check for the OS X implementation)
-	ep = ocl_hash_find_program(program_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-#if defined(__APPLE__)
-	char buffer[1024];
-	sprintf(buffer, "%s%s", program_name, kernel_name);
-	e.key = strdup(buffer);
-	ep = hsearch(e, FIND);
-#else
-	ocl_program_t * program = (ocl_program_t *)ep->data;
-
-	e.key = strdup(kernel_name);
-	hsearch_r(e, FIND, &ep, &program->kernels);
-#endif
-
-	free(e.key);
-
-	return ep;
+	ocl_program_t * _program = ocl_hash_find_program(program_name);
+	return hm_find(_program->kernel_hash, kernel_name);
 } // ocl_hash_find_kernel
 
 /*----------------------------------------------------------------------------*
  * ocl_hash_destroy
  *----------------------------------------------------------------------------*/
 
-void ocl_hash_destroy() {
-#if defined(__APPLE__)
-	hdestroy();
-#else
-	size_t i;
-
-#if defined(ENABLE_OPENCL_PROFILING)
-	// destroy timer hash
-	hdestroy_r(&ocl.events);
-#endif
-
-	// destroy kernel tables
-	for(i=0; i<ocl.tables; ++i) {
-		hdestroy_r(ocl.free_tables[i]);
-	} // for
-
-	// destroy program hash
-	hdestroy_r(&ocl.programs);
-#endif
+void ocl_hash_finalize() {
 } // ocl_destroy_hash
 
 /******************************************************************************
@@ -613,47 +436,23 @@ int32_t ocl_add_from_string(const char * string, char ** source,
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_host_initialize_timer(const char * label) {
-	ENTRY e, * ep = NULL;
 	int32_t ierr = 0;
 
-	// check for existing key
-	ep = ocl_hash_find_event(label);
-
-	if(ep != NULL) {
-		error("Hash entry already exists for %s\n", label);
-		exit(1);
+	if(hm_key_exists(ocl.host_event_hash, label) == 1) {
+		warning("Hash key already exists!!!  No action taken...");
+		return ierr;
 	} // if
 
-	// allocate data (this will be freed when we destroy the hash)
-	ocl_host_timer_data_t * data =
+	ocl_host_timer_data_t * _data =
 		(ocl_host_timer_data_t *)malloc(sizeof(ocl_host_timer_data_t));
 
 	// initialize data
-	data->start.tv_sec = 0.0;
-	data->start.tv_usec = 0.0;
-	data->duration = 0.0;
+	_data->start.tv_sec = 0.0;
+	_data->start.tv_usec = 0.0;
+	_data->duration = 0.0;
 
-	// set hash values
-	e.key = strdup(label);
-	e.data = (void *)data;
+	hm_add(ocl.host_event_hash, label, (void *)_data);
 
-	// add data to free
-#if ! defined(__APPLE__)
-	add_allocation(e.key, NULL);
-#endif
-	add_allocation(e.data, NULL);
-
-#if defined(__APPLE__)
-	ep = hsearch(e, ENTER);
-#else
-	ierr = !hsearch_r(e, ENTER, &ep, &ocl.events);
-#endif
-
-	if(ierr != 0 || ep == NULL) {
-		error("Hash entry failed for %s\n", label);
-		exit(1);
-	} // if
-	
 	return ierr;
 } // ocl_host_initialize_timer
 
@@ -662,22 +461,14 @@ int32_t ocl_host_initialize_timer(const char * label) {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_host_clear_timer(const char * label) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
-	// lookup event
-	ep = ocl_hash_find_event(label);
+	ocl_host_timer_data_t * _data =
+		(ocl_host_timer_data_t *)hm_find(ocl.host_event_hash, label);
 
-	if(ep == NULL) {
-		error("Hash entry does not exist for %s\n", label);
-		exit(1);
-	} // if
-	
-	ocl_host_timer_data_t * data = (ocl_host_timer_data_t *)ep->data;
-	
-	data->start.tv_sec = 0.0;
-	data->start.tv_usec = 0.0;
-	data->duration = 0.0;
+	_data->start.tv_sec = 0.0;
+	_data->start.tv_usec = 0.0;
+	_data->duration = 0.0;
 
 	return ierr;
 } // ocl_host_clear_timer
@@ -687,25 +478,17 @@ int32_t ocl_host_clear_timer(const char * label) {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_host_start_timer(const char * label) {
-	ENTRY * ep = NULL;
-	ocl_host_timer_data_t tmp;
 	int32_t ierr = 0;
+	ocl_host_timer_data_t tmp;
 
-	// lookup event
-	ep = ocl_hash_find_event(label);
+	ocl_host_timer_data_t * _data =
+		(ocl_host_timer_data_t *)hm_find(ocl.host_event_hash, label);
 
-	if(ep == NULL) {
-		error("Hash entry does not exist for %s\n", label);
-		exit(1);
-	} // if
-	
-	ocl_host_timer_data_t * data = (ocl_host_timer_data_t *)ep->data;
-	
 	if(gettimeofday(&tmp.start, NULL)) {
 		warning("Start timer failed for %s\n", label);
 	} // if
-
-	data->start = tmp.start;
+	
+	_data->start = tmp.start;
 
 	return ierr;
 } // ocl_host_start_timer
@@ -715,7 +498,6 @@ int32_t ocl_host_start_timer(const char * label) {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_host_stop_timer(const char * label) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 	struct timeval stop;
 
@@ -723,20 +505,13 @@ int32_t ocl_host_stop_timer(const char * label) {
 		warning("Stop timer failed for %s\n", label);
 	} // if
 
-	// lookup event
-	ep = ocl_hash_find_event(label);
-
-	if(ep == NULL) {
-		error("Hash entry does not exist for %s\n", label);
-		exit(1);
-	} // if
-	
-	ocl_host_timer_data_t * data = (ocl_host_timer_data_t *)ep->data;
+	ocl_host_timer_data_t * _data =
+		(ocl_host_timer_data_t *)hm_find(ocl.host_event_hash, label);
 
 	double duration = (stop.tv_sec*1000000.0 + stop.tv_usec);
-	duration -= (data->start.tv_sec*1000000.0 + data->start.tv_usec);
+	duration -= (_data->start.tv_sec*1000000.0 + _data->start.tv_usec);
 	
-	data->duration += duration;
+	_data->duration += duration;
 
 	return ierr;
 } // ocl_host_stop_timer
@@ -746,41 +521,25 @@ int32_t ocl_host_stop_timer(const char * label) {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_host_report_timer(const char * label) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
-	// lookup event
-	ep = ocl_hash_find_event(label);
-
-	if(ep == NULL) {
-		error("Hash entry does not exist for %s\n", label);
-		exit(1);
-	} // if
-	
-	ocl_host_timer_data_t * data = (ocl_host_timer_data_t *)ep->data;
+	ocl_host_timer_data_t * _data =
+		(ocl_host_timer_data_t *)hm_find(ocl.host_event_hash, label);
 
 	message("Timing results for %s:\n", label);
-	message("\tduration %lf\n", data->duration/1000000.0);
+	message("\tduration %lf\n", _data->duration/1000000.0);
 	message("\n");
 
 	return ierr;
 } // ocl_host_report_timer
 
 int32_t ocl_host_read_timer(const char * label, double * value) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
-	// lookup event
-	ep = ocl_hash_find_event(label);
+	ocl_host_timer_data_t * _data =
+		(ocl_host_timer_data_t *)hm_find(ocl.host_event_hash, label);
 
-	if(ep == NULL) {
-		error("Hash entry does not exist for %s\n", label);
-		exit(1);
-	} // if
-	
-	ocl_host_timer_data_t * data = (ocl_host_timer_data_t *)ep->data;
-
-	*value = data->duration/1000000.0;
+	*value = _data->duration/1000000.0;
 
 	return ierr;
 } // ocl_host_read_timer
@@ -814,7 +573,6 @@ int32_t ocl_add_timer_list(const char * label,
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
-	ENTRY e, * ep = NULL;
 	cl_ulong queued, submit, start, end;
 	int32_t ierr = 0;
 
@@ -839,58 +597,34 @@ int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
 	clGetEventProfilingInfo(event->event, CL_PROFILING_COMMAND_END,
 		sizeof(cl_ulong), &end, NULL);
 
-	ocl_timer_event_t * timer_event =
+	ocl_timer_event_t * _timer_event =
 		(ocl_timer_event_t *)malloc(sizeof(ocl_timer_event_t));
 
 	// how long did the event sit in the host queue?
-	timer_event->queued = (submit-queued)*1e-9;
+	_timer_event->queued = (submit-queued)*1e-9;
 
 	// what was the invocation latency?
-	timer_event->invocation = (start-submit)*1e-9;
+	_timer_event->invocation = (start-submit)*1e-9;
 
 	// what was the execution duration?
-	timer_event->duration = (end-start)*1e-9;
+	_timer_event->duration = (end-start)*1e-9;
 
 	// aggregate of all time spent in event execution
-	timer_event->aggregate = timer_event->queued + timer_event->invocation +
-		timer_event->duration;
+	_timer_event->aggregate = _timer_event->queued + _timer_event->invocation +
+		_timer_event->duration;
 
-	ep = ocl_hash_find_event(label);
+	if(hm_key_exists(ocl.device_event_hash, label) == 1) {
+		ocl_timer_event_t * _data =
+			(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
-	// if the label exists, append new values
-	if(ep != NULL) {
-		((ocl_timer_event_t *)ep->data)->queued += timer_event->queued;
-		((ocl_timer_event_t *)ep->data)->invocation += timer_event->invocation;
-		((ocl_timer_event_t *)ep->data)->duration += timer_event->duration;
-		((ocl_timer_event_t *)ep->data)->aggregate += timer_event->aggregate;
-		free(timer_event);
+		_data->queued += _timer_event->queued;
+		_data->invocation += _timer_event->invocation;
+		_data->duration += _timer_event->duration;
+		_data->aggregate += _timer_event->aggregate;
+		free(_timer_event);
 	}
-	// add new label
 	else {
-		// set the key
-		e.key = strdup(label);
-
-		// set the data
-		e.data = (void *)timer_event;
-
-		// add data to free
-#if ! defined(__APPLE__)
-		add_allocation(e.key, NULL);
-#endif
-		add_allocation(e.data, NULL);
-
-		// add event to hash
-#if defined(__APPLE__)
-		ep = hsearch(e, ENTER);
-#else
-		ierr = !hsearch_r(e, ENTER, &ep, &ocl.events);
-#endif
-
-		// check errors
-		if(ierr != 0 || ep == NULL) {
-			message("Hash entry failed for %s\n", label);
-			exit(1);
-		} // if
+		hm_add(ocl.device_event_hash, label, (void *)_timer_event);
 	} // if
 
 	return ierr;
@@ -901,7 +635,6 @@ int32_t ocl_add_timer(const char * label, const ocl_event_t * event) {
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_clear_timer(const char * label) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
 #if !defined(ENABLE_OPENCL_PROFILING)
@@ -909,15 +642,13 @@ int32_t ocl_clear_timer(const char * label) {
 	exit(1);
 #endif
 
-	ep = ocl_hash_find_event(label);
+	ocl_timer_event_t * _data =
+		(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
-	// if the label exists, append new values
-	if(ep != NULL) {
-		((ocl_timer_event_t *)ep->data)->queued = 0.0;
-		((ocl_timer_event_t *)ep->data)->invocation = 0.0;
-		((ocl_timer_event_t *)ep->data)->duration = 0.0;
-		((ocl_timer_event_t *)ep->data)->aggregate = 0.0;
-	}
+		_data->queued = 0.0;
+		_data->invocation = 0.0;
+		_data->duration = 0.0;
+		_data->aggregate = 0.0;
 
 	return ierr;
 } // ocl_clear_timer
@@ -928,28 +659,20 @@ int32_t ocl_clear_timer(const char * label) {
 
 int32_t ocl_report_timer(const char * label) {
 	int32_t ierr = 0;
-	ENTRY * ep = NULL;
 
 #if !defined(ENABLE_OPENCL_PROFILING)
 	message("ERROR: You must enable profiling to use timers!\n");
 	exit(1);
 #endif
 
-	// make sure that this label doesn't already exist in the hash
-	ep = ocl_hash_find_event(label);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", label);
-		exit(1);
-	} // if
-
-	ocl_timer_event_t * timer_event = (ocl_timer_event_t *)ep->data;
+	ocl_timer_event_t * _data =
+		(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
 	message("Timing results for %s:\n", label);
-	message("\tqueued %lf\n", timer_event->queued);
-	message("\tinvocation %lf\n", timer_event->invocation);
-	message("\tduration %lf\n", timer_event->duration);
-	message("\taggregate %lf\n", timer_event->aggregate);
+	message("\tqueued %lf\n", _data->queued);
+	message("\tinvocation %lf\n", _data->invocation);
+	message("\tduration %lf\n", _data->duration);
+	message("\taggregate %lf\n", _data->aggregate);
 	message("\n");
 
 	return ierr;
@@ -961,7 +684,6 @@ int32_t ocl_report_timer(const char * label) {
 
 int32_t ocl_read_timer(const char * label, ocl_timer_attribute_t attribute,
 	double * value) {
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
 #if !defined(ENABLE_OPENCL_PROFILING)
@@ -969,27 +691,21 @@ int32_t ocl_read_timer(const char * label, ocl_timer_attribute_t attribute,
 	exit(1);
 #endif
 
-	ep = ocl_hash_find_event(label);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", label);
-		exit(1);
-	} // if
-
-	ocl_timer_event_t * timer_event = (ocl_timer_event_t *)ep->data;
+	ocl_timer_event_t * _data =
+		(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
 	switch(attribute) {
 		case OCL_TIMER_QUEUED:
-			*value = timer_event->queued;
+			*value = _data->queued;
 			break;
 		case OCL_TIMER_INVOCATION:
-			*value = timer_event->invocation;
+			*value = _data->invocation;
 			break;
 		case OCL_TIMER_DURATION:
-			*value = timer_event->duration;
+			*value = _data->duration;
 			break;
 		case OCL_TIMER_AGGREGATE:
-			*value = timer_event->aggregate;
+			*value = _data->aggregate;
 			break;
 		default:
 			message("Error: Unknown timer attribute %d!\n", attribute);

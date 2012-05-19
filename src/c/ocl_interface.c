@@ -123,7 +123,7 @@ int32_t ocl_finalize() {
 	ocl_finalize_device(&ocl.devices[OCL_AUXILIARY_DEVICE]);
 
 	// cleanup hash table
-	ocl_hash_destroy();
+	ocl_hash_finalize();
 
 	// garbage collection for fortran
 	for(i=0; i<ocl.allocations; ++i) {
@@ -450,8 +450,12 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 		exit(1);
 	} // if
 
+/////////////////////////////// FIXME: HASH
+
 	// add program to the hash
 	ocl_hash_add_program(program_name, token);
+
+/////////////////////////////// FIXME: HASH
 
 	// free memory
 	free(_program_source);
@@ -466,23 +470,14 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	const char * kernel_source_name, const char * kernel_name) {
 	CALLER_SELF
-	ENTRY * ep = NULL;
 	int32_t ierr = 0;
 
-	// get the program hash data
-	ep = ocl_hash_find_program(program_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-	// get the program data
-	ocl_program_t * program = (ocl_program_t *)ep->data;
+	// retrieve program
+	ocl_program_t * _program = ocl_hash_find_program(program_name);
 
 	// create the kernel token
 	ocl_kernel_t kernel;
-	kernel.token = clCreateKernel(program->token, kernel_source_name, &ierr);
+	kernel.token = clCreateKernel(_program->token, kernel_source_name, &ierr);
 
 	if(ierr != CL_SUCCESS) {
 		CL_ABORTcreateKernel(ierr, kernel_name);
@@ -539,26 +534,10 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 
 int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 	ocl_kernel_t * token) {
-	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 
-	// check that the program exists
-	ep = ocl_hash_find_program(program_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-	// check that the kernel exists
-	ep = ocl_hash_find_kernel(program_name, kernel_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
-		exit(1);
-	} // if
-
-	*token = *((ocl_kernel_t *)ep->data);
+	// retrieve kernel
+	*token = *(ocl_hash_find_kernel(program_name, kernel_name));
 
 	if(token == NULL) {
 		message("Error: NULL kernel token!\n", kernel_name);
@@ -575,28 +554,12 @@ int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
 	cl_uint index, size_t size, const void * value) {
 	CALLER_SELF
-	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 
-	// check that the program exists
-	ep = ocl_hash_find_program(program_name);
+	// retrieve kernel
+	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
 
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-	// check that the kernel exists
-	ep = ocl_hash_find_kernel(program_name, kernel_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
-		exit(1);
-	} // if
-
-	// set the actual kernel argument
-	ocl_kernel_t * kernel = (ocl_kernel_t *)ep->data;
-	ierr = clSetKernelArg(kernel->token, index, size, value);
+	ierr = clSetKernelArg(_kernel->token, index, size, value);
 
 	if(ierr != CL_SUCCESS) {
 		CL_ABORTerr(clSetKernelArg, ierr);
@@ -611,31 +574,15 @@ int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
 
 int32_t ocl_kernel_hints(const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints) {
-	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 	
-	// check that the program exists
-	ep = ocl_hash_find_program(program_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-	// check that the kernel exists
-	ep = ocl_hash_find_kernel(program_name, kernel_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
-		exit(1);
-	} // if
-
-	ocl_kernel_t * kernel = (ocl_kernel_t *)ep->data;
+	// retrieve kernel
+	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
 
 	// compute hint
-	KERNEL_HINT_FUNCTION(&kernel->info, hints);
+	KERNEL_HINT_FUNCTION(&_kernel->info, hints);
 
-	hints->local_mem_size = kernel->info.local_mem_size;
+	hints->local_mem_size = _kernel->info.local_mem_size;
 
 	return ierr;
 } // ocl_kernel_hints
@@ -794,37 +741,22 @@ int32_t ocl_enqueue_kernel_ndrange(uint32_t device_id,
 	const size_t * global_offset, const size_t * global_size,
 	const size_t * local_size, ocl_event_t * event) {
 	CALLER_SELF
-	ENTRY *ep = NULL;
 	int32_t ierr = 0;
 
-	// check that the program exists
-	ep = ocl_hash_find_program(program_name);
+	// retrieve device instance
+	ocl_device_instance_t * _instance = ocl_device_instance(device_id);
 
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", program_name);
-		exit(1);
-	} // if
-
-	// check that the kernel exists
-	ep = ocl_hash_find_kernel(program_name, kernel_name);
-
-	if(ep == NULL) {
-		message("Error: hash entry \"%s\" does not exist!\n", kernel_name);
-		exit(1);
-	} // if
-
-	ocl_device_instance_t * instance = ocl_device_instance(device_id);
-
-	ocl_kernel_t * kernel = (ocl_kernel_t *)ep->data;
+	// retrieve kernel
+	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
 
 	if(event != NULL) {
-		ierr = clEnqueueNDRangeKernel(instance->queue, kernel->token,
+		ierr = clEnqueueNDRangeKernel(_instance->queue, _kernel->token,
 			dim, global_offset, global_size, local_size,
 			event->num_events_in_wait_list, event->event_wait_list,
 			&event->event);
 	}
 	else {
-		ierr = clEnqueueNDRangeKernel(instance->queue, kernel->token,
+		ierr = clEnqueueNDRangeKernel(_instance->queue, _kernel->token,
 			dim, global_offset, global_size, local_size, 0, NULL, NULL);
 	} // if
 
