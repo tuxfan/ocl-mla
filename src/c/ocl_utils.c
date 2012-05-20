@@ -17,8 +17,21 @@ extern ocl_data_t ocl;
 extern int32_t ocl_warning;
 
 /*----------------------------------------------------------------------------*
- * P.O.S. OS X Snow Leopard
+ * Possibly undefined functions
  *----------------------------------------------------------------------------*/
+
+#if !defined(HAVE_DECL_STRDUP)
+char * strdup(const char * s) {
+	size_t n = strlen(s) + 1;
+	char * result = malloc(n * sizeof(char));
+
+	if(!result) { return NULL; }
+
+	strcpy(result, s);
+
+	return result;
+} // strndup
+#endif
 
 #if !defined(HAVE_DECL_STRNDUP)
 char * strndup(const char * s, size_t n) {

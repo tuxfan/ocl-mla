@@ -49,8 +49,12 @@
 #endif
 
 /*------------------------------------------------------------------------------
- * P.O.S. OS X Snow Leopard
+ * Possibly undefined functions
  *----------------------------------------------------------------------------*/
+
+#if !defined(HAVE_DECL_STRDUP)
+char * strdup(const char * s);
+#endif
 
 #if !defined(HAVE_DECL_STRNDUP)
 char * strndup(const char * s, size_t n);

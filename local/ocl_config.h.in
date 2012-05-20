@@ -27,17 +27,35 @@
  * Configured values: These should be set by the configure script.
  *----------------------------------------------------------------------------*/
 
+/* define the platform to be used for the performance device */
 #undef OCL_PLATFORM_PERFORMANCE
+
+/* define the function to be used for the performance device initialization */
 #undef OCL_PERFORMANCE_INITIALIZATION
+
+/* define the platform to be used for the auxiliary device */
 #undef OCL_PLATFORM_AUXILIARY
+
+/* define the function to be used for the auxiliary device initialization */
 #undef OCL_AUXILIARY_INITIALIZATION
+
+/* flag used by the fortran compiler to search for modules */
 #undef FC_MODULE_PATH_FLAG
+
+/* enable profiling information when creating queues */
 #undef ENABLE_OPENCL_PROFILING
+
+/* enable verbose output */
 #undef ENABLE_OCL_VERBOSE
+
+/* enable assertions: these will print a message and exit on error */
 #undef ENABLE_OCL_ASSERTIONS
-#undef ENABLE_HM
+
+/* strdup function */
+#undef HAVE_DECL_STRDUP
+
+/* strndup function */
 #undef HAVE_DECL_STRNDUP
-#undef HAVE_OPENCL
 
 /*----------------------------------------------------------------------------*
  * Defaulted values: These do not need to be set unless you want to
@@ -49,15 +67,6 @@
 
 /* maximum source length allowed for kernel sources */
 #undef OCL_MAX_SOURCE_LENGTH
-
-/* maximum number of hash entries for programs */
-#undef OCL_MAX_PROGRAM_HASH_ENTRIES
-
-/* maximum number of hash entries for kernels */
-#undef OCL_MAX_KERNEL_HASH_ENTRIES
-
-/* maximum number of hash entries for timers */
-#undef OCL_MAX_TIMER_HASH_ENTRIES
 
 /* maximum number of memory allocations for garbage collection */
 #undef OCL_MAX_ALLOCATIONS

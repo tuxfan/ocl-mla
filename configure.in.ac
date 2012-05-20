@@ -89,7 +89,8 @@ CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
 # Check for strndup
 #------------------------------------------------------------------------------#
 
-#CONFIG_TEST_STRNDUP()
+AC_CHECK_DECLS(strndup)
+AC_CHECK_DECLS(strdup)
 
 #------------------------------------------------------------------------------#
 # OpenCL
