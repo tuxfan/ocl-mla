@@ -52,12 +52,16 @@
  * Possibly undefined functions
  *----------------------------------------------------------------------------*/
 
-#if !defined(HAVE_DECL_STRDUP)
+#if HAVE_DECL_STRDUP == 0
 char * strdup(const char * s);
 #endif
 
-#if !defined(HAVE_DECL_STRNDUP)
+#if HAVE_DECL_STRNDUP == 0
 char * strndup(const char * s, size_t n);
+#endif
+
+#if HAVE_DECL_STRSEP == 0
+char * strsep(char **stringp, const char *delim);
 #endif
 
 /*------------------------------------------------------------------------------

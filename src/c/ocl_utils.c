@@ -20,7 +20,7 @@ extern int32_t ocl_warning;
  * Possibly undefined functions
  *----------------------------------------------------------------------------*/
 
-#if !defined(HAVE_DECL_STRDUP)
+#if HAVE_DECL_STRDUP == 0
 char * strdup(const char * s) {
 	size_t n = strlen(s) + 1;
 	char * result = malloc(n * sizeof(char));
@@ -31,9 +31,9 @@ char * strdup(const char * s) {
 
 	return result;
 } // strndup
-#endif
+#endif // HAVE_DECL_STRDUP
 
-#if !defined(HAVE_DECL_STRNDUP)
+#if HAVE_DECL_STRNDUP == 0
 char * strndup(const char * s, size_t n) {
 	char * result;
 	size_t len = strlen(s);
@@ -50,7 +50,41 @@ char * strndup(const char * s, size_t n) {
 
 	return (char *)memcpy(result, s, len);
 } // strndup
-#endif
+#endif // HAVE_DECL_STRNDUP
+
+#if HAVE_DECL_STRSEP == 0
+char * strsep(char **stringp, const char *delim)
+{
+	register char *s;
+	register const char *spanp;
+	register int c, sc;
+	char *tok;
+
+	if((s = *stringp) != NULL) {
+		for(tok = s;;) {
+			c = *s++;
+			spanp = delim;
+			do {
+				if((sc = *spanp++) == c) {
+
+					if(c == 0) {
+						s = NULL;
+					}
+					else {
+						s[-1] = 0;
+					} // if
+
+					*stringp = s;
+
+					return (tok);
+				} // if
+			} while (sc != 0);
+		} // for
+	} // if
+
+	return NULL;
+} // strsep
+#endif // HAVE_DECL_STRSEP
 
 /*----------------------------------------------------------------------------*
  * I/O
@@ -266,11 +300,6 @@ char * file_to_string(const char * filename) {
 /******************************************************************************
  * Hash implementation
  ******************************************************************************/
-
-// needed to initialize hash data before call to hcreate_r
-#if !defined(__APPLE__)
-static struct hsearch_data ocl_htab_init = {0};
-#endif
 
 /*----------------------------------------------------------------------------*
  * ocl_hash_init

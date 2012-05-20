@@ -91,6 +91,7 @@ CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
 
 AC_CHECK_DECLS(strndup)
 AC_CHECK_DECLS(strdup)
+AC_CHECK_DECLS(strsep)
 
 #------------------------------------------------------------------------------#
 # OpenCL

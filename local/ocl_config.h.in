@@ -57,6 +57,9 @@
 /* strndup function */
 #undef HAVE_DECL_STRNDUP
 
+/* strsep function */
+#undef HAVE_DECL_STRSEP
+
 /*----------------------------------------------------------------------------*
  * Defaulted values: These do not need to be set unless you want to
  * override them.
