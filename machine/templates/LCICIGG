@@ -77,11 +77,11 @@ OPENCL_CPPFLAGS="-I/usr/include"
 OPENCL_LDFLAGS="-L/usr/lib64"
 OPENCL_LIBS="-lOpenCL"
 OPENCL_CHECKHEADER="CL/opencl.h"
-OPENCL_PROFILING=yes
 
 #------------------------------------------------------------------------------#
 # OpenCL options
 #------------------------------------------------------------------------------#
 
+OPENCL_PROFILING=yes
 OCL_VERBOSE=yes
 OCL_ASSERTIONS=yes

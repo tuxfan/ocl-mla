@@ -76,11 +76,11 @@ HM_CHECKHEADER="hash_mark.h"
 OPENCL_CPPFLAGS=""
 OPENCL_FRAMEWORK="-framework OpenCL"
 OPENCL_CHECKHEADER="OpenCL/opencl.h"
-OPENCL_PROFILING=yes
 
 #------------------------------------------------------------------------------#
 # OpenCL options
 #------------------------------------------------------------------------------#
 
+OPENCL_PROFILING=yes
 OCL_VERBOSE=yes
 OCL_ASSERTIONS=yes

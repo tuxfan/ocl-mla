@@ -77,11 +77,11 @@ OPENCL_CPPFLAGS="-I__SET_THIS_TO_THE_INCLUDE_PATH__/include"
 OPENCL_LDFLAGS="-L__SET_THIS_TO_THE_LIB_PATH__/lib"
 OPENCL_LIBS="-lOpenCL"
 OPENCL_CHECKHEADER="CL/opencl.h"
-OPENCL_PROFILING=yes
 
 #------------------------------------------------------------------------------#
 # OpenCL options
 #------------------------------------------------------------------------------#
 
+OPENCL_PROFILING=yes
 OCL_VERBOSE=yes
 OCL_ASSERTIONS=yes
