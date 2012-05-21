@@ -16,3 +16,4 @@ missing
 version
 configure
 configure.ac
+local/ocl_config.h.in

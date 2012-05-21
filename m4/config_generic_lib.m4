@@ -138,8 +138,8 @@ int main () { $3; }
 				AC_SUBST($2_LIBS, [$$2_FRAMEWORK])
 			fi
 
-			AC_DEFINE(HAVE_$2, 1)
+			AC_DEFINE_UNQUOTED(HAVE_$2, 1, [Specify value for $2])
 		else
-			AC_DEFINE(HAVE_$2, 0)
+			AC_DEFINE_UNQUOTED(HAVE_$2, 0, [Specify value for $2])
 		fi
 ])

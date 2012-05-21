@@ -10,6 +10,12 @@
 SUBDIRS = lib utils examples test
 
 #------------------------------------------------------------------------------#
+# Utils file
+#------------------------------------------------------------------------------#
+
+EXTRA_DIST = utils/stringify_kernel_files
+
+#------------------------------------------------------------------------------#
 # Create links
 #------------------------------------------------------------------------------#
 
@@ -56,13 +62,14 @@ install-exec-hook:
 #------------------------------------------------------------------------------#
 
 install-data-hook:
-	@([ -d ${datarootdir} ] || mkdir -p ${datarootdir})
-	@([ -d ${mandir} ] || mkdir -p ${mandir})
-	@([ -d ${datarootdir}/html ] || mkdir -p ${datarootdir}/html)
-	@([ -d ${top_builddir}/doc/man ] && \
-		cp -r ${top_builddir}/doc/man/* ${mandir})
-	@([ -d ${top_builddir}/doc/html ] && \
-		cp -r ${top_builddir}/doc/html/* ${datarootdir}/html)
+	@([ -d ${top_builddir}/@DOC@ ] && \
+		([ -d ${datarootdir} ] || mkdir -p ${datarootdir}) && \
+		([ -d ${mandir} ] || mkdir -p ${mandir}) && \
+		([ -d ${datarootdir}/html ] || mkdir -p ${datarootdir}/html) && \
+		([ -d ${top_builddir}/doc/man ] && \
+			cp -r ${top_builddir}/doc/man/* ${mandir}) && \
+		([ -d ${top_builddir}/doc/html ] && \
+			cp -r ${top_builddir}/doc/html/* ${datarootdir}/html))
 
 #------------------------------------------------------------------------------#
 # Extra clean

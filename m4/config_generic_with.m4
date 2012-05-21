@@ -34,7 +34,7 @@ AC_DEFUN([CONFIG_GENERIC_WITH], [
 		])
 
 		AC_MSG_CHECKING(specification for $1)
-		AC_DEFINE_UNQUOTED($2, $define)
+		AC_DEFINE_UNQUOTED($2, $define, [Specify value for $1])
 		AC_SUBST($2, [$define])
 		AC_MSG_RESULT($define)
 ])
