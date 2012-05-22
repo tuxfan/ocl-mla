@@ -397,6 +397,66 @@ int32_t ocl_enqueue_read_buffer(uint32_t device_id,
 } // ocl_enqueue_read_buffer
 
 /*----------------------------------------------------------------------------*\
+ * ocl_enqueue_map_buffer
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
+	int32_t synchronous, cl_mem_flags flags, size_t offset, size_t cb,
+	void * ptr, ocl_event_t * event) {
+	CALLER_SELF
+	int32_t ierr;
+
+	ocl_device_instance_t * instance = ocl_device_instance(device_id);
+
+	ASSERT((synchronous == 0) && (event == NULL),
+		"Asynchronous map operations require a non-NULL event!")
+
+	if(event != NULL) {
+		ptr = clEnqueueMapBuffer(instance->queue, buffer, synchronous, flags,
+			offset, cb, event->num_events_in_wait_list, event->event_wait_list,
+			&event->event, &ierr);
+	}
+	else {
+		ptr = clEnqueueMapBuffer(instance->queue, buffer, synchronous, flags,
+			offset, cb, 0, NULL, NULL, &ierr);
+	} // if
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clEnqueueMapBuffer, ierr);
+	} // if
+
+	return ierr;
+} // ocl_enqueue_map_buffer
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_unmap_buffer
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_unmap_buffer(uint32_t device_id, cl_mem buffer,
+	void * ptr, ocl_event_t * event) {
+	CALLER_SELF
+	int32_t ierr;
+
+	ocl_device_instance_t * instance = ocl_device_instance(device_id);
+
+	if(event != NULL) {
+		ierr = clEnqueueUnmapMemObject(instance->queue, buffer, ptr,
+			event->num_events_in_wait_list, event->event_wait_list,
+			&event->event);
+	}
+	else {
+		ierr = clEnqueueUnmapMemObject(instance->queue, buffer, ptr,
+			0, NULL, NULL);
+	} // if
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clEnqueueUnmapMemObject, ierr);
+	} // if
+
+	return ierr;
+} // ocl_enqueue_unmap_buffer
+
+/*----------------------------------------------------------------------------*\
  * ocl_add_program
 \*----------------------------------------------------------------------------*/
 
@@ -1008,6 +1068,27 @@ int32_t ocl_enqueue_read_buffer_f90(uint32_t device_id,
 	return ocl_enqueue_read_buffer(device_id, *(cl_mem *)buffer->data,
 		synchronous, offset, cb, ptr, (ocl_event_t *)event->data);
 } // ocl_enqueue_read_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_map_buffer_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_map_buffer_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, int32_t synchronous, cl_mem_flags flags,
+	size_t offset, size_t cb, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_map_buffer(device_id, *(cl_mem *)buffer->data,
+		synchronous, flags, offset, cb, ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_map_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_unmap_buffer_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_unmap_buffer_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_unmap_buffer(device_id, *(cl_mem *)buffer->data,
+		ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_unmap_buffer_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_add_program_f90

@@ -454,6 +454,69 @@ int32_t ocl_enqueue_read_buffer(uint32_t device_id, cl_mem buffer,
 	int32_t synchronous, size_t offset, size_t cb, void * ptr,
 	ocl_event_t * event);
 
+/*!
+\page ocl_enqueue_map_buffer
+Enqueue a map-buffer operation.
+
+\par C Version:
+ierr ocl_enqueue_map_buffer(device_id, buffer, synchronous, offset, cb, ptr, event)
+
+\par Fortran Version:
+ocl_enqueue_map_buffer(device_id, buffer, synchronous, offset, cb, ptr, event, ierr)
+
+@param device_id Device instance handle \n
+uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
+@param buffer Device-side buffer handle \n
+cl_mem (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param synchronous Flag for synchronous (blocking) execution \n
+int32_t (\b C), integer(int32_t) (\b Fortran) \n
+@param offset Byte offset within buffer to begin map \n
+size_t (\b C), integer(c_size_t) (\b Fortran) \n
+@param cb Bytes to map \n
+size_t (\b C), integer(c_size_t) (\b Fortran) \n
+@param ptr Host-side buffer \n
+void * (\b C), type(c_ptr) (\b Fortran) \n
+@param event Event handle (used to collect timing information) \n
+ocl_event_t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param ierr Error status \n
+int32_t (\b C), integer(int32_t) (\b Fortran)
+
+\par Description:
+This subroutine enqueues a map-buffer operation on the given device.  The operation will fill \b ptr with the mapped device buffer region.  If the operation is asynchronous, a separate blocking operation must be performed using the \b event variable before \b ptr can be read or written.
+*/
+
+int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
+	int32_t synchronous, cl_mem_flags flags, size_t offset, size_t cb,
+	void * ptr, ocl_event_t * event);
+
+/*!
+\page ocl_enqueue_unmap_buffer
+Enqueue a unmap-buffer operation.
+
+\par C Version:
+ierr ocl_enqueue_unmap_buffer(device_id, buffer, synchronous, offset, cb, ptr, event)
+
+\par Fortran Version:
+ocl_enqueue_unmap_buffer(device_id, buffer, synchronous, offset, cb, ptr, event, ierr)
+
+@param device_id Device instance handle \n
+uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
+@param buffer Device-side buffer handle \n
+cl_mem (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param ptr Host-side buffer \n
+void * (\b C), type(c_ptr) (\b Fortran) \n
+@param event Event handle (used to collect timing information) \n
+ocl_event_t * (\b C), type(ocl_allocation_t) (\b Fortran) \n
+@param ierr Error status \n
+int32_t (\b C), integer(int32_t) (\b Fortran)
+
+\par Description:
+This subroutine enqueues a unmap-buffer operation on the given device.
+*/
+
+int32_t ocl_enqueue_unmap_buffer(uint32_t device_id, cl_mem buffer,
+	void * ptr, ocl_event_t * event);
+
 /*----------------------------------------------------------------------------*\
  * Add OpenCL program.
 \*----------------------------------------------------------------------------*/

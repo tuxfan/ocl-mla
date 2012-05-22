@@ -87,7 +87,7 @@ module ocl_interface
 
       ierr = ocl_enqueue_write_buffer_f90(device_id, buffer, synchronous, &
          offset, cb, ptr, event)
-   end subroutine
+   end subroutine ocl_enqueue_write_buffer
 
    !---------------------------------------------------------------------------!
    ! ocl_enqueue_read_buffer
@@ -108,7 +108,45 @@ module ocl_interface
 
       ierr = ocl_enqueue_read_buffer_f90(device_id, buffer, synchronous, &
          offset, cb, ptr, event)
-   end subroutine
+   end subroutine ocl_enqueue_read_buffer
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_map_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_map_buffer(device_id, buffer, synchronous, &
+      flags, offset, cb, ptr, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      type(ocl_allocation_t) :: buffer
+      integer(int32_t) :: synchronous
+      integer(cl_bitfield), value :: flags
+      integer(c_size_t) :: offset
+      integer(c_size_t) :: cb
+      type(c_ptr) :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_map_buffer_f90(device_id, buffer, synchronous, &
+         flags, offset, cb, ptr, event)
+   end subroutine ocl_enqueue_map_buffer
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_unmap_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event)
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      type(ocl_allocation_t) :: buffer
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_unmap_buffer_f90(device_id, buffer, ptr, event)
+   end subroutine ocl_enqueue_unmap_buffer
 
    !---------------------------------------------------------------------------!
    ! ocl_initialize_event

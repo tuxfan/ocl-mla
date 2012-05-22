@@ -114,6 +114,43 @@ interface
    end function ocl_enqueue_read_buffer_f90
 
    !---------------------------------------------------------------------------!
+   ! ocl_enqueue_map_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_map_buffer_f90(device_id, buffer, synchronous, &
+      flags, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_map_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      type(ocl_allocation_t) :: buffer
+      integer(int32_t), value :: synchronous
+      integer(cl_bitfield), value :: flags
+      integer(c_size_t), value :: offset
+      integer(c_size_t), value :: cb
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+   end function ocl_enqueue_map_buffer_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_unmap_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_unmap_buffer_f90(device_id, buffer, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_unmap_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      type(ocl_allocation_t) :: buffer
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+   end function ocl_enqueue_unmap_buffer_f90
+
+   !---------------------------------------------------------------------------!
    ! ocl_initialize_event_f90
    !---------------------------------------------------------------------------!
 
