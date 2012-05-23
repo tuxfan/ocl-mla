@@ -7,13 +7,10 @@
 #include <ocl.h>
 #include <example_strings.h>
 
-#if 0
 	typedef double real_t;
 	const char * COMPILE_OPTS = "-Dreal_t=double";
-#else
-	typedef float real_t;
-	const char * COMPILE_OPTS = "-Dreal_t=float";
-#endif
+//	typedef float real_t;
+//	const char * COMPILE_OPTS = "-Dreal_t=float";
 
 const real_t PI = 3.14159;
 const size_t k = 1;
@@ -23,14 +20,13 @@ const size_t k = 1;
 
 int main(int argc, char ** argv) {
 
-	if(argc != 2) {
-		fprintf(stderr, "Usage: %s <elements>\n", argv[0]);
+	if(argc != 3) {
+		fprintf(stderr, "Usage: %s <elements> <systems>\n", argv[0]);
 		exit(1);
 	} // if
 
 	size_t elements = atoi(argv[1]);
-
-	int32_t systems = elements*256;
+	int32_t systems = atoi(argv[2]);
 
 	real_t * h_sub = (real_t *)malloc(systems*elements*sizeof(real_t));
 	real_t * h_diag = (real_t *)malloc(systems*elements*sizeof(real_t));
@@ -147,10 +143,10 @@ int main(int argc, char ** argv) {
 		rms += SQR(abs);
 	} // for
 
-	rms /= elements;
+	rms /= (double)elements;
 	rms = sqrt(rms);
 
-	fprintf(stdout, "rms: %lf\n", rms);
+	fprintf(stdout, "rms: %e\n", rms);
 
 	ocl_report_timer("solve");
 	ocl_report_timer("read");

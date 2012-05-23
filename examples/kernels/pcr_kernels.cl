@@ -1,4 +1,8 @@
 /*
+	Adapted for OCL-MLA from NVIDIA example.
+ */
+
+/*
  * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
  *
  * Please refer to the NVIDIA end user license agreement (EULA) associated
@@ -31,15 +35,6 @@ __kernel void pcr_branch_free_kernel(__global real_t *a_d,
 	int num_systems, int iterations) {
 	size_t thid = get_local_id(0);
 	size_t blid = get_group_id(0);
-//	size_t grps = get_num_groups(0);
-//	size_t lsize = get_local_size(0);
-//	size_t gsize = get_global_size(0);
-
-//	printf("lsize: %d\n", (int)lsize);
-//	printf("thid: %d\n", (int)thid);
-//	printf("grps: %d\n", (int)grps);
-//	printf("gsize: %d\n", (int)gsize);
-//	printf("blid: %d\n", (int)blid);
 
 	int delta = 1;
 
@@ -54,15 +49,6 @@ __kernel void pcr_branch_free_kernel(__global real_t *a_d,
 	c[thid] = c_d[thid + blid * system_size];
 	d[thid] = d_d[thid + blid * system_size];
 
-//	printf("system_size: %d\n", system_size);
-//	printf("num_systems: %d\n", num_systems);
-//	printf("iterations: %d\n", iterations);
-
-// printf("a: %f\n", a[thid]);
-// printf("b: %f\n", b[thid]);
-// printf("c: %f\n", c[thid]);
-// printf("d: %f\n", d[thid]);
-  
 	real_t aNew, bNew, cNew, dNew;
   
 	barrier(CLK_LOCAL_MEM_FENCE);
@@ -119,7 +105,6 @@ __kernel void pcr_branch_free_kernel(__global real_t *a_d,
 	barrier(CLK_LOCAL_MEM_FENCE);
     
 	x_d[thid + blid * system_size] = x[thid];
-//	printf("x: %f\n", x[thid]);
 } // pcr_branch_free_kernel
 
 /*
