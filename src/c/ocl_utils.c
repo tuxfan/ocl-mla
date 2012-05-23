@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 
@@ -261,7 +262,11 @@ size_t num_allocations() {
 
 void default_hint(const ocl_kernel_info_t * info,
 	ocl_kernel_hints_t * hints) {
-	hints->max_work_group_size = info->work_group_size;
+	// force power-of-two size
+	size_t places = log2(info->work_group_size);
+
+	hints->max_work_group_size = 1<<places;
+
 } // default_hint
 
 /*----------------------------------------------------------------------------*
