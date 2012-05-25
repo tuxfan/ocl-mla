@@ -19,6 +19,12 @@ module ocl_data
    integer(cl_bitfield), parameter :: CL_MEM_USE_HOST_PTR   = 2**3 ! (1 << 3)
    integer(cl_bitfield), parameter :: CL_MEM_ALLOC_HOST_PTR = 2**4 ! (1 << 4)
    integer(cl_bitfield), parameter :: CL_MEM_COPY_HOST_PTR  = 2**5 ! (1 << 5)
+   integer(cl_bitfield), parameter :: &
+      CL_MEM_USE_PERSISTENT_MEM_AMD  = 2**6 ! (1 << 5)
+
+   ! Map flags
+   integer(cl_bitfield), parameter :: CL_MAP_READ  = 2**0 ! (1 << 0)
+   integer(cl_bitfield), parameter :: CL_MAP_WRITE = 2**1 ! (1 << 1)
 
    ! Booleans
    integer(int32_t), parameter :: CL_FALSE = 0
