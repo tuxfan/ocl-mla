@@ -65,7 +65,7 @@ int main(int argc, char ** argv) {
 	ocl_set_kernel_arg("program", "test", 2, sizeof(cl_mem), &d2_array);
 	ocl_set_kernel_arg("program", "test", 3, sizeof(cl_mem), &d3_array);
 
-	ocl_kernel_hints("program", "test", &hints);
+	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "program", "test", &hints);
 	ocl_ndrange_hints(global_size, hints.max_work_group_size, 0.5, 0.5,
 		&local_size, &work_group_elements, &single_elements);
 

@@ -543,6 +543,7 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 		CL_ABORTcreateKernel(ierr, kernel_name);
 	} // if
 
+#if 0
 	// get kernel information
 	size_t param_value_size = sizeof(size_t);
 	ierr = clGetKernelWorkGroupInfo(kernel.token, ocl.devices[device_id].id,
@@ -581,12 +582,107 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	else {
 		kernel.info.preferred_multiple = 1;
 	} // if
+#endif
 
 	// add kernel to hash table
 	ocl_hash_add_kernel(program_name, kernel_name, kernel);
 
 	return ierr;
 } // ocl_add_kernel
+
+int32_t ocl_kernel_work_group_info(uint32_t device_id,
+	const char * program_name, const char * kernel_name,
+	ocl_kernel_work_group_info_t * info) {
+	CALLER_SELF
+	int32_t ierr = 0;
+	size_t param_value_size;
+
+	// get requested device
+	ocl_device_instance_t * _instance = ocl_device_instance(device_id);
+
+	// get requested kernel
+	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
+
+#if 0
+	// VERSION 1.2
+	// maximum global work size that can be enqueued for this kernel
+	param_value_size = 3*sizeof(size_t);
+	ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+		CL_KERNEL_GLOBAL_WORK_SIZE, param_value_size,
+		(void *)&info->global_work_size, NULL);
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+	} // if
+#else
+	info->global_work_size[0] = 0;
+	info->global_work_size[1] = 0;
+	info->global_work_size[2] = 0;
+#endif
+
+	// maximum work group size that can be used for this kernel
+	param_value_size = sizeof(size_t);
+	ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+		CL_KERNEL_WORK_GROUP_SIZE, param_value_size,
+		(void *)&info->work_group_size, NULL);
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+	} // if
+
+	// compile-time specificed work group size
+	param_value_size = 3*sizeof(size_t);
+	ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+		CL_KERNEL_COMPILE_WORK_GROUP_SIZE, param_value_size,
+		(void *)&info->compile_work_group_size, NULL);
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+	} // if
+
+	// local memory used by this kernel
+	param_value_size = sizeof(cl_ulong);
+	ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+		CL_KERNEL_LOCAL_MEM_SIZE, param_value_size,
+		(void *)&info->local_mem_size, NULL);
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+	} // if
+
+	// preferred work group size multiple for this kernel
+	if(ocl.devices[device_id].info.version_major >= 1 &&
+		ocl.devices[device_id].info.version_minor >= 1) {
+
+// dummy value to enable compilation on older OpenCL installations
+#ifndef CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE
+#define CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE 0
+#endif
+		param_value_size = sizeof(size_t);
+		ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+			CL_KERNEL_PREFERRED_WORK_GROUP_SIZE_MULTIPLE, param_value_size,
+			(void *)&info->preferred_multiple, NULL);
+
+		if(ierr != CL_SUCCESS) {
+			CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+		} // if
+	}
+	else {
+		info->preferred_multiple = 1;
+	} // if
+
+	// private memory used by this kernel
+	param_value_size = sizeof(cl_ulong);
+	ierr = clGetKernelWorkGroupInfo(_kernel->token, _instance->id,
+		CL_KERNEL_PRIVATE_MEM_SIZE, param_value_size,
+		(void *)&info->private_mem_size, NULL);
+
+	if(ierr != CL_SUCCESS) {
+		CL_ABORTerr(clGetKernelWorkGroupInfo, ierr);
+	} // if
+
+	return ierr;
+} // ocl_kernel_work_group_info
 
 /*----------------------------------------------------------------------------*\
  * ocl_kernel_token
@@ -632,17 +728,24 @@ int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
  * ocl_kernel_hints
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_kernel_hints(const char * program_name,
+int32_t ocl_kernel_hints(uint32_t device_id, const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints) {
 	int32_t ierr = 0;
+
+	ocl_kernel_work_group_info_t _info;
+
+	ocl_kernel_work_group_info(device_id, program_name, kernel_name, &_info);
 	
+#if 0
 	// retrieve kernel
 	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
+#endif
 
+	// FIXME: Change interface
 	// compute hint
-	KERNEL_HINT_FUNCTION(&_kernel->info, hints);
+	KERNEL_HINT_FUNCTION(&_info, hints);
 
-	hints->local_mem_size = _kernel->info.local_mem_size;
+	hints->local_mem_size = _info.local_mem_size;
 
 	return ierr;
 } // ocl_kernel_hints
@@ -1135,9 +1238,9 @@ int32_t ocl_set_kernel_arg_allocation_f90(const char * program_name,
  * ocl_kernel_hint_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_kernel_hints_f90(const char * program_name,
+int32_t ocl_kernel_hints_f90(uint32_t * device_id, const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints) {
-	return ocl_kernel_hints(program_name, kernel_name, hints);
+	return ocl_kernel_hints(*device_id, program_name, kernel_name, hints);
 } // ocl_kernel_hint_f90
 
 /*----------------------------------------------------------------------------*\

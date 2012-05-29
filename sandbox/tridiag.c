@@ -5,7 +5,7 @@
 #include <math.h>
 
 #include <ocl.h>
-#include <example_strings.h>
+#include <sandbox_strings.h>
 
 	typedef double real_t;
 	const char * COMPILE_OPTS = "-Dreal_t=double";
@@ -82,7 +82,7 @@ int main(int argc, char ** argv) {
 		"pcr_branch_free_kernel", "solve");
 
 	ocl_kernel_hints_t kernel_hints;
-	ocl_kernel_hints("tridiag", "solve", &kernel_hints);
+	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "tridiag", "solve", &kernel_hints);
 
 	if(elements > kernel_hints.max_work_group_size) {
 		fprintf(stderr, "Error: too many elements for device!!!");

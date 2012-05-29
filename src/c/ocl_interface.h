@@ -582,6 +582,11 @@ int32_t ocl_add_kernel(uint32_t device_id, const char * program_name,
 	const char * kernel_source_name, const char * kernel_name);
 
 // FIXME: need man page
+int32_t ocl_kernel_work_group_info(uint32_t device_id,
+	const char * program_namel, const char * kernel_name,
+	ocl_kernel_work_group_info_t * info);
+
+// FIXME: need man page
 int32_t ocl_kernel_token(const char * program_name, const char * kernel_name,
 	ocl_kernel_t * token);
 
@@ -633,6 +638,8 @@ ierr ocl_kernel_hints(program_name, kernel_name, hint)
 \par Fortran Version:
 ocl_kernel_hints(program_name, kernel_name, hint, ierr)
 
+@param device_id Device instance handle \n
+uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
 @param program_name Program name hash key \n
 const char * (\b C), character(kind=c_char), dimension(*) (\b Fortran) \n
 @param kernel_name Kernel name hash key \n
@@ -644,7 +651,7 @@ size_t * (\b C), integer(c_size_t) (\b Fortran)
 This subroutine fills \b hint with the preferred/maximum \b local_size to use in calls to ocl_enqueue_kernel_ndrange.  The method used to compute the hint may be architecture specific and can be overridden at compile time by defining the \b KERNEL_HINT_FUNCTION preprocessor varialbe.
 */
 
-int32_t ocl_kernel_hints(const char * program_name,
+int32_t ocl_kernel_hints(uint32_t device_id, const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints);
 
 int32_t ocl_device_info(uint32_t device_id, ocl_device_info_t * info);

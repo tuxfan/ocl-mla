@@ -176,17 +176,19 @@ typedef struct ocl_kernel_hints_ {
 	size_t local_mem_size;
 } ocl_kernel_hints_t; 
 
-typedef struct ocl_kernel_info_ {
-	size_t local_size;
+typedef struct ocl_kernel_work_group_info_ {
+	size_t global_work_size[3];
 	size_t work_group_size;
+	size_t compile_work_group_size[3];
 	cl_ulong local_mem_size;
 	size_t preferred_multiple;
-} ocl_kernel_info_t;
+	cl_ulong private_mem_size;
+} ocl_kernel_work_group_info_t;
 
 typedef struct ocl_kernel_ {
 	cl_kernel token;
-	ocl_kernel_info_t info;
-	ocl_kernel_hints_t hints;
+	//ocl_kernel_info_t info;
+	//ocl_kernel_hints_t hints;
 } ocl_kernel_t;
 
 /*------------------------------------------------------------------------------
