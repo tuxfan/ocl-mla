@@ -692,10 +692,13 @@ int32_t ocl_clear_timer(const char * label) {
 	ocl_timer_event_t * _data =
 		(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
-		_data->queued = 0.0;
-		_data->invocation = 0.0;
-		_data->duration = 0.0;
-		_data->aggregate = 0.0;
+	// timer doesn't exists: do nothing
+	if(_data == NULL) { return ierr; }
+	
+	_data->queued = 0.0;
+	_data->invocation = 0.0;
+	_data->duration = 0.0;
+	_data->aggregate = 0.0;
 
 	return ierr;
 } // ocl_clear_timer
