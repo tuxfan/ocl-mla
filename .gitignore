@@ -1,6 +1,8 @@
 build
 src/include
-Makefile.am
+lib/Makefile.am
+test/Makefile.am
+test/*/Makefile.am
 Makefile.in
 aclocal.m4
 autom4te.cache
