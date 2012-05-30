@@ -141,6 +141,7 @@ int main(int argc, char ** argv) {
 	for(i = 0; i<systems*elements; ++i) {
 		real_t abs = ABS(analytic[i], h_x[i]);
 		rms += SQR(abs);
+		printf("x(%d): %lf\n", (int)i, h_x[i]);
 	} // for
 
 	rms /= (double)elements;

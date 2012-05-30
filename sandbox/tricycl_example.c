@@ -51,6 +51,16 @@ int main(int argc, char ** argv) {
 
 	tricycl_solve_sp(elements, systems, sub, diag, sup, rhs, x);
 
+	for(s=0; s<systems; ++s) {
+		for(i=0; i<elements; ++i) {
+#if 0
+			printf("%f %f %f %f\n", sub[s*elements+i], diag[s*elements+i],
+				sup[s*elements+i], rhs[s*elements+i]);
+#endif
+			printf("%f\n", x[s*elements+1]);
+		} // for
+	} // for
+
 	// shutdown OpenCL layer
 	ocl_finalize();
 

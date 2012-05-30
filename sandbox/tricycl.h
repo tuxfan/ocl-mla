@@ -7,7 +7,6 @@
 size_t tricycl_iterations(size_t elements);
 
 int32_t tricycl_solve_sp(size_t system_size, size_t num_systems,
-	const float * sub, const float * diag, const float * sup,
-	const float * rhs, const float * x);
+	float * sub, float * diag, float * sup, float * rhs, float * x);
 
 #endif // tricycl_h
