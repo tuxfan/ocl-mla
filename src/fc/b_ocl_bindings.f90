@@ -129,7 +129,7 @@ interface
       integer(cl_bitfield), value :: flags
       integer(c_size_t), value :: offset
       integer(c_size_t), value :: cb
-      type(c_ptr), value :: ptr
+      type(c_ptr) :: ptr
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
    end function ocl_enqueue_map_buffer_f90

@@ -459,10 +459,10 @@ int32_t ocl_enqueue_read_buffer(uint32_t device_id, cl_mem buffer,
 Enqueue a map-buffer operation.
 
 \par C Version:
-ierr ocl_enqueue_map_buffer(device_id, buffer, synchronous, offset, cb, ptr, event)
+ierr ocl_enqueue_map_buffer(device_id, buffer, synchronous, flags, offset, cb, ptr, event)
 
 \par Fortran Version:
-ocl_enqueue_map_buffer(device_id, buffer, synchronous, offset, cb, ptr, event, ierr)
+ocl_enqueue_map_buffer(device_id, buffer, synchronous, flags, offset, cb, ptr, event, ierr)
 
 @param device_id Device instance handle \n
 uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
@@ -470,6 +470,8 @@ uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
 cl_mem (\b C), type(ocl_allocation_t) (\b Fortran) \n
 @param synchronous Flag for synchronous (blocking) execution \n
 int32_t (\b C), integer(int32_t) (\b Fortran) \n
+@param flags Map flags (See below)\n
+cl_mem_flag (\b C), integer(cl_bitfield) (\b Fortran) \n
 @param offset Byte offset within buffer to begin map \n
 size_t (\b C), integer(c_size_t) (\b Fortran) \n
 @param cb Bytes to map \n
@@ -483,6 +485,9 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 
 \par Description:
 This subroutine enqueues a map-buffer operation on the given device.  The operation will fill \b ptr with the mapped device buffer region.  If the operation is asynchronous, a separate blocking operation must be performed using the \b event variable before \b ptr can be read or written.
+
+\par Buffer Creation Flags:
+\b CL_MAP_READ, \b CL_MAP_WRITE
 */
 
 int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
@@ -494,10 +499,10 @@ int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
 Enqueue a unmap-buffer operation.
 
 \par C Version:
-ierr ocl_enqueue_unmap_buffer(device_id, buffer, synchronous, offset, cb, ptr, event)
+ierr ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event)
 
 \par Fortran Version:
-ocl_enqueue_unmap_buffer(device_id, buffer, synchronous, offset, cb, ptr, event, ierr)
+ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event, ierr)
 
 @param device_id Device instance handle \n
 uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n

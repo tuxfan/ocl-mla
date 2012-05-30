@@ -408,8 +408,8 @@ int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
 
 	ocl_device_instance_t * instance = ocl_device_instance(device_id);
 
-	ASSERT((synchronous == 0) && (event == NULL),
-		"Asynchronous map operations require a non-NULL event!")
+	ASSERT(!((synchronous == 0) && (event == NULL)),
+		"Asynchronous map operations require a non-NULL event!");
 
 	if(event != NULL) {
 		ptr = clEnqueueMapBuffer(instance->queue, buffer, synchronous, flags,

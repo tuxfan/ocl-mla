@@ -136,7 +136,7 @@ module ocl_interface
    ! ocl_enqueue_unmap_buffer
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event)
+   subroutine ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t), value :: device_id

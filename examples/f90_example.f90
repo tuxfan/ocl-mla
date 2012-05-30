@@ -42,8 +42,11 @@ program main
 
    ! step (4)
    ! create a device-side buffer
+   !call ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes, &
+   !   CL_MEM_READ_ONLY + CL_MEM_COPY_HOST_PTR, c_loc(h_array), d_array, ierr) 
    call ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes, &
-      CL_MEM_READ_ONLY + CL_MEM_COPY_HOST_PTR, c_loc(h_array), d_array, ierr) 
+      CL_MEM_READ_ONLY + CL_MEM_USE_PERSISTENT_MEM_AMD, &
+      C_NULL_PTR, d_array, ierr) 
 
    ! step (5)
    ! add program and build
