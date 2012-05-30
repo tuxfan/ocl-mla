@@ -32,7 +32,6 @@ CONFIG_WITH_MACHINE("$srcdir/machine")
 #------------------------------------------------------------------------------#
 
 AC_CONFIG_FILES([Makefile \
-	examples/Makefile \
 	lib/Makefile \
 	utils/Makefile \
 	local/ocl_local.h \
@@ -41,6 +40,8 @@ AC_CONFIG_FILES([Makefile \
 	test/c/atlocal \
 	test/fc/Makefile \
 	test/fc/atlocal \
+	examples/Makefile \
+	sandbox/Makefile \
 	doc/Makefile \
 	doc/doxygen.conf
 ])

@@ -63,7 +63,7 @@ int main(int argc, char ** argv) {
 	size_t work_group_indeces;
 	size_t single_indeces;
 
-	ocl_kernel_hints("program", "my test", &hints);
+	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "program", "my test", &hints);
 	ocl_ndrange_hints(global_size, hints.max_work_group_size,
 		0.5, 0.5, &local_size, &work_group_indeces, &single_indeces);
 

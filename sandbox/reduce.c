@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include "ocl.h"
-#include <example_strings.h>
+#include <sandbox_strings.h>
 
 #define SIMD_SIZE 4
 
@@ -91,7 +91,7 @@ int main(int argc, char ** argv) {
 	const size_t work_group_single = 1;
 
 	// get a tighter bound on the max work group size
-	ocl_kernel_hints("program", "reduce", &hints);
+	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "program", "reduce", &hints);
 
 	ocl_ndrange_hints(global_size, hints.max_work_group_size, 0.5, 0.5,
 		&work_group_size, &work_group_elements, &single_elements);

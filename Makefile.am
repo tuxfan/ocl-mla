@@ -7,7 +7,7 @@
 # Recurse subdirs
 #------------------------------------------------------------------------------#
 
-SUBDIRS = lib utils examples test
+SUBDIRS = lib utils test examples sandbox
 
 #------------------------------------------------------------------------------#
 # Utils file

@@ -260,7 +260,7 @@ size_t num_allocations() {
  * default_hint
  *----------------------------------------------------------------------------*/
 
-void default_hint(const ocl_kernel_info_t * info,
+void default_hint(const ocl_kernel_work_group_info_t * info,
 	ocl_kernel_hints_t * hints) {
 	// force power-of-two size
 	size_t places = log2(info->work_group_size);

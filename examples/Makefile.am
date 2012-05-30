@@ -5,9 +5,7 @@
 
 bin_PROGRAMS = \
 	c_example \
-	f90_example \
-	reduce \
-	tridiag
+	f90_example
 
 INCLUDES = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
@@ -33,15 +31,3 @@ f90_example_SOURCES = \
 	@top_srcdir@/examples/f90_example.f90
 f90_example_LDFLAGS = @EXTRA_LDFLAGS@
 f90_example_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
-
-reduce_SOURCES = \
-	@top_builddir@/local/example_strings.c \
-	@top_srcdir@/examples/reduce.c
-reduce_LDFLAGS = @EXTRA_LDFLAGS@
-reduce_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
-
-tridiag_SOURCES = \
-	@top_builddir@/local/example_strings.c \
-	@top_srcdir@/examples/tridiag.c
-tridiag_LDFLAGS = @EXTRA_LDFLAGS@
-tridiag_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
