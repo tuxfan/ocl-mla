@@ -259,22 +259,18 @@ for(size_t s=0; s<num_systems; ++s) {
 	cl_mem d_d;
 	cl_mem d_x;
 
+	size_t full_size = sub_size*sub_systems*num_systems;
 
-	// buffers for interface system
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE,
-		sub_size*sub_systems*sizeof(float),
+	// buffers for full system
+	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sub, &d_a);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE,
-		sub_size*sub_systems*sizeof(float),
+	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, diag, &d_b);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE,
-		sub_size*sub_systems*sizeof(float),
+	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sup, &d_c);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE,
-		sub_size*sub_systems*sizeof(float),
+	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, rhs, &d_d);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE,
-		sub_size*sub_systems*sizeof(float),
+	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, full_size*sizeof(float),
 		CL_MEM_WRITE_ONLY, NULL, &d_x);
 
 	size_t sub_iterations = tricycl_iterations(sub_size);
@@ -294,7 +290,7 @@ for(size_t s=0; s<num_systems; ++s) {
 	ocl_set_kernel_arg("tridiag", "solve", 8, sizeof(int32_t),
 		&sub_iterations);
 
-	global_size = sub_size;
+	global_size = full_size;
 	local_size = sub_size;
 
 	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "tridiag",
@@ -303,7 +299,7 @@ for(size_t s=0; s<num_systems; ++s) {
 	ocl_finish(OCL_PERFORMANCE_DEVICE);
 
 	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_x, 1, offset_zero,
-		sub_size*sub_systems*sizeof(float), x, &event);
+		full_size*sizeof(float), x, &event);
 
 	ocl_finish(OCL_PERFORMANCE_DEVICE);
 
