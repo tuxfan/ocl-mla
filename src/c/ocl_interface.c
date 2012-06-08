@@ -498,24 +498,36 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 	// build the program source
 	err = clBuildProgram(token, 1, &instance->id, _compile_options, NULL, NULL);
 
-	// capture failed output, print to stdout and exit
+	// capture compilation output
+	FILE * log = fopen("ocl_compile.log", "w");	
+
+	if(log == NULL) {
+		message("Failed opening ocl_compile.log!\n");
+		exit(1);
+	} // if
+
+	char buffer[256*1024];
+	size_t length;
+
+	err = clGetProgramBuildInfo(token, instance->id,
+		CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &length);
+
+	if(err != CL_SUCCESS) {
+		CL_ABORTerr(clGetProgramBuildInfo, err);
+	} // if
+
+	fprintf(log, "clBuildProgram Output\nCompile Options: %s\n%s\n",
+		_compile_options, buffer);
+
+	fclose(log);
+
 	if(err == CL_BUILD_PROGRAM_FAILURE) {
-		char buffer[256*1024];
-		size_t length;
-
-		clGetProgramBuildInfo(token, instance->id,
-			CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &length);
-
 		message("clBuildProgram failed:\n%s\n%s\n", buffer, _compile_options);
 		exit(1);
 	} // if
 
-/////////////////////////////// FIXME: HASH
-
 	// add program to the hash
 	ocl_hash_add_program(program_name, token);
-
-/////////////////////////////// FIXME: HASH
 
 	// free memory
 	free(_program_source);
@@ -741,7 +753,6 @@ int32_t ocl_kernel_hints(uint32_t device_id, const char * program_name,
 	ocl_kernel_t * _kernel = ocl_hash_find_kernel(program_name, kernel_name);
 #endif
 
-	// FIXME: Change interface
 	// compute hint
 	KERNEL_HINT_FUNCTION(&_info, hints);
 
