@@ -85,6 +85,7 @@ CONFIG_GENERIC_WITH(fc_module_path_flag, FC_MODULE_PATH_FLAG, [-J])
 CONFIG_GENERIC_ENABLE(opencl_profiling, OPENCL_PROFILING)
 CONFIG_GENERIC_ENABLE(ocl_verbose, OCL_VERBOSE)
 CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
+CONFIG_GENERIC_ENABLE(ocl_compiler_log, OCL_COMPILER_LOG)
 
 #------------------------------------------------------------------------------#
 # Check for strndup

@@ -499,6 +499,17 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 	err = clBuildProgram(token, 1, &instance->id, _compile_options, NULL, NULL);
 
 	// capture compilation output
+	char buffer[256*1024];
+	size_t length;
+
+	cl_uint berr = clGetProgramBuildInfo(token, instance->id,
+		CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &length);
+
+	if(berr != CL_SUCCESS) {
+		CL_ABORTerr(clGetProgramBuildInfo, err);
+	} // if
+
+#if defined(ENABLE_OCL_COMPILER_LOG)
 	FILE * log = fopen("ocl_compile.log", "w");	
 
 	if(log == NULL) {
@@ -506,20 +517,11 @@ int32_t ocl_add_program(uint32_t device_id, const char * program_name,
 		exit(1);
 	} // if
 
-	char buffer[256*1024];
-	size_t length;
-
-	err = clGetProgramBuildInfo(token, instance->id,
-		CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &length);
-
-	if(err != CL_SUCCESS) {
-		CL_ABORTerr(clGetProgramBuildInfo, err);
-	} // if
-
 	fprintf(log, "clBuildProgram Output\nCompile Options: %s\n%s\n",
 		_compile_options, buffer);
 
 	fclose(log);
+#endif
 
 	if(err == CL_BUILD_PROGRAM_FAILURE) {
 		message("clBuildProgram failed:\n%s\n%s\n", buffer, _compile_options);
