@@ -1,0 +1,87 @@
+################################################################################
+# Copyright (c) 2012 Los Alamos National Security, LLC
+# All rights reserved.
+################################################################################
+
+#------------------------------------------------------------------------------#
+# L = linux
+# G = CL_DEVICE_TYPE_GPU (performance)
+# N = NVIDIA CUDA
+# G = CL_DEVICE_TYPE_GPU (auxiliary)
+# A = NVIDIA CUDA
+# G = gcc
+# G = gfortran
+#------------------------------------------------------------------------------#
+
+#------------------------------------------------------------------------------#
+# OCL preprocessor defines
+#
+# These control various attributes of the compiled library.  The values given
+# here are set to their defaults.  It is not necessary to define these unless
+# you would like to change the default behavior.
+#------------------------------------------------------------------------------#
+
+OCL_DEFINES="-DOCL_EVENT_LIST_BLOCK_SIZE=32"
+OCL_DEFINES+=" -DOCL_MAX_SOURCE_LENGTH=16*1024"
+OCL_DEFINES+=" -DOCL_MAX_ALLOCATIONS=1024"
+OCL_DEFINES+=" -DOCL_MAX_LOGICAL_DEVICES=10"
+OCL_DEFINES+=" -DOCL_MAX_PLATFORMS=10"
+OCL_DEFINES+=" -DOCL_MAX_PLATFORM_DEVICES=10"
+
+#------------------------------------------------------------------------------#
+# CFLAGS
+#------------------------------------------------------------------------------#
+
+CFLAGS="-g -O0 -m64 -std=c99 -pedantic -Werror -Wall ${OCL_DEFINES}"
+
+#------------------------------------------------------------------------------#
+# FFLAGS
+#------------------------------------------------------------------------------#
+
+FCFLAGS="-g -O0 -m64 -std=gnu -pedantic-errors -Werror -Wall"
+
+#------------------------------------------------------------------------------#
+# Fortran module search path flag
+#------------------------------------------------------------------------------#
+
+FC_MODULE_PATH_FLAG="-J"
+
+#------------------------------------------------------------------------------#
+# Performance platform
+#------------------------------------------------------------------------------#
+
+OCL_PLATFORM_PERFORMANCE="NVIDIA CUDA"
+OCL_PERFORMANCE_INITIALIZATION=ocl_init_generic_gpu
+
+#------------------------------------------------------------------------------#
+# Auxiliary platform
+#------------------------------------------------------------------------------#
+
+OCL_PLATFORM_AUXILIARY="NVIDIA CUDA"
+OCL_AUXILIARY_INITIALIZATION=ocl_init_generic_gpu
+
+#------------------------------------------------------------------------------#
+# HashMark library
+#------------------------------------------------------------------------------#
+
+HM_CPPFLAGS="-I__SET_THIS_TO_THE_INCLUDE_PATH__/include"
+HM_LDFLAGS="-L__SET_THIS_TO_THE_LIB_PATH__/lib"
+HM_LIBS="-lhm"
+HM_CHECKHEADER="hash_mark.h"
+
+#------------------------------------------------------------------------------#
+# OpenCL library
+#------------------------------------------------------------------------------#
+
+OPENCL_CPPFLAGS="-I__SET_THIS_TO_THE_INCLUDE_PATH__/include"
+OPENCL_LDFLAGS="-L__SET_THIS_TO_THE_LIB_PATH__/lib"
+OPENCL_LIBS="-lOpenCL"
+OPENCL_CHECKHEADER="CL/opencl.h"
+
+#------------------------------------------------------------------------------#
+# OpenCL options
+#------------------------------------------------------------------------------#
+
+OPENCL_PROFILING=yes
+OCL_VERBOSE=yes
+OCL_ASSERTIONS=yes
