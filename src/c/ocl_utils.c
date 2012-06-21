@@ -692,7 +692,7 @@ int32_t ocl_clear_timer(const char * label) {
 	ocl_timer_event_t * _data =
 		(ocl_timer_event_t *)hm_find(ocl.device_event_hash, label);
 
-	// timer doesn't exists: do nothing
+	// timer doesn't exist: do nothing
 	if(_data == NULL) { return ierr; }
 	
 	_data->queued = 0.0;
@@ -732,9 +732,7 @@ int32_t ocl_report_timer(const char * label) {
  * ocl_read_timer
  *----------------------------------------------------------------------------*/
 
-int32_t ocl_read_timer(const char * label, ocl_timer_attribute_t attribute,
-	double * value) {
-	int32_t ierr = 0;
+int32_t ocl_read_timer(const char * label, ocl_timer_attribute_t attribute, double * value) { int32_t ierr = 0;
 
 #if !defined(ENABLE_OPENCL_PROFILING)
 	message("ERROR: You must enable profiling to use timers!\n");
