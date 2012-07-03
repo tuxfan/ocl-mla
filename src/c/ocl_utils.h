@@ -53,15 +53,18 @@
  *----------------------------------------------------------------------------*/
 
 #if HAVE_DECL_STRDUP == 0
-char * strdup(const char * s);
+extern char * strdup(const char * s)
+	__THROW __attribute_malloc__ __nonnull ((1));
 #endif
 
 #if HAVE_DECL_STRNDUP == 0
-char * strndup(const char * s, size_t n);
+extern char * strndup(const char * s, size_t n)
+	__THROW __attribute_malloc__ __nonnull ((1));
 #endif
 
 #if HAVE_DECL_STRSEP == 0
-char * strsep(char **stringp, const char *delim);
+extern char * strsep(char ** stringp, const char * delim)
+	__THROW __attribute_malloc__ __nonnull ((1));
 #endif
 
 /*------------------------------------------------------------------------------
