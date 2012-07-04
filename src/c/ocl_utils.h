@@ -52,6 +52,7 @@
  * Possibly undefined functions
  *----------------------------------------------------------------------------*/
 
+#if 0
 #if HAVE_DECL_STRDUP == 0
 extern char * strdup(const char * s)
 	__THROW __attribute_malloc__ __nonnull ((1));
@@ -65,6 +66,7 @@ extern char * strndup(const char * s, size_t n)
 #if HAVE_DECL_STRSEP == 0
 extern char * strsep(char ** stringp, const char * delim)
 	__THROW __attribute_malloc__ __nonnull ((1));
+#endif
 #endif
 
 /*------------------------------------------------------------------------------

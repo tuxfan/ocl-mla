@@ -4,6 +4,7 @@
 \******************************************************************************/
 
 #define _ocl_source
+#define _GNU_SOURCE
 
 #include <stdio.h>
 #include <string.h>
@@ -21,6 +22,7 @@ extern int32_t ocl_warning;
  * Possibly undefined functions
  *----------------------------------------------------------------------------*/
 
+#if 0
 #if HAVE_DECL_STRDUP == 0
 char * strdup(const char * s) {
 	size_t n = strlen(s) + 1;
@@ -86,6 +88,7 @@ char * strsep(char **stringp, const char *delim)
 	return NULL;
 } // strsep
 #endif // HAVE_DECL_STRSEP
+#endif
 
 /*----------------------------------------------------------------------------*
  * I/O
