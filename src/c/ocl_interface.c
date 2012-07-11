@@ -19,6 +19,7 @@
 extern ocl_data_t ocl;
 extern int32_t ocl_warning;
 
+#if 0
 /*----------------------------------------------------------------------------*\
  * Default performance platform and device
 \*----------------------------------------------------------------------------*/
@@ -48,6 +49,7 @@ extern int32_t ocl_warning;
 #ifndef OCL_AUXILIARY_INITIALIZATION
 #define OCL_AUXILIARY_INITIALIZATION ocl_init_generic_cpu
 #endif
+#endif
 
 /*----------------------------------------------------------------------------*\
  * ocl_init
@@ -70,6 +72,12 @@ int32_t ocl_init_threaded(size_t thread) {
 	message("Initializing OpenCL layer\n\n");
 #endif
 
+	if(ocl_init_devices(thread) != 0) {
+		message("Device Initialization failed!\n");
+		exit(1);
+	} // if
+
+#if 0
 	// initialize the performance device
 	if(OCL_PERFORMANCE_INITIALIZATION(&ocl.devices[OCL_PERFORMANCE_DEVICE],
 		ocl_platform_performance, thread) != 0) {
@@ -92,6 +100,7 @@ int32_t ocl_init_threaded(size_t thread) {
 #if defined(ENABLE_OCL_VERBOSE)
 	print_device_info(&ocl.devices[OCL_AUXILIARY_DEVICE].info,
 		"Auxilliary");
+#endif
 #endif
 
 	// initialize the hash table

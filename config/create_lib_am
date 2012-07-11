@@ -55,6 +55,7 @@ echo "# Sources"
 echo "#------------------------------------------------------------------------------#"
 echo
 echo "libocl_la_SOURCES = \\"
+echo "	\${top_builddir}/local/ocl_device_config.c \\"
 
 numfiles=`$find_exec src -type f -regex $src_str | wc -l`
 cnt=1

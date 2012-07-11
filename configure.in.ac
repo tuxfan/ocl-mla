@@ -66,6 +66,8 @@ CONFIG_PROG_DOXYGEN
 # With options
 #------------------------------------------------------------------------------#
 
+CONFIG_GENERIC_WITH(ocl_devices, OCL_DEVICES, [default])
+
 CONFIG_GENERIC_WITH(ocl_platform_performance, OCL_PLATFORM_PERFORMANCE,
 	[default])
 CONFIG_GENERIC_WITH(ocl_performance_initialization,
@@ -86,14 +88,6 @@ CONFIG_GENERIC_ENABLE(opencl_profiling, OPENCL_PROFILING)
 CONFIG_GENERIC_ENABLE(ocl_verbose, OCL_VERBOSE)
 CONFIG_GENERIC_ENABLE(ocl_assertions, OCL_ASSERTIONS)
 CONFIG_GENERIC_ENABLE(ocl_compiler_log, OCL_COMPILER_LOG)
-
-#------------------------------------------------------------------------------#
-# Check for strndup
-#------------------------------------------------------------------------------#
-
-AC_CHECK_DECLS(strndup)
-AC_CHECK_DECLS(strdup)
-AC_CHECK_DECLS(strsep)
 
 #------------------------------------------------------------------------------#
 # OpenCL
@@ -134,6 +128,7 @@ if test "$HAS_DOXYGEN" = "yes" ; then
 fi
 
 AC_CONFIG_COMMANDS([links], [make links])
+AC_CONFIG_COMMANDS([devices], [make devices])
 AC_CONFIG_COMMANDS([remind], [make reminder])
 
 #------------------------------------------------------------------------------#

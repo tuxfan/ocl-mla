@@ -14,6 +14,8 @@
 	#include <ocl_config.h>
 #endif
 
+#include <ocl_device_config.h>
+
 #include <sys/time.h>
 
 #include <ocl_local.h>
@@ -204,8 +206,8 @@ typedef struct ocl_program_ {
  * OpenCL device information.
  *----------------------------------------------------------------------------*/
 
-static const uint32_t OCL_PERFORMANCE_DEVICE = 0;
-static const uint32_t OCL_AUXILIARY_DEVICE = 1;
+//static const uint32_t OCL_PERFORMANCE_DEVICE = 0;
+//static const uint32_t OCL_AUXILIARY_DEVICE = 1;
 
 typedef struct ocl_data_ {
 	ocl_device_instance_t devices[OCL_MAX_LOGICAL_DEVICES+2];
