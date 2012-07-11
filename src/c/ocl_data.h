@@ -206,11 +206,15 @@ typedef struct ocl_program_ {
  * OpenCL device information.
  *----------------------------------------------------------------------------*/
 
-//static const uint32_t OCL_PERFORMANCE_DEVICE = 0;
-//static const uint32_t OCL_AUXILIARY_DEVICE = 1;
+#define OCL_DEVICE_TYPES 4
+static const size_t OCL_CPU = 0;
+static const size_t OCL_GPU = 1;
+static const size_t OCL_ACCELERATOR = 2;
+static const size_t OCL_CUSTOM = 3;
 
 typedef struct ocl_data_ {
 	ocl_device_instance_t devices[OCL_MAX_LOGICAL_DEVICES+2];
+	size_t initialized_devices[OCL_DEVICE_TYPES];
 
 	size_t program_hash;
 	size_t host_event_hash;

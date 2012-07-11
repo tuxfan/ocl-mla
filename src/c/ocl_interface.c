@@ -72,6 +72,10 @@ int32_t ocl_init_threaded(size_t thread) {
 	message("Initializing OpenCL layer\n\n");
 #endif
 
+	for(size_t i=0; i<OCL_DEVICE_TYPES; ++i) {
+		ocl.initialized_devices[i] = 0;
+	} // for
+
 	if(ocl_init_devices(thread) != 0) {
 		message("Device Initialization failed!\n");
 		exit(1);

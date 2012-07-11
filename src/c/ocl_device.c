@@ -10,6 +10,8 @@
 #include "ocl_device.h"
 #include "ocl_utils.h"
 
+extern ocl_data_t ocl;
+
 /*------------------------------------------------------------------------------
  * Known platforms with defines
  *----------------------------------------------------------------------------*/
@@ -120,9 +122,19 @@ int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
 					"hardware devices: using round robin...\n");
 			} // if
 
-			size_t device_id = num_devices > 1 ? thread%num_devices : 0;
+			size_t device_type_id = device_type == CL_DEVICE_TYPE_CPU ? OCL_CPU :
+				device_type == CL_DEVICE_TYPE_GPU ? OCL_GPU :
+				device_type == CL_DEVICE_TYPE_ACCELERATOR ? OCL_ACCELERATOR :
+				OCL_CUSTOM;
 
+			size_t device_id = thread%num_devices +
+				ocl.initialized_devices[device_type_id];
+			device_id = device_id > num_devices ? 0 : device_id;
+
+			// increment how many devices of this type have been initialized
 			instance->id = devices[device_id];
+
+			ocl.initialized_devices[device_type_id]++;
 
 			// get device information
 			CL_CHECKerr(clGetDeviceInfo, devices[device_id], CL_DEVICE_NAME,
