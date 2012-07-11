@@ -32,7 +32,7 @@ links:
 #------------------------------------------------------------------------------#
 
 devices:
-	${top_srcdir}/config/make_devices "${OCL_DEVICES}" "${top_builddir}/local"
+	@(${top_srcdir}/config/make_devices "${OCL_DEVICES}" "${top_builddir}/local")
 
 #------------------------------------------------------------------------------#
 # Configure message

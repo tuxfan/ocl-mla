@@ -67,17 +67,6 @@ CONFIG_PROG_DOXYGEN
 #------------------------------------------------------------------------------#
 
 CONFIG_GENERIC_WITH(ocl_devices, OCL_DEVICES, [default])
-
-CONFIG_GENERIC_WITH(ocl_platform_performance, OCL_PLATFORM_PERFORMANCE,
-	[default])
-CONFIG_GENERIC_WITH(ocl_performance_initialization,
-	OCL_PERFORMANCE_INITIALIZATION, [ocl_init_generic_cpu])
-
-CONFIG_GENERIC_WITH(ocl_platform_auxiliary, OCL_PLATFORM_AUXILIARY,
-	[default])
-CONFIG_GENERIC_WITH(ocl_auxiliary_initialization,
-	OCL_AUXILIARY_INITIALIZATION, [ocl_init_generic_cpu])
-
 CONFIG_GENERIC_WITH(fc_module_path_flag, FC_MODULE_PATH_FLAG, [-J])
 
 #------------------------------------------------------------------------------#
