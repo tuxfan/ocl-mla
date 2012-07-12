@@ -8,6 +8,7 @@ module ocl_interface
    use, intrinsic :: ISO_C_BINDING
    use :: ocl_bindings
    use :: ocl_data
+   use :: ocl_device_config
 
    contains
 

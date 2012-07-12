@@ -33,10 +33,6 @@ module ocl_data
    ! Dynamically initialized variables
    integer(c_size_t) :: cl_mem_size
 
-   ! OpenCL logical devices
-   integer(int32_t), parameter :: OCL_PERFORMANCE_DEVICE = 0
-   integer(int32_t), parameter :: OCL_AUXILIARY_DEVICE = 1
-
    ! Type for C allocations
    type, bind(C) :: ocl_allocation_t
       integer(int32_t) :: idx
