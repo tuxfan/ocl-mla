@@ -13,16 +13,16 @@ int main(int argc, char ** argv) {
 
 	ocl_init();
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "tridiag", pcr_kernels_PPSTR,
+	ocl_add_program(OCL_DEFAULT_DEVICE, "tridiag", pcr_kernels_PPSTR,
 		"-Dreal_t=float");
 
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "tridiag",
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "tridiag",
 		"pcr_branch_free_kernel", "solve");
 
 	float * h_a = (float *)malloc(elements*sizeof(float));
 	cl_mem d_a;
 
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, elements*sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, elements*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_a, &d_a);
 
 	ocl_set_kernel_arg("tridiag", "solve", 0, sizeof(cl_mem), &d_a);
@@ -30,7 +30,7 @@ int main(int argc, char ** argv) {
 		(elements+1)*5*sizeof(float), NULL);
 
 	ocl_kernel_work_group_info_t info;
-	ocl_kernel_work_group_info(OCL_PERFORMANCE_DEVICE,
+	ocl_kernel_work_group_info(OCL_DEFAULT_DEVICE,
 		"tridiag", "solve", &info);
 
 	printf("global work size: (%d, %d, %d)\n",

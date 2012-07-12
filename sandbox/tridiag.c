@@ -76,13 +76,13 @@ int main(int argc, char ** argv) {
 
 	ocl_init();
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "tridiag", pcr_kernels_PPSTR,
+	ocl_add_program(OCL_DEFAULT_DEVICE, "tridiag", pcr_kernels_PPSTR,
 		COMPILE_OPTS);
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "tridiag",
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "tridiag",
 		"pcr_branch_free_kernel", "solve");
 
 	ocl_kernel_hints_t kernel_hints;
-	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "tridiag", "solve", &kernel_hints);
+	ocl_kernel_hints(OCL_DEFAULT_DEVICE, "tridiag", "solve", &kernel_hints);
 
 	if(elements > kernel_hints.max_work_group_size) {
 		fprintf(stderr, "Error: too many elements for device!!!");
@@ -97,15 +97,15 @@ int main(int argc, char ** argv) {
 	ocl_ndrange_hints(elements, kernel_hints.max_work_group_size,
 		0.5, 0.5, &local_size, &work_group_indeces, &single_indeces);
 
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, systems*elements*sizeof(real_t),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, systems*elements*sizeof(real_t),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_sub, &d_sub);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, systems*elements*sizeof(real_t),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, systems*elements*sizeof(real_t),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_diag, &d_diag);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, systems*elements*sizeof(real_t),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, systems*elements*sizeof(real_t),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_sup, &d_sup);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, systems*elements*sizeof(real_t),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, systems*elements*sizeof(real_t),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_rhs, &d_rhs);
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, systems*elements*sizeof(real_t),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, systems*elements*sizeof(real_t),
 		CL_MEM_WRITE_ONLY, NULL, &d_x);
 
 	ocl_set_kernel_arg("tridiag", "solve", 0, sizeof(cl_mem), &d_sub);
@@ -125,14 +125,14 @@ int main(int argc, char ** argv) {
 
 	size_t global_size = systems*elements;
 
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "tridiag", "solve",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "tridiag", "solve",
 		1, &global_offset, &global_size, &local_size, &event);
 
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	ocl_add_timer("solve", &event);
 
-	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_x, 1, global_offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_x, 1, global_offset,
 		systems*elements*sizeof(real_t), h_x, &event);
 
 	ocl_add_timer("read", &event);
