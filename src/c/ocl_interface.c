@@ -19,38 +19,6 @@
 extern ocl_data_t ocl;
 extern int32_t ocl_warning;
 
-#if 0
-/*----------------------------------------------------------------------------*\
- * Default performance platform and device
-\*----------------------------------------------------------------------------*/
-
-#ifndef OCL_PLATFORM_PERFORMANCE
-	const char * ocl_platform_performance = "default";
-#else
-	const char * ocl_platform_performance =
-		{ DEFINE_TO_STRING(OCL_PLATFORM_PERFORMANCE) };
-#endif
-
-#ifndef OCL_PERFORMANCE_INITIALIZATION
-#define OCL_PERFORMANCE_INITIALIZATION ocl_init_generic_gpu
-#endif
-
-/*----------------------------------------------------------------------------*\
- * Default auxiliary platform and device
-\*----------------------------------------------------------------------------*/
-
-#ifndef OCL_PLATFORM_AUXILIARY
-	const char * ocl_platform_auxiliary = "default";
-#else
-	const char * ocl_platform_auxiliary =
-		{ DEFINE_TO_STRING(OCL_PLATFORM_AUXILIARY) };
-#endif
-
-#ifndef OCL_AUXILIARY_INITIALIZATION
-#define OCL_AUXILIARY_INITIALIZATION ocl_init_generic_cpu
-#endif
-#endif
-
 /*----------------------------------------------------------------------------*\
  * ocl_init
 \*----------------------------------------------------------------------------*/
@@ -81,32 +49,6 @@ int32_t ocl_init_threaded(size_t thread) {
 		exit(1);
 	} // if
 
-#if 0
-	// initialize the performance device
-	if(OCL_PERFORMANCE_INITIALIZATION(&ocl.devices[OCL_PERFORMANCE_DEVICE],
-		ocl_platform_performance, thread) != 0) {
-		message("Initialization of performance device failed!\n");
-		exit(1);
-	} // if
-
-#if defined(ENABLE_OCL_VERBOSE)
-	print_device_info(&ocl.devices[OCL_PERFORMANCE_DEVICE].info,
-		"Performance");
-#endif
-
-	// initialize the auxiliary device
-	if(OCL_AUXILIARY_INITIALIZATION(&ocl.devices[OCL_AUXILIARY_DEVICE],
-		ocl_platform_auxiliary, thread) != 0) {
-		message("Initialization of auxiliary device failed!\n");
-		exit(1);
-	} // if
-
-#if defined(ENABLE_OCL_VERBOSE)
-	print_device_info(&ocl.devices[OCL_AUXILIARY_DEVICE].info,
-		"Auxilliary");
-#endif
-#endif
-
 	// initialize the hash table
 	if(ocl_hash_init() != 0) {
 		message("Hash initialization failed!\n");
@@ -133,8 +75,7 @@ int32_t ocl_finalize() {
 #endif
 
 	// shutdown all devices
-	ocl_finalize_device(&ocl.devices[OCL_PERFORMANCE_DEVICE]);
-	ocl_finalize_device(&ocl.devices[OCL_AUXILIARY_DEVICE]);
+	ocl_finalize_devices();
 
 	// cleanup hash table
 	ocl_hash_finalize();

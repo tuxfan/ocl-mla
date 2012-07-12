@@ -101,6 +101,7 @@ echo "" >> $src
 
 	echo "" >> $header
 	echo "int32_t ocl_init_devices(size_t thread);" >> $header
+	echo "int32_t ocl_finalize_devices();" >> $header
 
 	echo "" >> $src
 	echo "int32_t ocl_init_devices(size_t thread) {" >> $src
@@ -109,6 +110,17 @@ echo "" >> $src
 	echo "	for(size_t i=0; i<"$num_devices"; ++i) {" >> $src
 	echo "		ierr |= (device_initializers[i])(&ocl.devices[i]," >> $src
 	echo "			device_platforms[i], thread);" >> $src
+	echo "	} // for" >> $src
+	echo "" >> $src
+	echo "	return ierr;" >> $src
+	echo "} // ocl_init_devices" >> $src
+
+	echo "" >> $src
+	echo "int32_t ocl_finalize_devices() {" >> $src
+	echo "	int32_t ierr = 0;" >> $src
+	echo "" >> $src
+	echo "	for(size_t i=0; i<"$num_devices"; ++i) {" >> $src
+	echo "		ocl_finalize_device(&ocl.devices[i]);" >> $src
 	echo "	} // for" >> $src
 	echo "" >> $src
 	echo "	return ierr;" >> $src

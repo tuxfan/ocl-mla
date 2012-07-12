@@ -129,7 +129,7 @@ int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
 
 			size_t device_id = thread%num_devices +
 				ocl.initialized_devices[device_type_id];
-			device_id = device_id > num_devices ? 0 : device_id;
+			device_id = device_id >= num_devices ? 0 : device_id;
 
 			// increment how many devices of this type have been initialized
 			instance->id = devices[device_id];
