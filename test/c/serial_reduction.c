@@ -56,31 +56,31 @@ int main(int argc, char ** argv) {
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
+	ocl_add_program(OCL_DEFAULT_DEVICE, "program",
 		performance_source, NULL);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels
 	 *-------------------------------------------------------------------------*/
 
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "program", "reduce_serial", "reduce");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "program", "reduce_serial", "reduce");
 
 	/*-------------------------------------------------------------------------*
 	 * Create device data
 	 *-------------------------------------------------------------------------*/
 
 	// create device-side array
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
 
 	// create device-side element count
 	int elements = ELEMENTS;
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, sizeof(int),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(int),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, &elements, &d_elements);
 
 	// create device-side accumulation
 	float acc = 0.0;
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(float),
 		CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, &acc, &d_acc);
 
 	/*-------------------------------------------------------------------------*
@@ -102,21 +102,21 @@ int main(int argc, char ** argv) {
 	 * Execute the serial reduction
 	 *-------------------------------------------------------------------------*/
 
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program", "reduce",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "program", "reduce",
 		1, &global_offset, &global_size, &local_size, &event);
 
 	// block for execution completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	/*-------------------------------------------------------------------------*
 	 * Read accumulation from the device
 	 *-------------------------------------------------------------------------*/
 
-	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_acc, 1, global_offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_acc, 1, global_offset,
 		sizeof(float), &acc, &event);
 
 	// block for read completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	/*-------------------------------------------------------------------------*
 	 * Print the results

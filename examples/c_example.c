@@ -42,7 +42,7 @@ int main(int argc, char ** argv) {
 
 	// step (4)
 	// create a device-side buffer
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes,
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes,
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
 
 	// step (5)
@@ -51,19 +51,19 @@ int main(int argc, char ** argv) {
 	ocl_add_from_string(utils_PPSTR, &source, 0);
 	ocl_add_from_string(test_PPSTR, &source, 0);
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program",
+	ocl_add_program(OCL_DEFAULT_DEVICE, "program",
 		source, "-DMY_DEFINE");
 	free(source);
 
 	// step (6)
 	// add kernel
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "program", "test", "my test");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "program", "test", "my test");
 
 	ocl_kernel_hints_t hints;
 	size_t work_group_indeces;
 	size_t single_indeces;
 
-	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "program", "my test", &hints);
+	ocl_kernel_hints(OCL_DEFAULT_DEVICE, "program", "my test", &hints);
 	ocl_ndrange_hints(global_size, hints.max_work_group_size,
 		0.5, 0.5, &local_size, &work_group_indeces, &single_indeces);
 
@@ -83,12 +83,12 @@ int main(int argc, char ** argv) {
 
 	// step (9)
 	// invoke kernel
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "program",
 		"my test", 1, &global_offset, &global_size, &local_size, &event);
 
 	// step (10)
 	// block for kernel completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);
 
@@ -98,7 +98,7 @@ int main(int argc, char ** argv) {
 
 	// step (12)
 	// read data from device
-	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_array, 1, offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset,
 		ELEMENTS*sizeof(float), h_array, &event);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);
@@ -106,7 +106,7 @@ int main(int argc, char ** argv) {
 #if 0
 	// step (13)
 	// block for read completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 #endif
 
 	ocl_wait_for_events(&wait_list);

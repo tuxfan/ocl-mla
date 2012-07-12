@@ -39,16 +39,16 @@ int main(int argc, char ** argv) {
 
 	// step (4)
 	// create a device-side buffer
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes,
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes,
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
 
 	// step (5)
 	// add program and build
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", "T_T.cl", "");
+	ocl_add_program(OCL_DEFAULT_DEVICE, "program", "T_T.cl", "");
 
 	// step (6)
 	// add kernel
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "program", "test", "my test");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "program", "test", "my test");
 
 	// step (7)
 	// set kenerl argument
@@ -61,12 +61,12 @@ int main(int argc, char ** argv) {
 
 	// step (9)
 	// invoke kernel
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "program",
 		"my test", 1, &global_offset, &global_size, &local_size, &event);
 
 	// step (10)
 	// block for kernel completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);
 
@@ -76,7 +76,7 @@ int main(int argc, char ** argv) {
 
 	// step (12)
 	// read data from device
-	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_array, 1, offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset,
 		ELEMENTS*sizeof(float), h_array, &event);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);
@@ -84,7 +84,7 @@ int main(int argc, char ** argv) {
 #if 0
 	// step (13)
 	// block for read completion
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 #endif
 
 	ocl_wait_for_events(&wait_list);

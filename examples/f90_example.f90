@@ -42,22 +42,22 @@ program main
 
    ! step (4)
    ! create a device-side buffer
-   !call ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes, &
+   !call ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes, &
    !   CL_MEM_READ_ONLY + CL_MEM_COPY_HOST_PTR, c_loc(h_array), d_array, ierr) 
-   call ocl_create_buffer(OCL_PERFORMANCE_DEVICE, bytes, &
+   call ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes, &
       CL_MEM_READ_ONLY + CL_MEM_USE_PERSISTENT_MEM_AMD, &
       C_NULL_PTR, d_array, ierr) 
 
    ! step (5)
    ! add program and build
-   !call ocl_add_program(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
+   !call ocl_add_program(OCL_DEFAULT_DEVICE, 'program' // C_NULL_CHAR, &
    !   test_PPSTR // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
-   call ocl_add_program(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
+   call ocl_add_program(OCL_DEFAULT_DEVICE, 'program' // C_NULL_CHAR, &
       'test.cl' // C_NULL_CHAR, '' // C_NULL_CHAR, ierr)
 
    ! step (6)
    ! add kernel
-   call ocl_add_kernel(OCL_PERFORMANCE_DEVICE, 'program' // C_NULL_CHAR, &
+   call ocl_add_kernel(OCL_DEFAULT_DEVICE, 'program' // C_NULL_CHAR, &
       'test' // C_NULL_CHAR, 'my test' // C_NULL_CHAR, ierr)
  
    call ocl_kernel_hints('program' // C_NULL_CHAR, &
@@ -82,13 +82,13 @@ program main
 
    ! step (9)
    ! invoke kernel
-   call ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, &
+   call ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, &
       'program' // C_NULL_CHAR, 'my test' // C_NULL_CHAR, &
       1, global_offset, global_size, local_size, event, ierr)
 
    ! step (10)
    ! block on kernel completion
-   call ocl_finish(OCL_PERFORMANCE_DEVICE)
+   call ocl_finish(OCL_DEFAULT_DEVICE)
 
    ! step (11)
    ! add a timer timer event for the kernel invocation
@@ -96,12 +96,12 @@ program main
 
    ! step (12)
    ! read data from device
-   call ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, d_array, 1, offset, &
+   call ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset, &
       bytes, c_loc(h_array), event, ierr)
 
    ! step (13)
    ! block for read completion
-   call ocl_finish(OCL_PERFORMANCE_DEVICE)
+   call ocl_finish(OCL_DEFAULT_DEVICE)
 
    ! step (14)
    ! add a timer event for the buffer read

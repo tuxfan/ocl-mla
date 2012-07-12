@@ -68,18 +68,18 @@ int main(int argc, char ** argv) {
 	 * Add programs and compile
 	 *-------------------------------------------------------------------------*/
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "program", performance_source,
+	ocl_add_program(OCL_DEFAULT_DEVICE, "program", performance_source,
 		NULL);
-	ocl_add_program(OCL_AUXILIARY_DEVICE, "aux", auxiliary_source,
+	ocl_add_program(OCL_DEFAULT_DEVICE, "aux", auxiliary_source,
 		NULL);
 
 	/*-------------------------------------------------------------------------*
 	 * Add kernels
 	 *-------------------------------------------------------------------------*/
 
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "program", "reduce_data_parallel",
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "program", "reduce_data_parallel",
 		"reduce");
-	ocl_add_kernel(OCL_AUXILIARY_DEVICE, "aux", "reduce_serial", "reduce");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "aux", "reduce_serial", "reduce");
 
 	ocl_kernel_t token;
 	ocl_kernel_token("program", "reduce", &token);
@@ -93,7 +93,7 @@ int main(int argc, char ** argv) {
 	const size_t work_group_single = 1;
 
 	// get a tighter bound on the max work group size
-	ocl_kernel_hints(OCL_PERFORMANCE_DEVICE, "program", "reduce", &hints);
+	ocl_kernel_hints(OCL_DEFAULT_DEVICE, "program", "reduce", &hints);
 
 	ocl_ndrange_hints(global_size, hints.max_work_group_size, 0.5, 0.5,
 		&work_group_size, &work_group_elements, &single_elements);
@@ -112,23 +112,23 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	// create device-side array
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &p_array);
 
 	// create device-side work group accumulation array
-	ocl_create_buffer(OCL_PERFORMANCE_DEVICE, work_groups*sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
 		CL_MEM_READ_WRITE, NULL, &p_acc_wg);
 
 	// create device-side element count
-	ocl_create_buffer(OCL_AUXILIARY_DEVICE, sizeof(int),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(int),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, &work_groups, &a_elements);
 
 	// create device-side work group accumulation array
-	ocl_create_buffer(OCL_AUXILIARY_DEVICE, work_groups*sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
 		CL_MEM_READ_WRITE, NULL, &a_acc_wg);
 
 	// create device-side accumulation
-	ocl_create_buffer(OCL_AUXILIARY_DEVICE, sizeof(float),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(float),
 		CL_MEM_WRITE_ONLY, NULL, &a_acc);
 
 	/*-------------------------------------------------------------------------*
@@ -161,11 +161,11 @@ int main(int argc, char ** argv) {
 	// invoke kernel using preferred work group size
 	if(work_group_elements > 0) {
 #if 0
-		ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "program",
+		ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "program",
 			"reduce", 1, &global_offset, &work_group_elements,
 			&work_group_size, &event);
 #else
-		ocl_enqueue_kernel_ndrange_token(OCL_PERFORMANCE_DEVICE, &token,
+		ocl_enqueue_kernel_ndrange_token(OCL_DEFAULT_DEVICE, &token,
 			1, &global_offset, &work_group_elements, &work_group_size, &event);
 #endif
 	} // if
@@ -191,17 +191,17 @@ int main(int argc, char ** argv) {
 	 * Move data from performance device to auxiliary device
 	 *-------------------------------------------------------------------------*/
 
-	ocl_enqueue_read_buffer(OCL_PERFORMANCE_DEVICE, p_acc_wg,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, p_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
 		h_acc_wg, &event);	
 
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_enqueue_write_buffer(OCL_AUXILIARY_DEVICE, a_acc_wg,
+	ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, a_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
 		h_acc_wg, &event);	
 
-	ocl_finish(OCL_AUXILIARY_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	/*-------------------------------------------------------------------------*
 	 * Execute the serial reduction
@@ -209,7 +209,7 @@ int main(int argc, char ** argv) {
 
 	global_offset = 0;
 	global_size = 1;
-	ocl_enqueue_kernel_ndrange(OCL_AUXILIARY_DEVICE, "aux",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "aux",
 		"reduce", 1, &global_offset, &global_size,
 		&work_group_single, &event);
 
@@ -218,11 +218,11 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	float acc = 0.0;
-	ocl_enqueue_read_buffer(OCL_AUXILIARY_DEVICE, a_acc, 1, offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, a_acc, 1, offset,
 		sizeof(float), &acc, &event);
 
 	// block for read completion
-	ocl_finish(OCL_AUXILIARY_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	// add a timer event for the buffer read
 	ocl_add_timer("readbuffer", &event);
