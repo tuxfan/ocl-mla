@@ -60,7 +60,8 @@ doc: FORCE
 install-exec-hook:
 	@(cp ${top_builddir}/lib/*.mod ${libdir}/; \
 		cp ${top_builddir}/local/ocl_config.h ${includedir}; \
-		cp ${top_builddir}/local/ocl_local.h ${includedir};)
+		cp ${top_builddir}/local/ocl_local.h ${includedir}; \
+		cp ${top_builddir}/local/ocl_device_config.h ${includedir})
 	@([ -d ${bindir}/kernels ] || mkdir ${bindir}/kernels && \
 		cp ${top_srcdir}/examples/kernels/*.cl ${bindir}/kernels)
 
