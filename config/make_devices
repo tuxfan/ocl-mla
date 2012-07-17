@@ -144,7 +144,7 @@ echo "   integer(c_int32_t), parameter :: OCL_DEFAULT_DEVICE = 0" >> $fsrc
 ) # scope
 
 #------------------------------------------------------------------------------#
-# finish header creation
+# finish header and source creation
 #------------------------------------------------------------------------------#
 
 echo "" >> $header
