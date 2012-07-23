@@ -32,9 +32,6 @@ echo "Calling libtoolize..."
 # check for glibtoolize
 glibtoolize --version &> /dev/null && LIBTOOLIZE=glibtoolize || LIBTOOLIZE=libtoolize
 
-# older versions of libtoolize use configure.in
-$LIBTOOLIZE -c -n -f --automake &> /dev/null || ln -s configure.ac configure.in
-
 # actually call libtoolize
 $LIBTOOLIZE -c -f --automake
 
