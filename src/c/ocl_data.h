@@ -189,15 +189,22 @@ typedef struct ocl_kernel_work_group_info_ {
 
 typedef struct ocl_kernel_ {
 	cl_kernel token;
-	//ocl_kernel_info_t info;
-	//ocl_kernel_hints_t hints;
 } ocl_kernel_t;
+
+/*------------------------------------------------------------------------------
+ * OpenCL buffer.
+ *----------------------------------------------------------------------------*/
+
+typedef struct ocl_buffer_ {
+	cl_mem token;
+} ocl_buffer_t;
 
 /*------------------------------------------------------------------------------
  * OpenCL program.
  *----------------------------------------------------------------------------*/
 
 typedef struct ocl_program_ {
+	uint32_t device_id;
 	cl_program token;
 	size_t kernel_hash;
 } ocl_program_t;
@@ -216,6 +223,7 @@ typedef struct ocl_data_ {
 	ocl_device_instance_t devices[OCL_MAX_LOGICAL_DEVICES+2];
 	size_t initialized_devices[OCL_DEVICE_TYPES];
 
+	size_t device_hash[OCL_MAX_LOGICAL_DEVICES+2];
 	size_t program_hash;
 	size_t host_event_hash;
 	size_t device_event_hash;

@@ -160,15 +160,15 @@ int32_t tricycl_solve_sp(size_t system_size, size_t num_systems,
 	cl_mem d_ix;
 
 	// buffers for interface system
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, ia, &d_ia);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, ib, &d_ib);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, ic, &d_ic);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, id, &d_id);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, interface_size*sizeof(float),
 		CL_MEM_WRITE_ONLY, NULL, &d_ix);
 
 	// arguments for interface system
@@ -195,7 +195,7 @@ int32_t tricycl_solve_sp(size_t system_size, size_t num_systems,
 	
 	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_ix, 1, offset_zero,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d_ix, 1, offset_zero,
 		interface_size*sizeof(float), ix, &event);
 
 	ocl_finish(OCL_DEFAULT_DEVICE);
@@ -247,11 +247,11 @@ for(size_t s=0; s<num_systems; ++s) {
 	 * use interface solutions to decouple original system
 	 *-------------------------------------------------------------------------*/
 
-	ocl_release_buffer(&d_ia);
-	ocl_release_buffer(&d_ib);
-	ocl_release_buffer(&d_ic);
-	ocl_release_buffer(&d_id);
-	ocl_release_buffer(&d_ix);
+	ocl_release_buffer_raw(&d_ia);
+	ocl_release_buffer_raw(&d_ib);
+	ocl_release_buffer_raw(&d_ic);
+	ocl_release_buffer_raw(&d_id);
+	ocl_release_buffer_raw(&d_ix);
 
 	cl_mem d_a;
 	cl_mem d_b;
@@ -262,15 +262,15 @@ for(size_t s=0; s<num_systems; ++s) {
 	size_t full_size = sub_size*sub_systems*num_systems;
 
 	// buffers for full system
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sub, &d_a);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, diag, &d_b);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sup, &d_c);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, rhs, &d_d);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, full_size*sizeof(float),
 		CL_MEM_WRITE_ONLY, NULL, &d_x);
 
 	size_t sub_iterations = tricycl_iterations(sub_size);
@@ -298,16 +298,16 @@ for(size_t s=0; s<num_systems; ++s) {
 	
 	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_x, 1, offset_zero,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d_x, 1, offset_zero,
 		full_size*sizeof(float), x, &event);
 
 	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_release_buffer(&d_a);
-	ocl_release_buffer(&d_b);
-	ocl_release_buffer(&d_c);
-	ocl_release_buffer(&d_d);
-	ocl_release_buffer(&d_x);
+	ocl_release_buffer_raw(&d_a);
+	ocl_release_buffer_raw(&d_b);
+	ocl_release_buffer_raw(&d_c);
+	ocl_release_buffer_raw(&d_d);
+	ocl_release_buffer_raw(&d_x);
 
 	return ierr;
 } // tricycl_solve_sp

@@ -70,17 +70,17 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	// create device-side array
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
 
 	// create device-side element count
 	int elements = ELEMENTS;
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(int),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, sizeof(int),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, &elements, &d_elements);
 
 	// create device-side accumulation
 	float acc = 0.0;
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, sizeof(float),
 		CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, &acc, &d_acc);
 
 	/*-------------------------------------------------------------------------*
@@ -112,7 +112,7 @@ int main(int argc, char ** argv) {
 	 * Read accumulation from the device
 	 *-------------------------------------------------------------------------*/
 
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_acc, 1, global_offset,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d_acc, 1, global_offset,
 		sizeof(float), &acc, &event);
 
 	// block for read completion

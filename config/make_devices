@@ -42,6 +42,7 @@ echo "" >> $src
 echo "#include <ocl_data.h>" >> $src
 echo "#include <ocl_device.h>" >> $src
 echo "#include <ocl_device_config.h>" >> $src
+echo "#include <hash_mark.h>" >> $src
 echo "" >> $src
 echo "extern ocl_data_t ocl;" >> $src
 echo "" >> $src
@@ -122,6 +123,10 @@ echo "   integer(c_int32_t), parameter :: OCL_DEFAULT_DEVICE = 0" >> $fsrc
 	echo "" >> $src
 	echo "int32_t ocl_init_devices(size_t thread) {" >> $src
 	echo "	int32_t ierr = 0;" >> $src
+	echo "" >> $src
+	echo "	for(size_t i=0; i<"$num_devices"; ++i) {" >> $src
+	echo "		hm_add_table(&ocl.device_hash[i]);" >> $src
+	echo "	} // for" >> $src
 	echo "" >> $src
 	echo "	for(size_t i=0; i<"$num_devices"; ++i) {" >> $src
 	echo "		ierr |= (device_initializers[i])(&ocl.devices[i]," >> $src

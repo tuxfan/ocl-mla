@@ -106,23 +106,23 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	// create device-side array
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &p_array);
 
 	// create device-side work group accumulation array
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
 		CL_MEM_READ_WRITE, NULL, &p_acc_wg);
 
 	// create device-side element count
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(int),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, sizeof(int),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, &work_groups, &a_elements);
 
 	// create device-side work group accumulation array
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, work_groups*sizeof(float),
 		CL_MEM_READ_WRITE, NULL, &a_acc_wg);
 
 	// create device-side accumulation
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, sizeof(float),
 		CL_MEM_WRITE_ONLY, NULL, &a_acc);
 
 	/*-------------------------------------------------------------------------*
@@ -162,13 +162,13 @@ int main(int argc, char ** argv) {
 	 * Move data from performance device to auxiliary device
 	 *-------------------------------------------------------------------------*/
 
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, p_acc_wg,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, p_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
 		h_acc_wg, &event);	
 
 	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, a_acc_wg,
+	ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, a_acc_wg,
 		OCL_SYNCHRONOUS, offset, work_groups*sizeof(float),
 		h_acc_wg, &event);	
 
@@ -189,7 +189,7 @@ int main(int argc, char ** argv) {
 	 *-------------------------------------------------------------------------*/
 
 	float acc = 0.0;
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, a_acc, 1, offset,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, a_acc, 1, offset,
 		sizeof(float), &acc, &event);
 
 	// block for read completion

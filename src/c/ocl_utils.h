@@ -120,12 +120,28 @@ void default_hint(const ocl_kernel_work_group_info_t * info,
  *----------------------------------------------------------------------------*/
 
 int32_t ocl_hash_init();
-void ocl_hash_add_program(const char * program_name, cl_program token);
+
+// add functions
+void ocl_hash_add_program(const char * program_name, uint32_t device_id,
+	cl_program token);
 void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 	ocl_kernel_t token);
+void ocl_hash_add_buffer(uint32_t device_id, const char * buffer_name,
+	cl_mem token);
+
+// find functions
 ocl_program_t * ocl_hash_find_program(const char * program_name);
 ocl_kernel_t * ocl_hash_find_kernel(const char * program_name,
 	const char * kernel_name);
+ocl_buffer_t * ocl_hash_find_buffer(uint32_t device_id,
+	const char * buffer_name);
+
+// remove functions
+void ocl_hash_remove_program(const char * program_name);
+void ocl_hash_remove_kernel(const char * program_name,
+	const char * kernel_name);
+void ocl_hash_remove_buffer(uint32_t device_id, const char * buffer_name);
+
 void ocl_hash_finalize();
 
 /*******************************************************************************

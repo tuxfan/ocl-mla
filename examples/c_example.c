@@ -21,7 +21,6 @@ int main(int argc, char ** argv) {
 
 	float h_array[ELEMENTS];
 
-	cl_mem d_array;
 	ocl_event_t event;
 	ocl_event_wait_list_t wait_list;
 	cl_event events[10];
@@ -42,8 +41,8 @@ int main(int argc, char ** argv) {
 
 	// step (4)
 	// create a device-side buffer
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes,
-		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, "array", bytes,
+		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array);
 
 	// step (5)
 	// add program and build
@@ -74,7 +73,7 @@ int main(int argc, char ** argv) {
 
 	// step (7)
 	// set kenerl argument
-	ocl_set_kernel_arg("program", "my test", 0, sizeof(cl_mem), &d_array);
+	ocl_set_kernel_arg_buffer("program", "my test", "array", 0);
 
 	// step (8)
 	// initialize event for timings
@@ -98,7 +97,7 @@ int main(int argc, char ** argv) {
 
 	// step (12)
 	// read data from device
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset,
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, "array", 1, offset,
 		ELEMENTS*sizeof(float), h_array, &event);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);

@@ -250,6 +250,8 @@ int32_t ocl_hash_init() {
 	// print error and exit if something goes wrong
 	hm_set_property(hm_exit_on_error);
 
+	// buffer tables are handled in built-source file
+
 	// program hash table
 	hm_add_table(&ocl.program_hash);
 
@@ -264,12 +266,16 @@ int32_t ocl_hash_init() {
  * ocl_hash_add_program
  *----------------------------------------------------------------------------*/
 
-void ocl_hash_add_program(const char * name, cl_program token) {
+void ocl_hash_add_program(const char * name, uint32_t device_id,
+	cl_program token) {
 	// allocate storage for the program
 	ocl_program_t * _program = (ocl_program_t *)malloc(sizeof(ocl_program_t));
 
 	// initialize a kernel hash table for this program
 	hm_add_table(&_program->kernel_hash);
+
+	// set the program device id
+	_program->device_id = device_id;
 
 	// set the program token
 	_program->token = token;
@@ -296,6 +302,22 @@ void ocl_hash_add_kernel(const char * program_name, const char * kernel_name,
 } // ocl_hash_add_kernel
 
 /*----------------------------------------------------------------------------*
+ * ocl_hash_add_buffer
+ *----------------------------------------------------------------------------*/
+
+void ocl_hash_add_buffer(uint32_t device_id, const char * name,
+	cl_mem token) {
+	// allocate storage for the buffer
+	ocl_buffer_t * _buffer = (ocl_buffer_t *)malloc(sizeof(ocl_buffer_t));
+
+	// set the buffer token
+	_buffer->token = token;	
+
+	// add buffer to device hash
+	hm_add(ocl.device_hash[device_id], name, (void *)_buffer);
+} // ocl_hash_add_buffer
+
+/*----------------------------------------------------------------------------*
  * ocl_hash_find_program
  *----------------------------------------------------------------------------*/
 
@@ -312,6 +334,43 @@ ocl_kernel_t * ocl_hash_find_kernel(const char * program_name,
 	ocl_program_t * _program = ocl_hash_find_program(program_name);
 	return hm_find(_program->kernel_hash, kernel_name);
 } // ocl_hash_find_kernel
+
+/*----------------------------------------------------------------------------*
+ * ocl_hash_find_buffer
+ *----------------------------------------------------------------------------*/
+
+ocl_buffer_t * ocl_hash_find_buffer(uint32_t device_id,
+	const char * buffer_name) {
+	return hm_find(ocl.device_hash[device_id], buffer_name);
+} // ocl_hash_find_program
+
+/*----------------------------------------------------------------------------*
+ * ocl_hash_remove_program
+ *----------------------------------------------------------------------------*/
+
+void ocl_hash_remove_program(const char * program_name) {
+	ocl_program_t * _program = ocl_hash_find_program(program_name);
+	hm_remove_table(_program->kernel_hash, 1);
+	hm_remove(ocl.program_hash, program_name, 1);
+} // ocl_hash_remove_program
+
+/*----------------------------------------------------------------------------*
+ * ocl_hash_remove_kernel
+ *----------------------------------------------------------------------------*/
+
+void ocl_hash_remove_kernel(const char * program_name,
+	const char * kernel_name) {
+	ocl_program_t * _program = ocl_hash_find_program(program_name);
+	hm_remove(_program->kernel_hash, kernel_name, 1);
+} // ocl_hash_remove_program
+
+/*----------------------------------------------------------------------------*
+ * ocl_hash_remove_buffer
+ *----------------------------------------------------------------------------*/
+
+void ocl_hash_remove_buffer(uint32_t device_id, const char * buffer_name) {
+	hm_remove(ocl.device_hash[device_id], buffer_name, 1);
+} // ocl_hash_remove_buffer
 
 /*----------------------------------------------------------------------------*
  * ocl_hash_destroy

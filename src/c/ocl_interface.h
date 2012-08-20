@@ -347,8 +347,14 @@ This subroutine creates a device-side buffer on the given logical device.
 \b CL_MEM_USE_HOST_PTR, \b CL_MEM_ALLOC_HOST_PTR, \b CL_MEM_COPY_HOST_PTR
 */
 
-int32_t ocl_create_buffer(uint32_t device_id, size_t size,
+// FIXME
+int32_t ocl_create_buffer_raw(uint32_t device_id, size_t size,
 	cl_mem_flags flags, void * host_ptr, cl_mem * buffer);
+
+int32_t ocl_create_buffer(uint32_t device_id, const char * buffer_name,
+	size_t size, cl_mem_flags flags, void * host_ptr);
+
+cl_mem * ocl_buffer_reference(uint32_t device_id, const char * buffer_name);
 
 /*----------------------------------------------------------------------------*\
  * Release memory object.
@@ -374,7 +380,9 @@ This subroutine releases a device-side buffer, freeing any memory that was
 allocated for it.
 */
 
-int32_t ocl_release_buffer(cl_mem * buffer);
+int32_t ocl_release_buffer_raw(cl_mem * buffer);
+
+int32_t ocl_release_buffer(uint32_t device_id, const char * buffer_name);
 
 /*----------------------------------------------------------------------------*\
  * Write buffer to device.
@@ -411,9 +419,13 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 This subroutine enqueues a write-buffer operation on the given device.
 */
 
-int32_t ocl_enqueue_write_buffer(uint32_t device_id, cl_mem buffer,
+int32_t ocl_enqueue_write_buffer_raw(uint32_t device_id, cl_mem buffer,
 	int32_t synchronous, size_t offset, size_t cb, void * ptr,
 	ocl_event_t * event);
+
+int32_t ocl_enqueue_write_buffer(uint32_t device_id,
+	const char * buffer_name, int32_t synchronous, size_t offset,
+	size_t cb, void * ptr, ocl_event_t * event);
 
 /*----------------------------------------------------------------------------*\
  * Read buffer from device.
@@ -450,9 +462,13 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 This subroutine enqueues a read-buffer operation on the given device.
 */
 
-int32_t ocl_enqueue_read_buffer(uint32_t device_id, cl_mem buffer,
+int32_t ocl_enqueue_read_buffer_raw(uint32_t device_id, cl_mem buffer,
 	int32_t synchronous, size_t offset, size_t cb, void * ptr,
 	ocl_event_t * event);
+
+int32_t ocl_enqueue_read_buffer(uint32_t device_id,
+	const char * buffer_name, int32_t synchronous, size_t offset,
+	size_t cb, void * ptr, ocl_event_t * event);
 
 /*!
 \page ocl_enqueue_map_buffer
@@ -490,9 +506,13 @@ This subroutine enqueues a map-buffer operation on the given device.  The operat
 \b CL_MAP_READ, \b CL_MAP_WRITE
 */
 
-int32_t ocl_enqueue_map_buffer(uint32_t device_id, cl_mem buffer,
+int32_t ocl_enqueue_map_buffer_raw(uint32_t device_id, cl_mem buffer,
 	int32_t synchronous, cl_mem_flags flags, size_t offset, size_t cb,
 	void * ptr, ocl_event_t * event);
+
+int32_t ocl_enqueue_map_buffer(uint32_t device_id,
+	const char * buffer_name, int32_t synchronous, cl_mem_flags flags,
+	size_t offset, size_t cb, void * ptr, ocl_event_t * event);
 
 /*!
 \page ocl_enqueue_unmap_buffer
@@ -519,8 +539,11 @@ int32_t (\b C), integer(int32_t) (\b Fortran)
 This subroutine enqueues a unmap-buffer operation on the given device.
 */
 
-int32_t ocl_enqueue_unmap_buffer(uint32_t device_id, cl_mem buffer,
+int32_t ocl_enqueue_unmap_buffer_raw(uint32_t device_id, cl_mem buffer,
 	void * ptr, ocl_event_t * event);
+
+int32_t ocl_enqueue_unmap_buffer(uint32_t device_id,
+	const char * buffer_name, void * ptr, ocl_event_t * event);
 
 /*----------------------------------------------------------------------------*\
  * Add OpenCL program.
@@ -628,6 +651,9 @@ Add a kernel argument to the kernel specified by \b kernel_name in \b program_na
 
 int32_t ocl_set_kernel_arg(const char * program_name, const char * kernel_name,
 	cl_uint index, size_t size, const void * value);
+
+int32_t ocl_set_kernel_arg_buffer(const char * program_name,
+	const char * kernel_name, const char * buffer_name, cl_uint index);
 
 /*----------------------------------------------------------------------------*\
  * Get kernel hint.

@@ -22,7 +22,7 @@ int main(int argc, char ** argv) {
 	float * h_a = (float *)malloc(elements*sizeof(float));
 	cl_mem d_a;
 
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, elements*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, elements*sizeof(float),
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_a, &d_a);
 
 	ocl_set_kernel_arg("tridiag", "solve", 0, sizeof(cl_mem), &d_a);

@@ -41,7 +41,7 @@ int main(int argc, char ** argv) {
 
 	// step (4)
 	// create a device-side buffer
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes,
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, bytes,
 		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array, &d_array);
 
 	// step (5)
@@ -78,7 +78,7 @@ int main(int argc, char ** argv) {
 
 	// step (12)
 	// read data from device
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d_array, 1, offset,
 		ELEMENTS*sizeof(float), h_array, &event);
 
 	ocl_add_event_to_wait_list(&wait_list, &event);

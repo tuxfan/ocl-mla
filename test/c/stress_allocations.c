@@ -51,13 +51,13 @@ int main(int argc, char ** argv) {
 
 	ocl_add_kernel(OCL_DEFAULT_DEVICE, "program", "test", "test");
 
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY, NULL, &d0_array);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY, NULL, &d1_array);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY, NULL, &d2_array);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, ELEMENTS*sizeof(float),
 		CL_MEM_READ_ONLY, NULL, &d3_array);
 
 	ocl_set_kernel_arg("program", "test", 0, sizeof(cl_mem), &d0_array);
@@ -87,19 +87,19 @@ int main(int argc, char ** argv) {
 		ocl_initialize_event_wait_list(&wait_list, NULL, 0);
 
 		// write
-		ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, d0_array,
+		ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, d0_array,
 			0, 0, ELEMENTS*sizeof(float), h0_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, d1_array,
+		ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, d1_array,
 			0, 0, ELEMENTS*sizeof(float), h1_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, d2_array,
+		ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, d2_array,
 			0, 0, ELEMENTS*sizeof(float), h2_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_write_buffer(OCL_DEFAULT_DEVICE, d3_array,
+		ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, d3_array,
 			0, 0, ELEMENTS*sizeof(float), h3_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
@@ -113,19 +113,19 @@ int main(int argc, char ** argv) {
 		ocl_finish(OCL_DEFAULT_DEVICE);
 
 		// read
-		ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d0_array,
+		ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d0_array,
 			0, 0, ELEMENTS*sizeof(float), h0_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d1_array,
+		ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d1_array,
 			0, 0, ELEMENTS*sizeof(float), h1_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d2_array,
+		ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d2_array,
 			0, 0, ELEMENTS*sizeof(float), h2_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
-		ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d3_array,
+		ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d3_array,
 			0, 0, ELEMENTS*sizeof(float), h3_array, &event);
 		ocl_add_event_to_wait_list(&wait_list, &event);
 
