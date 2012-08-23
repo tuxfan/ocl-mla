@@ -39,6 +39,7 @@ echo "*/" >> $src
 echo "" >> $src
 echo "#define _ocl_source" >> $src
 echo "" >> $src
+echo "#include <ocl_utils.h>" >> $src
 echo "#include <ocl_data.h>" >> $src
 echo "#include <ocl_device.h>" >> $src
 echo "#include <ocl_device_config.h>" >> $src
@@ -128,9 +129,16 @@ echo "   integer(c_int32_t), parameter :: OCL_DEFAULT_DEVICE = 0" >> $fsrc
 	echo "		hm_add_table(&ocl.device_hash[i]);" >> $src
 	echo "	} // for" >> $src
 	echo "" >> $src
+	echo "#if defined(ENABLE_OCL_VERBOSE)" >> $src
+	echo "	char buffer[1024];" >> $src
+	echo "#endif" >> $src
 	echo "	for(size_t i=0; i<"$num_devices"; ++i) {" >> $src
 	echo "		ierr |= (device_initializers[i])(&ocl.devices[i]," >> $src
 	echo "			device_platforms[i], thread);" >> $src
+	echo "#if defined(ENABLE_OCL_VERBOSE)" >> $src
+	echo "			sprintf(buffer, \"Index %d, %s\", (int)i, device_platforms[i]);" >> $src
+	echo "			print_device_info(&ocl.devices[i].info, buffer);" >> $src
+	echo "#endif" >> $src
 	echo "	} // for" >> $src
 	echo "" >> $src
 	echo "	return ierr;" >> $src
