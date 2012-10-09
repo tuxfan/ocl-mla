@@ -7,7 +7,7 @@ bin_PROGRAMS = \
 	c_example \
 	f90_example
 
-INCLUDES = -I${top_srcdir}/src/include \
+AM_CPPFLAGS = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
 	@EXTRA_CPPFLAGS@
 

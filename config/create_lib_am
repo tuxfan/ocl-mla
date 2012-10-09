@@ -5,8 +5,8 @@
 ################################################################################
 
 # OS X sucks!
-find_exec="find" && [ `uname -o` == "Darwin" ] && find_exec="find -E"
-src_str=".*\.\(c*\|f90\)" && [ `uname -o` == "Darwin" ] && \
+find_exec="find" && [ `uname` == "Darwin" ] && find_exec="find -E"
+src_str=".*\.\(c*\|f90\)" && [ `uname` == "Darwin" ] && \
 	src_str=".*\.(c*|f90)"
 
 echo "################################################################################"
@@ -25,7 +25,7 @@ echo "#-------------------------------------------------------------------------
 echo
 echo "lib_LTLIBRARIES = libocl.la"
 echo
-echo "INCLUDES = -I\${top_srcdir}/src/include \\"
+echo "AM_CPPFLAGS = -I\${top_srcdir}/src/include \\"
 echo "	-I\${top_builddir}/local \\"
 echo "   @EXTRA_CPPFLAGS@"
 echo

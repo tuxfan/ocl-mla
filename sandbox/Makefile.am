@@ -9,7 +9,7 @@ bin_PROGRAMS = \
 	tricycl_example \
 	size
 
-INCLUDES = -I${top_srcdir}/src/include \
+AM_CPPFLAGS = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
 	@EXTRA_CPPFLAGS@
 
