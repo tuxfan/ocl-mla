@@ -1,44 +1,141 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>OCL-MLA by tuxfan</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="OCL-MLA : OpenCL Mid-Level Abstractions Project" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>OCL-MLA</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">OCL-MLA</h1>
-        <p class="header">OpenCL Mid-Level Abstractions Project</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/tuxfan/ocl-mla/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/tuxfan/ocl-mla/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/tuxfan/ocl-mla">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/tuxfan/ocl-mla">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/tuxfan">tuxfan</a></p>
+          <h1 id="project_title">OCL-MLA</h1>
+          <h2 id="project_tagline">OpenCL Mid-Level Abstractions Project</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/tuxfan/ocl-mla/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/tuxfan/ocl-mla/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>What is OCL-MLA?</h1>
 
-<p>OCL-MLA is exactly what its name implies: a mid-level set of abstractions to make OpenCL development easier.  OCL-MLA provides a set of compile-time configurable <em>logical</em> devices that are mapped to actual node-level device resources.  OCL-MLA insulates the application developer from differences in particular compute devices accessed by the OpenCL runtime.  Additionally, OCL-MLA provides a convenience hash-table interface for creating and accessing OpenCL constructs such as kernels, programs and buffers.  OCL-MLA supports C and <strong>Fortran</strong> APIs.</p>
+<p>OCL-MLA is exactly what its name implies: a mid-level set of abstractions to make OpenCL development easier.  OCL-MLA provides a set of compile-time configurable <em>logical</em> devices that are mapped to actual node-level device resources.  This removes the normal boiler-plate configuration that many people find intimidating and tedious.  Logical devices are pre-configured (think MPI_COMM_WORLD communicator) and initialized with a single call to <em>ocl_init()</em>.  OCL-MLA insulates the application developer from differences in particular compute devices accessed by the OpenCL runtime, while still allowing an expert OpenCL administrator to choose how each physical device is configured and used.  Additionally, OCL-MLA provides a convenience hash-table interface for creating and accessing OpenCL constructs such as kernels, programs and buffers.  OCL-MLA supports C and <strong>Fortran</strong> APIs.</p>
+
+<h1>Features</h1>
+
+<ul>
+<li>Compile-time logical device configuration</li>
+<li>Hash interface for creating and managing OpenCL tokens</li>
+<li><strong>Fortran bindings</strong></li>
+<li>Timer utilities</li>
+<li>Support for multiple OpenCL platforms in single configuration <em>(ICD - installable client driver)</em>
+</li>
+<li>Convenience functions for event manipulation</li>
+<li>Utilities for program manipulation, e.g., static compilation of input kernel source code</li>
+</ul><h1>Example</h1>
+
+<div class="highlight"><pre><span class="k">const</span> <span class="kt">size_t</span> <span class="n">ELEMENTS</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span> <span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+   <span class="kt">size_t</span> <span class="n">global_size</span> <span class="o">=</span> <span class="n">ELEMENTS</span><span class="p">;</span>
+
+   <span class="c1">// initialize OpenCL runtime</span>
+   <span class="n">ocl_init</span><span class="p">();</span>
+
+   <span class="c1">// create a host-side array</span>
+   <span class="kt">float</span> <span class="n">h_array</span><span class="p">[</span><span class="n">ELEMENTS</span><span class="p">];</span>
+
+   <span class="c1">// initialize host-side array</span>
+   <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">ELEMENTS</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">h_array</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+   <span class="p">}</span> <span class="c1">// for</span>
+
+   <span class="c1">// create a device-side array</span>
+   <span class="n">ocl_create_buffer</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">,</span> <span class="s">"array"</span><span class="p">,</span> <span class="n">ELEMENTS</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span>
+      <span class="n">CL_MEM_READ_ONLY</span> <span class="o">|</span> <span class="n">CL_MEM_COPY_HOST_PTR</span><span class="p">,</span> <span class="n">h_array</span><span class="p">);</span>
+
+   <span class="c1">// create program source from static input string</span>
+   <span class="kt">char</span> <span class="o">*</span> <span class="n">source</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+   <span class="n">ocl_add_from_string</span><span class="p">(</span><span class="n">test_PPSTR</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+   <span class="c1">// add program</span>
+   <span class="n">ocl_add_program</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">,</span> <span class="s">"program"</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="s">"-DMY_DEFINE"</span><span class="p">);</span>
+   <span class="n">free</span><span class="p">(</span><span class="n">source</span><span class="p">);</span>
+
+   <span class="c1">// add kernel</span>
+   <span class="n">ocl_add_kernel</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">,</span> <span class="s">"program"</span><span class="p">,</span> <span class="s">"test"</span><span class="p">,</span> <span class="s">"my test"</span><span class="p">);</span>
+
+   <span class="c1">// use hints interface to decide what work-group size to use</span>
+   <span class="n">ocl_kernel_hints_t</span> <span class="n">hints</span><span class="p">;</span>
+   <span class="kt">size_t</span> <span class="n">work_group_indeces</span><span class="p">;</span>
+   <span class="kt">size_t</span> <span class="n">single_indeces</span><span class="p">;</span>
+
+   <span class="c1">// get kernel hints</span>
+   <span class="n">ocl_kernel_hints</span><span class="p">(</span><span class="n">OCL_DEFAULT_DEVICE</span><span class="p">,</span> <span class="s">"program"</span><span class="p">,</span> <span class="s">"my test"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">hints</span><span class="p">);</span>
+
+   <span class="c1">// heuristic for how to execute global_size work-items</span>
+   <span class="n">ocl_ndrange_hints</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">hints</span><span class="p">.</span><span class="n">max_work_group_size</span><span class="p">,</span>
+      <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">local_size</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">work_group_indeces</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">single_indeces</span><span class="p">);</span>
+
+   <span class="c1">// set kenerl argument</span>
+   <span class="n">ocl_set_kernel_arg_buffer</span><span class="p">(</span><span class="s">"program"</span><span class="p">,</span> <span class="s">"my test"</span><span class="p">,</span> <span class="s">"array"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+   <span class="c1">// initialize event for timings</span>
+   <span class="n">ocl_initialize_event</span><span class="p">(</span><span class="o">&amp;</span><span class="n">event</span><span class="p">);</span>
+
+   <span class="c1">// invoke kernel</span>
+   <span class="n">ocl_enqueue_kernel_ndrange</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">,</span> <span class="s">"program"</span><span class="p">,</span>
+      <span class="s">"my test"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">global_offset</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">global_size</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">local_size</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">);</span>
+
+   <span class="c1">// block for kernel completion</span>
+   <span class="n">ocl_finish</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">);</span>
+
+   <span class="c1">// add a timer event for the kernel invocation</span>
+   <span class="n">ocl_add_timer</span><span class="p">(</span><span class="s">"kernel"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">);</span>
+
+   <span class="c1">// read data from device</span>
+   <span class="n">ocl_enqueue_read_buffer</span><span class="p">(</span><span class="n">OCL_PERFORMANCE_DEVICE</span><span class="p">,</span> <span class="s">"array"</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span>
+      <span class="n">ELEMENTS</span><span class="o">*</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">float</span><span class="p">),</span> <span class="n">h_array</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">);</span>
+
+   <span class="c1">// print data read from device</span>
+   <span class="k">for</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">ELEMENTS</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"%f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">h_array</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+   <span class="p">}</span> <span class="c1">// for</span>
+   <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+   <span class="c1">// print timer results</span>
+   <span class="n">ocl_report_timer</span><span class="p">(</span><span class="s">"kernel"</span><span class="p">);</span>
+
+   <span class="c1">// finalize OpenCL runtime</span>
+   <span class="n">ocl_finalize</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">OCL-MLA maintained by <a href="https://github.com/tuxfan">tuxfan</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+
+    
+
   </body>
 </html>
