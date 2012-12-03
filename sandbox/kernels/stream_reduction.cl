@@ -3,48 +3,29 @@
  * All rights reserved.
 \******************************************************************************/
 
-#define MAX_SIZE 1024
+/*----------------------------------------------------------------------------*
+ * Test kernel
+ *----------------------------------------------------------------------------*/
 
-void scan(unsigned lid, __local unsigned * value, __local unsigned * count,
-	unsigned p);
-
-__kernel void phz_reduce(__global unsigned * value,
-	__global unsigned * count) {
+__kernel void reduce(__global const unsigned * count,
+	__global unsigned * offset) {
 	size_t lid = get_local_id(0);
 	size_t lsize = get_local_size(0);
 
-	__local unsigned _count[MAX_SIZE];
-	__local unsigned _value[MAX_SIZE];
+	__local unsigned _count[8];
+	__local unsigned _offset[8];
 
-	// read values into local memory
-	_value[lid] = value[lid];
+	_count[lid] = count[lid];
 
-	// initialize with the value at the current work item
-	_count[lid] = _value[lid];
+	phz_reduce(lid, lsize, _count, _offset);
 
-	// add work item to the left if it exists
-	if(lid>0) {
-		_count[lid] += _value[lid-1];
+	offset[lid] = _offset[lid];
+
+	if(count[lid] > 0) {
+		printf("thread %d has %d values and writes to offset %d\n",
+			lid, count[lid], offset[lid]);
 	} // if
-
-	for(size_t v=2, p=1; v<lsize; v*=2, ++p) {
-		if(lid>=p) {
-			scan(lid, _value, _count, p);
-		} // if
-	} // for
 } // phz_reduce
-
-void scan(unsigned lid, __local unsigned * value, __local unsigned * count, unsigned p) {
-	// carry the previous sum
-	count[lid] = value[lid];
-
-	// compute power of 2 for left-hand offset
-	unsigned factor = 1<<p;
-
-	if(lid>factor) {
-		count[lid] += value[lid-factor];	
-	} // if
-} // scan
 
 /*
  * Local Variables:

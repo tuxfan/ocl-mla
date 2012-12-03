@@ -15,29 +15,40 @@ int main(int argc, char ** argv) {
 	 * Create program
 	 *-------------------------------------------------------------------------*/
 
+	char * source = NULL;
+	ocl_add_from_string(phaze_PPSTR, &source, 0);
+	ocl_add_from_string(stream_reduction_PPSTR, &source, 0);
+
 	ocl_add_program(OCL_DEFAULT_DEVICE, "stream",
-		stream_reduction_PPSTR, NULL);
+		source, NULL);
+
+	free(source);
 
 	/*-------------------------------------------------------------------------*
 	 * Create kernel
 	 *-------------------------------------------------------------------------*/
 
-	ocl_add_kernel(OCL_DEFAULT_DEVICE, "stream", "phz_reduce", "reduce");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "stream", "reduce", "reduce");
 
 	/*-------------------------------------------------------------------------*
 	 * Create buffers
 	 *-------------------------------------------------------------------------*/
 
-	unsigned * values = (unsigned *)malloc(ELEMENTS*sizeof(unsigned));
-	//unsigned * count = (unsigned *)malloc(ELEMENTS*sizeof(unsigned));
+	unsigned * value = (unsigned *)malloc(ELEMENTS*sizeof(unsigned));
+	unsigned * offset = (unsigned *)malloc(ELEMENTS*sizeof(unsigned));
 
-	for(size_t i=0; i<ELEMENTS; ++i) {
-		values[i] = 0;
-	} // for
+	value[0] = 1;
+	value[1] = 0;
+	value[2] = 1;
+	value[3] = 2;
+	value[4] = 0;
+	value[5] = 3;
+	value[6] = 0;
+	value[7] = 1;
 
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, "values", ELEMENTS*sizeof(unsigned),
-		CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, values);
-	ocl_create_buffer(OCL_DEFAULT_DEVICE, "count", ELEMENTS*sizeof(unsigned),
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, "value", ELEMENTS*sizeof(unsigned),
+		CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, value);
+	ocl_create_buffer(OCL_DEFAULT_DEVICE, "offset", ELEMENTS*sizeof(unsigned),
 		CL_MEM_READ_WRITE, NULL);
 
 
@@ -45,8 +56,8 @@ int main(int argc, char ** argv) {
 	 * Set kernel arguments
 	 *-------------------------------------------------------------------------*/
 
-	ocl_set_kernel_arg_buffer("stream", "reduce", "values", 0);
-	ocl_set_kernel_arg_buffer("stream", "reduce", "count", 1);
+	ocl_set_kernel_arg_buffer("stream", "reduce", "value", 0);
+	ocl_set_kernel_arg_buffer("stream", "reduce", "offset", 1);
 
 	/*-------------------------------------------------------------------------*
 	 * Enqueue kernel
@@ -61,11 +72,11 @@ int main(int argc, char ** argv) {
 
 	ocl_finish(OCL_DEFAULT_DEVICE);
 
-	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, "values", 1, 0,
-		ELEMENTS*sizeof(unsigned), values, NULL);
+	ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, "offset", 1, 0,
+		ELEMENTS*sizeof(unsigned), offset, NULL);
 
 	for(size_t i=0; i<ELEMENTS; ++i) {
-		printf("%d\n", values[i]);
+		printf("%d\n", offset[i]);
 	} // for
 
 	/*-------------------------------------------------------------------------*
