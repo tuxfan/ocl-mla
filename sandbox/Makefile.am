@@ -8,7 +8,8 @@ bin_PROGRAMS = \
 	tridiag \
 	tricycl_example \
 	size \
-	stream
+	stream \
+	global
 
 AM_CPPFLAGS = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
@@ -52,3 +53,9 @@ stream_SOURCES = \
 	@top_srcdir@/sandbox/stream.c
 stream_LDFLAGS = @EXTRA_LDFLAGS@
 stream_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
+
+global_SOURCES = \
+	@top_builddir@/local/sandbox_strings.c \
+	@top_srcdir@/sandbox/global.c
+global_LDFLAGS = @EXTRA_LDFLAGS@
+global_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
