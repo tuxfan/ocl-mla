@@ -3,8 +3,7 @@
  * All rights reserved.
 \******************************************************************************/
 
-//__constant int phz_ptr_address_lo;
-//__constant int phz_ptr_address_hi;
+__constant double * const _data_ = (__constant double *)DATA_ADDRESS;
 
 __kernel void test(__global unsigned * value, __global unsigned * offset) {
 	size_t lid = get_local_id(0);

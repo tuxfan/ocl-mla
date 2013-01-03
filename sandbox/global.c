@@ -18,7 +18,8 @@ int main(int argc, char ** argv) {
 	//char * source = NULL;
 	//ocl_add_from_string(global_PPSTR, &source, 0);
 
-	ocl_add_program(OCL_DEFAULT_DEVICE, "global", global_PPSTR, NULL);
+	ocl_add_program(OCL_DEFAULT_DEVICE, "global", global_PPSTR,
+		"-DDATA_ADDRESS=0x00");
 
 	//free(source);
 
@@ -53,8 +54,8 @@ int main(int argc, char ** argv) {
 	 * Set kernel arguments
 	 *-------------------------------------------------------------------------*/
 
-	ocl_set_kernel_arg_buffer("stream", "reduce", "value", 0);
-	ocl_set_kernel_arg_buffer("stream", "reduce", "offset", 1);
+	ocl_set_kernel_arg_buffer("global", "test", "value", 0);
+	ocl_set_kernel_arg_buffer("global", "test", "offset", 1);
 
 	/*-------------------------------------------------------------------------*
 	 * Enqueue kernel
