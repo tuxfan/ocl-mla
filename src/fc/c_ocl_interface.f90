@@ -372,15 +372,17 @@ module ocl_interface
    ! ocl_kernel_hints
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_kernel_hints(program_name, kernel_name, hints, ierr)
+   subroutine ocl_kernel_hints(device_id, program_name, kernel_name, &
+      hints, ierr)
       use :: ocl_data
       implicit none
+      integer(int32_t) :: device_id
       character(kind=c_char), dimension(*) :: program_name
       character(kind=c_char), dimension(*) :: kernel_name
       type(ocl_kernel_hints_t) :: hints
       integer(int32_t) :: ierr
 
-      ierr = ocl_kernel_hints_f90(program_name, kernel_name, hints)
+      ierr = ocl_kernel_hints_f90(device_id, program_name, kernel_name, hints)
    end subroutine ocl_kernel_hints
 
    !---------------------------------------------------------------------------!
@@ -388,18 +390,22 @@ module ocl_interface
    !---------------------------------------------------------------------------!
 
    subroutine ocl_ndrange_hints(indeces, max_work_group_size, &
-      work_group_size, work_group_indeces, single_indeces)
+      work_group_weight, single_element_weight, work_group_size, &
+      work_group_indeces, single_indeces)
       use :: ocl_data
       implicit none
       integer(c_size_t) :: indeces
       integer(c_size_t) :: max_work_group_size
+      real(c_double) :: work_group_weight
+      real(c_double) :: single_element_weight
       integer(c_size_t) :: work_group_size
       integer(c_size_t) :: work_group_indeces
       integer(c_size_t) :: single_indeces
       integer(int32_t) :: ierr
 
       ierr = ocl_ndrange_hints_f90(indeces, max_work_group_size, &
-         work_group_size, work_group_indeces, single_indeces)
+         work_group_weight, single_element_weight, work_group_size, &
+         work_group_indeces, single_indeces)
    end subroutine ocl_ndrange_hints
 
    !---------------------------------------------------------------------------!

@@ -17,6 +17,8 @@ program main
    integer(c_size_t), parameter :: local_size = 1
    integer(c_size_t), parameter :: offset = 0
    integer(c_size_t) :: work_group_indeces
+   real(c_double) :: work_group_weight
+   real(c_double) :: single_element_weight
    integer(c_size_t) :: single_indeces
    integer(c_size_t) :: work_group_size
    integer(c_size_t) :: bytes
@@ -60,15 +62,18 @@ program main
    call ocl_add_kernel(OCL_DEFAULT_DEVICE, 'program' // C_NULL_CHAR, &
       'test' // C_NULL_CHAR, 'my test' // C_NULL_CHAR, ierr)
  
-   call ocl_kernel_hints('program' // C_NULL_CHAR, &
+   call ocl_kernel_hints(OCL_DEFAULT_DEVICE, 'program' // C_NULL_CHAR, &
       'my test' // C_NULL_CHAR, hints, ierr)
 
    work_group_size = 0
    work_group_indeces = 0
+   work_group_weight = 0.5
+   single_element_weight = 0.5
    single_indeces = 0
 
    call ocl_ndrange_hints(global_size, hints%max_work_group_size, &
-      work_group_size, work_group_indeces, single_indeces)
+      work_group_weight, single_element_weight, work_group_size, &
+      work_group_indeces, single_indeces)
 
    ! step (7)
    ! Set kernel argument

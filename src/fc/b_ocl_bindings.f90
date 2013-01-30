@@ -330,11 +330,13 @@ interface
    ! ocl_kernel_hints_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_kernel_hints_f90(program_name, kernel_name, hints) &
+   function ocl_kernel_hints_f90(device_id, program_name, kernel_name, &
+      hints) &
       result(ierr) bind(C, name="ocl_kernel_hints_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
+      integer(int32_t), value :: device_id
       character(kind=c_char), dimension(*) :: program_name
       character(kind=c_char), dimension(*) :: kernel_name
       type(ocl_kernel_hints_t) :: hints
@@ -346,13 +348,16 @@ interface
    !---------------------------------------------------------------------------!
 
    function ocl_ndrange_hints_f90(indeces, max_work_group_size, &
-      work_group_size, work_group_indeces, single_indeces) &
+      work_group_weight, single_element_weight, work_group_size, &
+      work_group_indeces, single_indeces) &
       result(ierr) bind(C, name="ocl_ndrange_hints_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       integer(c_size_t) :: indeces
       integer(c_size_t) :: max_work_group_size
+      real(c_double) :: work_group_weight
+      real(c_double) :: single_element_weight
       integer(c_size_t) :: work_group_size
       integer(c_size_t) :: work_group_indeces
       integer(c_size_t) :: single_indeces

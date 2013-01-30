@@ -1413,9 +1413,9 @@ int32_t ocl_set_kernel_arg_allocation_f90(const char * program_name,
  * ocl_kernel_hint_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_kernel_hints_f90(uint32_t * device_id, const char * program_name,
+int32_t ocl_kernel_hints_f90(uint32_t device_id, const char * program_name,
 	const char * kernel_name, ocl_kernel_hints_t * hints) {
-	return ocl_kernel_hints(*device_id, program_name, kernel_name, hints);
+	return ocl_kernel_hints(device_id, program_name, kernel_name, hints);
 } // ocl_kernel_hint_f90
 
 /*----------------------------------------------------------------------------*\

@@ -33,7 +33,7 @@ tridiag_SOURCES = \
 	@top_builddir@/local/sandbox_strings.c \
 	@top_srcdir@/sandbox/tridiag.c
 tridiag_LDFLAGS = @EXTRA_LDFLAGS@
-tridiag_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la
+tridiag_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la -lm
 
 tricycl_example_SOURCES = \
 	@top_builddir@/local/sandbox_strings.c \
