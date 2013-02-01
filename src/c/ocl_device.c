@@ -45,6 +45,16 @@ int32_t ocl_init_generic_gpu(ocl_device_instance_t * instance,
 } // ocl_init_generic_gpu
 
 /*------------------------------------------------------------------------------
+ * This function initializes a generic MIC device.
+ *----------------------------------------------------------------------------*/
+
+int32_t ocl_init_generic_mic(ocl_device_instance_t * instance,
+	const char * platform, size_t thread) {
+	return ocl_init_generic_device(instance, platform,
+		CL_DEVICE_TYPE_ACCELERATOR, thread);
+} // ocl_init_generic_gpu
+
+/*------------------------------------------------------------------------------
  * This function initializes a generic device.
  *----------------------------------------------------------------------------*/
 

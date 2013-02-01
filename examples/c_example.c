@@ -12,7 +12,7 @@ int main(int argc, char ** argv) {
 
 	size_t i;
 
-	const int32_t ELEMENTS = 32;
+	const int32_t ELEMENTS = 16;
 	size_t global_offset = 0;
 	size_t global_size = ELEMENTS;
 	size_t local_size = 1;
@@ -42,7 +42,7 @@ int main(int argc, char ** argv) {
 	// step (4)
 	// create a device-side buffer
 	ocl_create_buffer(OCL_DEFAULT_DEVICE, "array", bytes,
-		CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, h_array);
+		CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, h_array);
 
 	// step (5)
 	// add program and build
@@ -102,7 +102,7 @@ int main(int argc, char ** argv) {
 
 	ocl_add_event_to_wait_list(&wait_list, &event);
 
-#if 0
+#if 1
 	// step (13)
 	// block for read completion
 	ocl_finish(OCL_DEFAULT_DEVICE);

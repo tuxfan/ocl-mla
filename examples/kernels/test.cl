@@ -15,7 +15,6 @@
 
 __kernel void test(__global float * data) {
 	size_t gid = get_global_id(0);
-
 	data[gid] = (float)gid;
 } // test
 
