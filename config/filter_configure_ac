@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# source version information
+. config/version
+
+if [ "$1" = "devel" ] ; then
+	sed "s,VERSION_TAG,$VERSION_TAG,g;s,DEVEL_TARGETS,sandbox/Makefile,g;s,DEVEL_DIRS,sandbox,g"
+else
+	sed "s,VERSION_TAG,$VERSION_TAG,g;s,DEVEL_TARGETS,,g;s,DEVEL_DIRS,,g"
+fi

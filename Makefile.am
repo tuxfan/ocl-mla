@@ -7,13 +7,13 @@
 # Recurse subdirs
 #------------------------------------------------------------------------------#
 
-SUBDIRS = lib utils test examples sandbox
+SUBDIRS = lib utils test examples ${DEVDIRS}
 
 #------------------------------------------------------------------------------#
 # Utils file
 #------------------------------------------------------------------------------#
 
-EXTRA_DIST = utils/stringify_kernel_files
+EXTRA_DIST = utils/stringify_kernel_files utils/make_devices
 
 #------------------------------------------------------------------------------#
 # Create links
@@ -32,7 +32,7 @@ links:
 #------------------------------------------------------------------------------#
 
 devices:
-	@(${top_srcdir}/config/make_devices "${OCL_DEVICES}" "${top_builddir}/local")
+	@(${top_srcdir}/utils/make_devices "${OCL_DEVICES}" "${top_builddir}/local")
 
 #------------------------------------------------------------------------------#
 # Configure message

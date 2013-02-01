@@ -5,11 +5,9 @@
 ################################################################################
 
 #------------------------------------------------------------------------------#
-# Usage: bootstrap <version>
+# Usage: bootstrap <mode>
 #
-# version (optional) specifies the version that will be built into the
-# configuration.  If version is not defined, a version will be generated
-# automatically by 'make_version'.
+# If mode is set to devel, the sandbox directory is added to the build.
 #------------------------------------------------------------------------------#
 
 #------------------------------------------------------------------------------#

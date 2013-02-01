@@ -31,7 +31,7 @@ CONFIG_WITH_MACHINE("$srcdir/machine")
 # Configuration targets
 #------------------------------------------------------------------------------#
 
-AC_CONFIG_FILES([Makefile \
+AC_CONFIG_FILES([Makefile DEVEL_TARGETS \
 	lib/Makefile \
 	utils/Makefile \
 	local/ocl_local.h \
@@ -41,10 +41,11 @@ AC_CONFIG_FILES([Makefile \
 	test/fc/Makefile \
 	test/fc/atlocal \
 	examples/Makefile \
-	sandbox/Makefile \
 	doc/Makefile \
 	doc/doxygen.conf
 ])
+
+AC_SUBST(DEVDIRS, ["DEVEL_DIRS"])
 
 #------------------------------------------------------------------------------#
 # Test harness
