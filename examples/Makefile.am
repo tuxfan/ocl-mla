@@ -3,6 +3,8 @@
 # All rights reserved.
 ################################################################################
 
+SUBDIRS = direct
+
 bin_PROGRAMS = \
 	c_example \
 	f90_example

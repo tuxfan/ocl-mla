@@ -1,0 +1,46 @@
+
+						DIRECT VESION 1.2
+
+		A "fast" O(N^2) gravity code useful for checking more
+		sophisticated gravity codes, such as tree-codes,
+		Fast Multipole codes  and FFT-based grid codes. Also useful
+		in the analysis of errors and approximations in such codes.
+
+				Stadel Release 1.2: October 11, 1994 
+
+		Featrures:
+			* Checkpointing
+			* Mark Arrays
+			* Periodic Boundary Conditions using the
+			  Ewald Summation Technique
+			* Several gravitational softening methods:
+				Plummer, Uniform density sphere and Cubic Spline
+
+		Changes from v1.11:
+			* Masses are now always taken from the TIPSY BINARY input
+			  file. You can no longer specify -m or -dm.
+			* Softening is taken from the TIPSY BINARY input file, by
+			  default. If you want to set the softening (say to zero)
+			  then you can specify the -e argument as before.
+			* Softening is done in a symmetric fashion, that is, the 
+		      interaction between patricle i and particle j uses the
+			  softening fSoft = 0.5*(fSoft_i + fSoft_j). If all the
+			  particles have the same softening this is equivalent to
+			  the previous definition.
+
+Files Included:
+	README
+	Makefile
+	main.c
+	kd.c
+	kd.h
+	grav.c
+	grav.h
+	ewald.c
+	ewald.h
+	spline.h
+	tipsydefs.h
+	man1/direct.1
+	cat1/direct.1
+
+
