@@ -7,4 +7,4 @@
 # Scripts
 #------------------------------------------------------------------------------#
 
-bin_SCRIPTS = stringify_kernel_files
+bin_SCRIPTS = stringify_kernel_files make_devices
