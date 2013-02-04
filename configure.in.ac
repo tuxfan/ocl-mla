@@ -42,7 +42,6 @@ AC_CONFIG_FILES([Makefile DEVEL_TARGETS \
 	test/fc/atlocal \
 	examples/Makefile \
 	examples/direct/Makefile \
-	examples/direct/unit \
 	doc/Makefile \
 	doc/doxygen.conf
 ])
@@ -121,7 +120,6 @@ fi
 
 AC_CONFIG_COMMANDS([links], [make links])
 AC_CONFIG_COMMANDS([devices], [make devices])
-AC_CONFIG_COMMANDS([direct], [make direct])
 AC_CONFIG_COMMANDS([remind], [make reminder])
 
 #------------------------------------------------------------------------------#

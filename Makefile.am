@@ -35,13 +35,6 @@ devices:
 	@(${top_srcdir}/utils/make_devices "${OCL_DEVICES}" "${top_builddir}/local")
 
 #------------------------------------------------------------------------------#
-# Setup direct
-#------------------------------------------------------------------------------#
-
-direct:
-	@(chmod 755 ${top_builddir}/examples/direct/unit)
-
-#------------------------------------------------------------------------------#
 # Configure message
 #------------------------------------------------------------------------------#
 
@@ -49,8 +42,6 @@ reminder: FORCE
 	@(echo ; \
 		echo "/*----------------------------------------------------------------------------*\\"; \
 		echo " * Configuration Complete!"; \
-		echo " * To run the examples, you will need to set the OCL_KERNEL_PATH environment"; \
-		echo " * variable to ${top_srcdir}/examples/kernels"; \
 		echo "\*----------------------------------------------------------------------------*/")
 
 #------------------------------------------------------------------------------#
@@ -104,6 +95,12 @@ dist-hook:
 		cp ${top_srcdir}/machine/templates/* ${distdir}/machine/templates)
 	@(mkdir ${distdir}/examples/kernels && \
 		cp ${top_srcdir}/examples/kernels/*.cl ${distdir}/examples/kernels)
+	@(mkdir ${distdir}/examples/direct/kernels && \
+		cp ${top_srcdir}/examples/direct/kernels/*.cl \
+		${distdir}/examples/direct/kernels)
+	@(mkdir ${distdir}/examples/direct/data && \
+		cp ${top_srcdir}/examples/direct/data/* \
+		${distdir}/examples/direct/data)
 	@(mkdir ${distdir}/doc && \
 		cp ${top_srcdir}/doc/Makefile.* ${distdir}/doc && \
 		cp ${top_srcdir}/doc/doxygen.conf.in ${distdir}/doc)

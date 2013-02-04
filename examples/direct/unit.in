@@ -1,4 +1,0 @@
-#! /usr/bin/env bash
-
-echo "@top_builddir@/examples/direct/direct -G 44986.564 -plummer -o pm32 -v < @top_srcdir@/examples/direct/data/ic32.sdf.tipsy"
-@top_builddir@/examples/direct/direct -G 44986.564 -plummer -o pm32 -v < @top_srcdir@/examples/direct/data/ic32.sdf.tipsy
