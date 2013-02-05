@@ -3,11 +3,12 @@
 #include "ewald.h"
 #include "spline.h"
 
-
 #define NREP	3
 #define NHUP	4
 
-#define M_PI 3.14159265359
+#ifndef M_PI
+#define M_PI 3.14159265358979323846264338327950288
+#endif
 
 void EwaldInteract(double dRel[3],double twoh,int iSoftType,double L,
 				   double *pphi,double dAccel[3])

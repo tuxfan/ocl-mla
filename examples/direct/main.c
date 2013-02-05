@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include <assert.h>
-#include <values.h>
+#include <float.h>
 #include <ctype.h>
 #include "kd.h"
 
