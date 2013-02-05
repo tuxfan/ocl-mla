@@ -20,9 +20,11 @@ BUILT_SOURCES = \
 	${top_builddir}/local/example_strings.h \
 	${top_builddir}/local/example_strings_f.f90
 
-${top_builddir}/local/example_strings.c : ${top_srcdir}/examples/kernels/*.cl
+${top_builddir}/local/example_strings.c : \
+	${top_srcdir}/examples/kernels/*.cl \
+	${top_srcdir}/examples/direct/kernels/*.cl
 	${top_srcdir}/utils/stringify_kernel_files --fortran \
-		${top_srcdir}/examples/kernels ${top_builddir}/local/example_strings
+		${top_srcdir}/examples ${top_builddir}/local/example_strings
 
 c_example_SOURCES = \
 	${top_builddir}/local/example_strings.c \

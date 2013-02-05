@@ -8,7 +8,7 @@
 #include "kd.h"
 
 #if defined(ENABLE_OCL)
-	#include <direct_strings.h>
+	#include <example_strings.h>
 #endif
 
 void usage(void)

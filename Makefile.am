@@ -62,6 +62,8 @@ install-exec-hook:
 		cp ${top_builddir}/local/ocl_device_config.h ${includedir})
 	@([ -d ${bindir}/kernels ] || mkdir ${bindir}/kernels && \
 		cp ${top_srcdir}/examples/kernels/*.cl ${bindir}/kernels)
+	@([ -d ${bindir}/data ] || mkdir ${bindir}/data && \
+		cp ${top_srcdir}/examples/direct/data/* ${bindir}/data)
 
 #------------------------------------------------------------------------------#
 # Extra install data

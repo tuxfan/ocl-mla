@@ -85,6 +85,8 @@ int kdReadTipsy(KD kd,FILE *fp,int bGas,int bDark,int bStar)
 	kd->p = (PARTICLE *)malloc(kd->nActive*sizeof(PARTICLE));
 	assert(kd->p != NULL);
 
+	printf("%d active particles\n", kd->nActive);
+
 #if defined(ENABLE_OCL)
 	/*
 	 ** Allocate device buffers.
