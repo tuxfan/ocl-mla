@@ -19,6 +19,10 @@ void diaGrav(PARTICLE *p,int bs,int iSoftType)
 		ay = 0.0;
 		az = 0.0;
 		dPot = 0.0;
+
+#if defined(ENABLE_OMP)
+#pragma omp parallel for
+#endif
 		for (j=i;j<bs;++j) {
 			dx = p[j].r[0] - p[i-1].r[0];
 			dy = p[j].r[1] - p[i-1].r[1];

@@ -49,6 +49,17 @@ AC_CONFIG_FILES([Makefile DEVEL_TARGETS \
 AC_SUBST(DEVDIRS, ["DEVEL_DIRS"])
 
 #------------------------------------------------------------------------------#
+# Direct flags
+#------------------------------------------------------------------------------#
+
+AC_ARG_VAR([DIRECT_CPPFLAGS], [User specified flags for direct example])
+AC_ARG_VAR([DIRECT_LDFLAGS], [User specified link flags for direct example])
+
+if test -z "$DIRECT_CPPFLAGS" ; then
+	AC_SUBST(DIRECT_CPPFLAGS, [-DENABLE_OCL])
+fi
+
+#------------------------------------------------------------------------------#
 # Test harness
 #------------------------------------------------------------------------------#
 

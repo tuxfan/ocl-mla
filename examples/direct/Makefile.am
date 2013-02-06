@@ -8,7 +8,7 @@ bin_PROGRAMS = \
 
 AM_CPPFLAGS = -I${top_srcdir}/src/include \
 	-I${top_builddir}/local \
-	@EXTRA_CPPFLAGS@ -DENABLE_OCL
+	@EXTRA_CPPFLAGS@ @DIRECT_CPPFLAGS@
 
 direct_SOURCES = \
 	${top_builddir}/local/example_strings.c \
@@ -22,5 +22,5 @@ direct_SOURCES = \
 	${top_srcdir}/examples/direct/grav.c \
 	${top_srcdir}/examples/direct/kd.c \
 	${top_srcdir}/examples/direct/main.c
-direct_LDFLAGS = @EXTRA_LDFLAGS@
+direct_LDFLAGS = @EXTRA_LDFLAGS@ @DIRECT_LDFLAGS@
 direct_LDADD = @EXTRA_LIBS@ ${top_builddir}/lib/libocl.la -lm
