@@ -176,7 +176,7 @@ int main(int argc,char **argv)
 /* ATI */
 	char * compile_options =
 //		"-cl-fast-relaxed-math -DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=8 -DUSE_CONDITIONAL";
-//		"-DBLSZ=64";
+		"-DBLSZ=64 -DUSE_LOCAL_MEMORY";
 //		"-DBLSZ=64 -DUSE_RSQRT";
 //		"-DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=8";
 //		"-DBLSZ=128 -DUSE_RSQRT";
@@ -190,7 +190,7 @@ int main(int argc,char **argv)
 //	char * compile_options =
 //		"-DBLSZ=1024";
 //		"-DBLSZ=1024 -DUSE_RSQRT -DUSE_CONDITIONAL";
-		"-cl-mad-enable -cl-fast-relaxed-math -DBLSZ=1024 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32 -DUSE_CONDITIONAL";
+//		"-cl-mad-enable -cl-fast-relaxed-math -DBLSZ=1024 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32 -DUSE_CONDITIONAL";
 
 	kd->local_size = 1024;
 //	kd->local_size = 256;

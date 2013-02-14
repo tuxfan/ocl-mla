@@ -98,18 +98,27 @@ __kernel void grav(__global position_t * p, __global acceleration_t * a,
 
 	for(i=0, tile=0; i<glsz; i+=BLSZ, ++tile) {
 		size_t idx = tile*BLSZ + thid;
+
+#if defined(USE_LOCAL_MEMORY)
 		b[thid] = p[idx].b;
 		barrier(CLK_LOCAL_MEM_FENCE);
+#endif
 
 		// update tile
 #if defined(UNROLL_LOOPS)
 #pragma unroll UNROLL_FACTOR
 #endif
 		for(j=0; j<BLSZ; ++j) {
+#if defined(USE_LOCAL_MEMORY)
 			_a = interactPlummer(bi, b[j], _a);
+#else
+			_a = interactPlummer(bi, p[idx].b, _a);
+#endif
 		} // for
 
+#if defined(USE_LOCAL_MEMORY)
 		barrier(CLK_LOCAL_MEM_FENCE);
+#endif
 	} // for
 
 	a[offset].a = _a*g;
