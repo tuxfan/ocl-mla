@@ -49,6 +49,7 @@ int main(int argc,char **argv)
 	G = 1.0;
 	iBlockSize = 256;
 	bPeriodic = 0;
+	fSoft = 0.0;
 	for (j=0;j<3;++j) {
 		fCenter[j] = 0.0;
 		fPeriod[j] = FLT_MAX;
