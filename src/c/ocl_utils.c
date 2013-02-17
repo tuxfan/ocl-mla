@@ -377,7 +377,7 @@ void ocl_hash_remove_buffer(uint32_t device_id, const char * buffer_name) {
  *----------------------------------------------------------------------------*/
 
 void ocl_hash_finalize() {
-} // ocl_destroy_hash
+} // ocl_hash_finalize
 
 /******************************************************************************
  * OpenCL kernel source interface
