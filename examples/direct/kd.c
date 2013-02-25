@@ -97,14 +97,14 @@ int kdReadTipsy(KD kd,FILE *fp,int bGas,int bDark,int bStar)
 	/*
 	 ** Allocate device buffers.
 	 */
-	ocl_create_buffer_raw(OCL_PERFORMANCE_DEVICE,
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE,
 		kd->nActive*sizeof(position_t), CL_MEM_READ_ONLY, NULL, &kd->d_p);
 
-	ocl_create_buffer_raw(OCL_PERFORMANCE_DEVICE,
+	ocl_create_buffer_raw(OCL_DEFAULT_DEVICE,
 		kd->nActive*sizeof(acceleration_t), CL_MEM_WRITE_ONLY, NULL, &kd->d_a);
 
 	size_t max_work_group_size = 0;
-	ocl_max_work_group_size(OCL_PERFORMANCE_DEVICE, &max_work_group_size);
+	ocl_max_work_group_size(OCL_DEFAULT_DEVICE, &max_work_group_size);
 
 #define SIMD_SIZE 4
 
@@ -478,7 +478,7 @@ bVerbose = 0;
 	ocl_host_start_timer("aggregate");
 
 	// write particle data to device
-	ocl_enqueue_write_buffer_raw(OCL_PERFORMANCE_DEVICE, kd->d_p,
+	ocl_enqueue_write_buffer_raw(OCL_DEFAULT_DEVICE, kd->d_p,
 		OCL_SYNCHRONOUS, 0, n*sizeof(position_t), h_p, &event);
 
 	ocl_add_timer("write", &event);
@@ -487,16 +487,16 @@ bVerbose = 0;
 	kd->global_size = n;
 
 	// update particles
-	ocl_enqueue_kernel_ndrange(OCL_PERFORMANCE_DEVICE, "direct",
+	ocl_enqueue_kernel_ndrange(OCL_DEFAULT_DEVICE, "direct",
 		"grav", 1, &kd->global_offset, &kd->global_size,
 		&kd->local_size, &event);
 
-	ocl_finish(OCL_PERFORMANCE_DEVICE);
+	ocl_finish(OCL_DEFAULT_DEVICE);
 
 	ocl_add_timer("execute", &event);
 
 	// read particle data from device
-	ocl_enqueue_read_buffer_raw(OCL_PERFORMANCE_DEVICE, kd->d_a,
+	ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, kd->d_a,
 		OCL_SYNCHRONOUS, 0, n*sizeof(acceleration_t), h_a, &event);
 
 	ocl_add_timer("read", &event);

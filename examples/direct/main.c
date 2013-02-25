@@ -198,11 +198,11 @@ int main(int argc,char **argv)
 //	kd->local_size = 128;
 //	kd->local_size = 64;
 
-	ocl_add_program(OCL_PERFORMANCE_DEVICE, "direct", source,
+	ocl_add_program(OCL_DEFAULT_DEVICE, "direct", source,
 		compile_options);
 	free(source);
 
-	ocl_add_kernel(OCL_PERFORMANCE_DEVICE, "direct", "grav", "grav");
+	ocl_add_kernel(OCL_DEFAULT_DEVICE, "direct", "grav", "grav");
 #endif
 	
 	if (bRestart) {
