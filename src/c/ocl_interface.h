@@ -87,6 +87,34 @@ This subroutine shuts down the OpenCL runtime layer.
 int32_t ocl_finalize();
 
 /*----------------------------------------------------------------------------*\
+ * Return device data for direct access to OpenCL initialized state.
+\*----------------------------------------------------------------------------*/
+
+/*!
+\page ocl_get_device_instance
+Return device data for direct access to OpenCL initialized state.
+
+\par C Version:
+ierr ocl_get_device_instance(device_id, instance)
+
+\par Fortran Version:
+ocl_get_device_instance(device_id, instance, ierr)
+
+@param device_id Device instance handle \n
+uint32_t (\b C), type(ocl_reference_t) (\b Fortran) \n
+@param instance Device instance raw data \n
+ocl_device_instance_t ** (\b C), type(ocl_reference_t) (\b Fortran) \n
+@param ierr Error status \n
+int32_t (\b C), integer(int32_t) (\b Fortran)
+
+\par Description:
+This subroutine returns device data for direct access to OpenCL initialized stat.
+*/
+
+int32_t ocl_get_device_instance(uint32_t device_id,
+	ocl_device_instance_t * instance);
+
+/*----------------------------------------------------------------------------*\
  * Initialize event data
 \*----------------------------------------------------------------------------*/
 

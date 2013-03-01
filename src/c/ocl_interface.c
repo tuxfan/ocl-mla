@@ -89,6 +89,24 @@ int32_t ocl_finalize() {
 } // ocl_finalize
 
 /*----------------------------------------------------------------------------*\
+ * ocl_finalize
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_get_device_instance(uint32_t device_id,
+	ocl_device_instance_t * instance) {
+	int32_t ierr = 0;
+
+	ocl_device_instance_t * _instance = ocl_device_instance(device_id);
+
+	instance->id = _instance->id;
+	instance->context = _instance->context;
+	instance->queue = _instance->queue;
+	instance->info = _instance->info;
+
+	return ierr;
+} // ocl_get_device_instance
+
+/*----------------------------------------------------------------------------*\
  * ocl_initialize_event
 \*----------------------------------------------------------------------------*/
 
