@@ -43,6 +43,20 @@ interface
    end function ocl_mem_size_f90
 
    !---------------------------------------------------------------------------!
+   ! ocl_get_device_instance_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_get_device_instance_f90(device_id, instance) &
+      result(ierr) bind(C, name="ocl_get_device_instance_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      type(ocl_allocation_t) :: instance
+      integer(int32_t) :: ierr
+   end function ocl_get_device_instance_f90
+
+   !---------------------------------------------------------------------------!
    ! ocl_create_buffer_f90
    !---------------------------------------------------------------------------!
 

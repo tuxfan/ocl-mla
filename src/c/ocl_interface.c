@@ -1195,6 +1195,22 @@ int32_t ocl_finalize_f90() {
 	return ocl_finalize();
 } // ocl_finalize_f90
 
+int32_t ocl_get_device_instance_f90(uint32_t device_id,
+	ocl_allocation_t * instance) {
+	int32_t ierr = 0;
+
+	ocl_device_instance_t * _instance =
+		(ocl_device_instance_t *)malloc(sizeof(ocl_device_instance_t));
+
+	instance->data = (void *)_instance;
+
+	add_allocation((void *)_instance, &instance->index);
+
+	ierr = ocl_get_device_instance(device_id, _instance);
+
+	return ierr;
+} // ocl_get_device_instance_f90
+
 /*----------------------------------------------------------------------------*\
  * ocl_initialize_event_f90
 \*----------------------------------------------------------------------------*/

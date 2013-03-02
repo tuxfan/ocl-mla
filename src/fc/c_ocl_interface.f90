@@ -38,6 +38,20 @@ module ocl_interface
    end subroutine ocl_finalize
 
    !---------------------------------------------------------------------------!
+   ! ocl_get_device_instance
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_get_device_instance(device_id, instance, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      type(ocl_allocation_t) :: instance
+      integer(int32_t) :: ierr
+
+      ierr = ocl_get_device_instance_f90(device_id, instance)
+   end subroutine ocl_get_device_instance
+
+   !---------------------------------------------------------------------------!
    ! ocl_create_buffer
    !---------------------------------------------------------------------------!
 
@@ -49,7 +63,7 @@ module ocl_interface
       integer(c_size_t) :: elements
       integer(cl_bitfield) :: flags
       type(c_ptr) :: host_ptr
-      type(ocl_allocation_t) buffer
+      type(ocl_allocation_t) :: buffer
       integer(int32_t) :: ierr
 
       ierr = ocl_create_buffer_f90(device_id, elements, flags, &
