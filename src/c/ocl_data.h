@@ -140,6 +140,16 @@ typedef struct ocl_device_instance_ {
 } ocl_device_instance_t;
 
 /*------------------------------------------------------------------------------
+ * OpenCL device information for external references.
+ *----------------------------------------------------------------------------*/
+
+typedef struct ocl_raw_instance_ {
+	cl_device_id id;
+	cl_context context;
+	cl_command_queue queue;
+} ocl_raw_instance_t;
+
+/*------------------------------------------------------------------------------
  * OpenCL event information.
  *----------------------------------------------------------------------------*/
 

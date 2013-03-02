@@ -112,7 +112,7 @@ This subroutine returns device data for direct access to OpenCL initialized stat
 */
 
 int32_t ocl_get_device_instance(uint32_t device_id,
-	ocl_device_instance_t * instance);
+	ocl_raw_instance_t * instance);
 
 /*----------------------------------------------------------------------------*\
  * Initialize event data
