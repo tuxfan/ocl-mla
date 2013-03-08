@@ -52,10 +52,10 @@ module ocl_interface
    end subroutine ocl_get_device_instance
 
    !---------------------------------------------------------------------------!
-   ! ocl_create_buffer
+   ! ocl_create_buffer_raw
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_create_buffer(device_id, elements, flags, &
+   subroutine ocl_create_buffer_raw(device_id, elements, flags, &
       host_ptr, buffer, ierr)
       use :: ocl_data
       implicit none
@@ -66,29 +66,104 @@ module ocl_interface
       type(ocl_allocation_t) :: buffer
       integer(int32_t) :: ierr
 
-      ierr = ocl_create_buffer_f90(device_id, elements, flags, &
+      ierr = ocl_create_buffer_raw_f90(device_id, elements, flags, &
          host_ptr, buffer)
+   end subroutine ocl_create_buffer_raw
+
+   !---------------------------------------------------------------------------!
+   ! ocl_create_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_create_buffer(device_id, buffer_name, elements, &
+      flags, host_ptr, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(c_size_t) :: elements
+      integer(cl_bitfield) :: flags
+      type(c_ptr) :: host_ptr
+      integer(int32_t) :: ierr
+
+      ierr = ocl_create_buffer_f90(device_id, buffer_name, elements, &
+         flags, host_ptr)
    end subroutine ocl_create_buffer
 
    !---------------------------------------------------------------------------!
-   ! ocl_release_buffer
+   ! ocl_release_buffer_raw
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_release_buffer(buffer, ierr)
+   subroutine ocl_release_buffer_raw(buffer, ierr)
       use :: ocl_data
       implicit none
       type(ocl_allocation_t) :: buffer
       integer(int32_t) :: ierr
       
-      ierr = ocl_release_buffer_f90(buffer)
+      ierr = ocl_release_buffer_raw_f90(buffer)
+   end subroutine ocl_release_buffer_raw
+
+   !---------------------------------------------------------------------------!
+   ! ocl_release_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_release_buffer(device_id, buffer_name, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t) :: ierr
+      
+      ierr = ocl_release_buffer_f90(device_id, buffer_name)
    end subroutine ocl_release_buffer
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_write_buffer_raw
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_write_buffer_raw(device_id, buffer, &
+      synchronous, offset, cb, ptr, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      type(ocl_allocation_t) :: buffer
+      integer(int32_t) :: synchronous
+      integer(c_size_t) :: offset
+      integer(c_size_t) :: cb
+      type(c_ptr) :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_write_buffer_raw_f90(device_id, buffer, &
+         synchronous, offset, cb, ptr, event)
+   end subroutine ocl_enqueue_write_buffer_raw
 
    !---------------------------------------------------------------------------!
    ! ocl_enqueue_write_buffer
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_write_buffer(device_id, buffer, synchronous, &
-      offset, cb, ptr, event, ierr)
+   subroutine ocl_enqueue_write_buffer(device_id, buffer_name, &
+      synchronous, offset, cb, ptr, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t) :: synchronous
+      integer(c_size_t) :: offset
+      integer(c_size_t) :: cb
+      type(c_ptr) :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_write_buffer_f90(device_id, buffer_name, &
+         synchronous, offset, cb, ptr, event)
+   end subroutine ocl_enqueue_write_buffer
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_read_buffer_raw
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_read_buffer_raw(device_id, buffer, &
+      synchronous, offset, cb, ptr, event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t) :: device_id
@@ -100,20 +175,20 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_write_buffer_f90(device_id, buffer, synchronous, &
-         offset, cb, ptr, event)
-   end subroutine ocl_enqueue_write_buffer
+      ierr = ocl_enqueue_read_buffer_raw_f90(device_id, buffer, &
+         synchronous, offset, cb, ptr, event)
+   end subroutine ocl_enqueue_read_buffer_raw
 
    !---------------------------------------------------------------------------!
    ! ocl_enqueue_read_buffer
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_read_buffer(device_id, buffer, synchronous, &
-      offset, cb, ptr, event, ierr)
+   subroutine ocl_enqueue_read_buffer(device_id, buffer_name, &
+      synchronous, offset, cb, ptr, event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t) :: device_id
-      type(ocl_allocation_t) :: buffer
+      character(kind=c_char), dimension(*) :: buffer_name
       integer(int32_t) :: synchronous
       integer(c_size_t) :: offset
       integer(c_size_t) :: cb
@@ -121,16 +196,16 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_read_buffer_f90(device_id, buffer, synchronous, &
-         offset, cb, ptr, event)
+      ierr = ocl_enqueue_read_buffer_f90(device_id, buffer_name, &
+         synchronous, offset, cb, ptr, event)
    end subroutine ocl_enqueue_read_buffer
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_map_buffer
+   ! ocl_enqueue_map_buffer_raw
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_map_buffer(device_id, buffer, synchronous, &
-      flags, offset, cb, ptr, event, ierr)
+   subroutine ocl_enqueue_map_buffer_raw(device_id, buffer, &
+      synchronous, flags, offset, cb, ptr, event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t) :: device_id
@@ -143,15 +218,38 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_map_buffer_f90(device_id, buffer, synchronous, &
-         flags, offset, cb, ptr, event)
+      ierr = ocl_enqueue_map_buffer_raw_f90(device_id, buffer, &
+         synchronous, flags, offset, cb, ptr, event)
+   end subroutine ocl_enqueue_map_buffer_raw
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_map_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_map_buffer(device_id, buffer_name, &
+      synchronous, flags, offset, cb, ptr, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t) :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t) :: synchronous
+      integer(cl_bitfield), value :: flags
+      integer(c_size_t) :: offset
+      integer(c_size_t) :: cb
+      type(c_ptr) :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_map_buffer_f90(device_id, buffer_name, &
+         synchronous, flags, offset, cb, ptr, event)
    end subroutine ocl_enqueue_map_buffer
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_unmap_buffer
+   ! ocl_enqueue_unmap_buffer_raw
    !---------------------------------------------------------------------------!
 
-   subroutine ocl_enqueue_unmap_buffer(device_id, buffer, ptr, event, ierr)
+   subroutine ocl_enqueue_unmap_buffer_raw(device_id, buffer, &
+      ptr, event, ierr)
       use :: ocl_data
       implicit none
       integer(int32_t), value :: device_id
@@ -160,7 +258,26 @@ module ocl_interface
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
 
-      ierr = ocl_enqueue_unmap_buffer_f90(device_id, buffer, ptr, event)
+      ierr = ocl_enqueue_unmap_buffer_raw_f90(device_id, buffer, &
+         ptr, event)
+   end subroutine ocl_enqueue_unmap_buffer_raw
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_unmap_buffer_raw
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_enqueue_unmap_buffer(device_id, buffer_name, &
+      ptr, event, ierr)
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+
+      ierr = ocl_enqueue_unmap_buffer_f90(device_id, buffer_name, &
+         ptr, event)
    end subroutine ocl_enqueue_unmap_buffer
 
    !---------------------------------------------------------------------------!
@@ -341,6 +458,24 @@ module ocl_interface
       ierr = ocl_set_kernel_arg_allocation_f90(program_name, &
          kernel_name, arg_index, cl_mem_size, arg_value)
    end subroutine ocl_set_kernel_arg_mem
+
+   !---------------------------------------------------------------------------!
+   ! ocl_add_kernel_arg_buffer
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_set_kernel_arg_buffer(program_name, kernel_name, &
+      buffer_name, arg_index, ierr)
+      use :: ocl_data
+      implicit none
+      character(kind=c_char), dimension(*) :: program_name
+      character(kind=c_char), dimension(*) :: kernel_name
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer, intent(in) :: arg_index
+      integer(int32_t) :: ierr
+
+      ierr = ocl_set_kernel_arg_buffer_f90(program_name, &
+         kernel_name, buffer_name, arg_index)
+   end subroutine ocl_set_kernel_arg_buffer
 
    !---------------------------------------------------------------------------!
    ! ocl_add_kernel_arg_local

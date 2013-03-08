@@ -57,12 +57,12 @@ interface
    end function ocl_get_device_instance_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_create_buffer_f90
+   ! ocl_create_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_create_buffer_f90(device_id, elements, flags, &
+   function ocl_create_buffer_raw_f90(device_id, elements, flags, &
       host_ptr, buffer) &
-      result(ierr) bind(C, name="ocl_create_buffer_f90")
+      result(ierr) bind(C, name="ocl_create_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
@@ -72,33 +72,85 @@ interface
       type(c_ptr), value :: host_ptr
       type(ocl_allocation_t) :: buffer
       integer(int32_t) :: ierr
+   end function ocl_create_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_create_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_create_buffer_f90(device_id, buffer_name, &
+      elements, flags, host_ptr) &
+      result(ierr) bind(C, name="ocl_create_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(c_size_t), value :: elements
+      integer(cl_bitfield), value :: flags
+      type(c_ptr), value :: host_ptr
+      integer(int32_t) :: ierr
    end function ocl_create_buffer_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_release_buffer_f90
+   ! ocl_release_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_release_buffer_f90(buffer) &
-      result(ierr) bind(C, name="ocl_release_buffer_f90")
+   function ocl_release_buffer_raw_f90(buffer) &
+      result(ierr) bind(C, name="ocl_release_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       type(ocl_allocation_t) :: buffer
       integer(int32_t) :: ierr
+   end function ocl_release_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_release_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_release_buffer_f90(device_id, buffer_name) &
+      result(ierr) bind(C, name="ocl_release_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t) :: ierr
    end function ocl_release_buffer_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_write_buffer_f90
+   ! ocl_enqueue_write_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_write_buffer_f90(device_id, buffer, synchronous, &
-      offset, cb, ptr, event) &
-      result(ierr) bind(C, name="ocl_enqueue_write_buffer_f90")
+   function ocl_enqueue_write_buffer_raw_f90(device_id, buffer, &
+      synchronous, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_write_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       integer(int32_t), value :: device_id
       type(ocl_allocation_t) :: buffer
+      integer(int32_t), value :: synchronous
+      integer(c_size_t), value :: offset
+      integer(c_size_t), value :: cb
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+   end function ocl_enqueue_write_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_write_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_write_buffer_f90(device_id, buffer_name, &
+      synchronous, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_write_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
       integer(int32_t), value :: synchronous
       integer(c_size_t), value :: offset
       integer(c_size_t), value :: cb
@@ -108,12 +160,12 @@ interface
    end function ocl_enqueue_write_buffer_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_read_buffer_f90
+   ! ocl_enqueue_read_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_read_buffer_f90(device_id, buffer, synchronous, &
-      offset, cb, ptr, event) &
-      result(ierr) bind(C, name="ocl_enqueue_read_buffer_f90")
+   function ocl_enqueue_read_buffer_raw_f90(device_id, buffer, &
+      synchronous, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_read_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
@@ -125,15 +177,35 @@ interface
       type(c_ptr), value :: ptr
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
+   end function ocl_enqueue_read_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_read_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_read_buffer_f90(device_id, buffer_name, &
+      synchronous, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_read_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t), value :: synchronous
+      integer(c_size_t), value :: offset
+      integer(c_size_t), value :: cb
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
    end function ocl_enqueue_read_buffer_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_map_buffer_f90
+   ! ocl_enqueue_map_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_map_buffer_f90(device_id, buffer, synchronous, &
-      flags, offset, cb, ptr, event) &
-      result(ierr) bind(C, name="ocl_enqueue_map_buffer_f90")
+   function ocl_enqueue_map_buffer_raw_f90(device_id, buffer, &
+      synchronous, flags, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_map_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
@@ -146,19 +218,58 @@ interface
       type(c_ptr) :: ptr
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
+   end function ocl_enqueue_map_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_map_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_map_buffer_f90(device_id, buffer_name, &
+      synchronous, flags, offset, cb, ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_map_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t), value :: synchronous
+      integer(cl_bitfield), value :: flags
+      integer(c_size_t), value :: offset
+      integer(c_size_t), value :: cb
+      type(c_ptr) :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
    end function ocl_enqueue_map_buffer_f90
 
    !---------------------------------------------------------------------------!
-   ! ocl_enqueue_unmap_buffer_f90
+   ! ocl_enqueue_unmap_buffer_raw_f90
    !---------------------------------------------------------------------------!
 
-   function ocl_enqueue_unmap_buffer_f90(device_id, buffer, ptr, event) &
-      result(ierr) bind(C, name="ocl_enqueue_unmap_buffer_f90")
+   function ocl_enqueue_unmap_buffer_raw_f90(device_id, buffer, &
+      ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_unmap_buffer_raw_f90")
       use, intrinsic :: ISO_C_BINDING
       use :: ocl_data
       implicit none
       integer(int32_t), value :: device_id
       type(ocl_allocation_t) :: buffer
+      type(c_ptr), value :: ptr
+      type(ocl_allocation_t) :: event
+      integer(int32_t) :: ierr
+   end function ocl_enqueue_unmap_buffer_raw_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_enqueue_unmap_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_enqueue_unmap_buffer_f90(device_id, buffer_name, &
+      ptr, event) &
+      result(ierr) bind(C, name="ocl_enqueue_unmap_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      integer(int32_t), value :: device_id
+      character(kind=c_char), dimension(*) :: buffer_name
       type(c_ptr), value :: ptr
       type(ocl_allocation_t) :: event
       integer(int32_t) :: ierr
@@ -339,6 +450,23 @@ interface
       type(ocl_allocation_t) :: arg_value
       integer(int32_t) :: ierr
    end function ocl_set_kernel_arg_allocation_f90
+
+   !---------------------------------------------------------------------------!
+   ! ocl_add_kernel_arg_buffer_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_set_kernel_arg_buffer_f90(program_name, kernel_name, &
+      buffer_name, arg_index) &
+      result(ierr) bind(C, name="ocl_set_kernel_arg_buffer_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      character(kind=c_char), dimension(*) :: program_name
+      character(kind=c_char), dimension(*) :: kernel_name
+      character(kind=c_char), dimension(*) :: buffer_name
+      integer(int32_t), value :: arg_index
+      integer(int32_t) :: ierr
+   end function ocl_set_kernel_arg_buffer_f90
 
    !---------------------------------------------------------------------------!
    ! ocl_kernel_hints_f90

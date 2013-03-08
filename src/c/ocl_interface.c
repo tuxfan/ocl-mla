@@ -317,18 +317,25 @@ int32_t ocl_create_buffer(uint32_t device_id, const char * buffer_name,
 	return ierr;
 } // ocl_create_buffer
 
+/*----------------------------------------------------------------------------*\
+ * ocl_buffer_type_size
+\*----------------------------------------------------------------------------*/
+
 size_t ocl_buffer_type_size() {
 	return sizeof(cl_mem);
 } // ocl_buffer_size
+
+/*----------------------------------------------------------------------------*\
+ * ocl_buffer_reference
+\*----------------------------------------------------------------------------*/
 
 cl_mem * ocl_buffer_reference(uint32_t device_id, const char * buffer_name) {
 	ocl_buffer_t * _buffer = ocl_hash_find_buffer(device_id, buffer_name);
 	return &_buffer->token;
 } // ocl_buffer_reference
 
-
 /*----------------------------------------------------------------------------*\
- * ocl_release_buffer
+ * ocl_release_buffer_raw
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_release_buffer_raw(cl_mem * buffer) {
@@ -363,7 +370,7 @@ int32_t ocl_release_buffer(uint32_t device_id, const char * buffer_name) {
 } // ocl_release_buffer
 
 /*----------------------------------------------------------------------------*\
- * ocl_enqueue_write_buffer
+ * ocl_enqueue_write_buffer_raw
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_write_buffer_raw(uint32_t device_id,
@@ -1317,36 +1324,51 @@ int32_t ocl_mem_size_f90() {
 } // ocl_mem_size_f90
 
 /*----------------------------------------------------------------------------*\
- * ocl_create_buffer_f90
+ * ocl_create_buffer_raw_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_create_buffer_f90(uint32_t device_id, size_t size,
+int32_t ocl_create_buffer_raw_f90(uint32_t device_id, size_t size,
 	cl_mem_flags flags, void * host_ptr, ocl_allocation_t * buffer) {
-	CALLER_SELF
-	cl_int err;
+	int32_t ierr;
 
 	cl_mem * _buffer = (cl_mem *)malloc(sizeof(cl_mem));
 
-	ocl_device_instance_t * instance = ocl_device_instance(device_id);
-	*_buffer = clCreateBuffer(instance->context, flags, size,
-		host_ptr, &err);
+	ierr = ocl_create_buffer_raw(device_id, size, flags, host_ptr, _buffer);
 
 	buffer->data = (void *)_buffer;
 
 	add_allocation((void *)_buffer, &buffer->index);
 
-	if(err != CL_SUCCESS) {
-		CL_ABORTerr(clCreateBuffer, err);
-	} // if
+	return ierr;
+} // ocl_create_buffer_raw_f90
 
-	return 0;
+/*----------------------------------------------------------------------------*\
+ * ocl_create_buffer_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_create_buffer_f90(uint32_t device_id, const char * buffer_name,
+	size_t size, cl_mem_flags flags, void * host_ptr) {
+	return ocl_create_buffer(device_id, buffer_name, size, flags, host_ptr);
 } // ocl_create_buffer_f90
 
 /*----------------------------------------------------------------------------*\
- * ocl_release_buffer_f90
+ * ocl_buffer_reference_f90
 \*----------------------------------------------------------------------------*/
 
-int32_t ocl_release_buffer_f90(ocl_allocation_t * buffer) {
+int32_t ocl_buffer_reference_f90(uint32_t device_id, const char * buffer_name,
+	ocl_reference_t * reference) {
+	int32_t ierr = 0;
+
+	reference->data = ocl_buffer_reference(device_id, buffer_name);	
+
+	return ierr;
+} // ocl_buffer_reference_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_release_buffer_raw_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_release_buffer_raw_f90(ocl_allocation_t * buffer) {
 	int32_t ierr = 0;
 
 	ocl_release_buffer_raw((cl_mem *)buffer->data);
@@ -1356,49 +1378,100 @@ int32_t ocl_release_buffer_f90(ocl_allocation_t * buffer) {
 	ocl.open_slots[ocl.slots++] = buffer->index;
 
 	return ierr;
+} // ocl_release_buffer_raw_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_release_buffer_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_release_buffer_f90(uint32_t device_id, const char * buffer_name) {
+	return ocl_release_buffer(device_id, buffer_name);
 } // ocl_release_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_write_buffer_raw_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_write_buffer_raw_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, int32_t synchronous, size_t offset, size_t cb,
+	void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_write_buffer_raw(device_id, *(cl_mem *)buffer->data,
+		synchronous, offset, cb, ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_write_buffer_raw_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_enqueue_write_buffer_f90
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_write_buffer_f90(uint32_t device_id,
-	ocl_allocation_t * buffer, int32_t synchronous, size_t offset, size_t cb,
-	void * ptr, ocl_allocation_t * event) {
-	return ocl_enqueue_write_buffer_raw(device_id, *(cl_mem *)buffer->data,
+	const char * buffer_name, int32_t synchronous, size_t offset,
+	size_t cb, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_write_buffer(device_id, buffer_name,
 		synchronous, offset, cb, ptr, (ocl_event_t *)event->data);
 } // ocl_enqueue_write_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_read_buffer_raw_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_read_buffer_raw_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, int32_t synchronous, size_t offset, size_t cb,
+	void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_read_buffer_raw(device_id, *(cl_mem *)buffer->data,
+		synchronous, offset, cb, ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_read_buffer_raw_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_enqueue_read_buffer_f90
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_read_buffer_f90(uint32_t device_id,
-	ocl_allocation_t * buffer, int32_t synchronous, size_t offset, size_t cb,
-	void * ptr, ocl_allocation_t * event) {
-	return ocl_enqueue_read_buffer_raw(device_id, *(cl_mem *)buffer->data,
+	const char * buffer_name, int32_t synchronous, size_t offset,
+	size_t cb, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_read_buffer(device_id, buffer_name,
 		synchronous, offset, cb, ptr, (ocl_event_t *)event->data);
 } // ocl_enqueue_read_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_map_buffer_raw_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_map_buffer_raw_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, int32_t synchronous, cl_mem_flags flags,
+	size_t offset, size_t cb, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_map_buffer_raw(device_id, *(cl_mem *)buffer->data,
+		synchronous, flags, offset, cb, ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_map_buffer_raw_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_enqueue_map_buffer_f90
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_map_buffer_f90(uint32_t device_id,
-	ocl_allocation_t * buffer, int32_t synchronous, cl_mem_flags flags,
+	const char * buffer_name, int32_t synchronous, cl_mem_flags flags,
 	size_t offset, size_t cb, void * ptr, ocl_allocation_t * event) {
-	return ocl_enqueue_map_buffer_raw(device_id, *(cl_mem *)buffer->data,
-		synchronous, flags, offset, cb, ptr, (ocl_event_t *)event->data);
+	return ocl_enqueue_map_buffer(device_id, buffer_name, synchronous,
+		flags, offset, cb, ptr, (ocl_event_t *)event->data);
 } // ocl_enqueue_map_buffer_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_enqueue_unmap_buffer_raw_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_enqueue_unmap_buffer_raw_f90(uint32_t device_id,
+	ocl_allocation_t * buffer, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_unmap_buffer_raw(device_id, *(cl_mem *)buffer->data,
+		ptr, (ocl_event_t *)event->data);
+} // ocl_enqueue_unmap_buffer_raw_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_enqueue_unmap_buffer_f90
 \*----------------------------------------------------------------------------*/
 
 int32_t ocl_enqueue_unmap_buffer_f90(uint32_t device_id,
-	ocl_allocation_t * buffer, void * ptr, ocl_allocation_t * event) {
-	return ocl_enqueue_unmap_buffer_raw(device_id, *(cl_mem *)buffer->data,
-		ptr, (ocl_event_t *)event->data);
+	const char * buffer_name, void * ptr, ocl_allocation_t * event) {
+	return ocl_enqueue_unmap_buffer(device_id, buffer_name, ptr,
+		(ocl_event_t *)event->data);
 } // ocl_enqueue_unmap_buffer_f90
 
 /*----------------------------------------------------------------------------*\
@@ -1430,6 +1503,16 @@ int32_t ocl_set_kernel_arg_f90(const char * program_name,
 	const char * kernel_name, cl_uint index, size_t size, const void * value) {
 	return ocl_set_kernel_arg(program_name, kernel_name, index, size, value);
 } // ocl_set_kernel_arg_f90
+
+/*----------------------------------------------------------------------------*\
+ * ocl_set_kernel_arg_buffer_f90
+\*----------------------------------------------------------------------------*/
+
+int32_t ocl_set_kernel_arg_buffer_f90(const char * program_name,
+	const char * kernel_name, const char * buffer_name, cl_uint index) {
+	return ocl_set_kernel_arg_buffer(program_name, kernel_name,
+		buffer_name, index);
+} // ocl_set_kernel_arg_buffer_f90
 
 /*----------------------------------------------------------------------------*\
  * ocl_set_kernel_arg_allocation_f90

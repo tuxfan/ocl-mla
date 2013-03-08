@@ -36,7 +36,7 @@ program main
 
    ! step (4)
    ! create a device-side buffer
-   call ocl_create_buffer(OCL_DEFAULT_DEVICE, bytes, &
+   call ocl_create_buffer_raw(OCL_DEFAULT_DEVICE, bytes, &
       CL_MEM_READ_ONLY + CL_MEM_COPY_HOST_PTR, c_loc(h_array), d_array, ierr) 
 
    ! step (5)
@@ -74,8 +74,8 @@ program main
 
    ! step (12)
    ! read data from device
-   call ocl_enqueue_read_buffer(OCL_DEFAULT_DEVICE, d_array, 1, offset, &
-      bytes, c_loc(h_array), event, ierr)
+   call ocl_enqueue_read_buffer_raw(OCL_DEFAULT_DEVICE, d_array, &
+      1, offset, bytes, c_loc(h_array), event, ierr)
 
    ! step (13)
    ! block for read completion
