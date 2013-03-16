@@ -331,12 +331,14 @@ Read the given attribute from the timer.  Supported attribute values are \b OCL_
 int32_t ocl_read_timer(const char * label, ocl_timer_attribute_t attribute,
 	double * value);
 
+#if 0
 // Fortran 90 bindings
 int32_t ocl_add_timer_f90(const char * label, const ocl_allocation_t * event);
 int32_t ocl_clear_timer_f90(const char * label);
 int32_t ocl_report_timer_f90(const char * label);
 int32_t ocl_read_timer_f90(const char * label,
 	ocl_timer_attribute_t attribute, double * value);
+#endif
 
 /*------------------------------------------------------------------------------
  * Macro definitions

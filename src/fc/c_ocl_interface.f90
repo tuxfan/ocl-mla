@@ -728,6 +728,20 @@ module ocl_interface
    end subroutine ocl_host_read_timer
 
    !---------------------------------------------------------------------------!
+   ! ocl_add_timer_list
+   !---------------------------------------------------------------------------!
+
+   subroutine ocl_add_timer_list(label, list)
+      use, intrinsic :: ISO_C_BINDING
+      implicit none
+      character(kind=c_char), dimension(*) :: label
+      type(ocl_allocation_t) :: list
+      integer(int32_t) :: ierr
+
+      ierr = ocl_add_timer_list_f90(label, list)
+   end subroutine ocl_add_timer_list
+
+   !---------------------------------------------------------------------------!
    ! ocl_add_timer
    !---------------------------------------------------------------------------!
 

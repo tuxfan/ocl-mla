@@ -809,6 +809,15 @@ int32_t ocl_host_read_timer_f90(const char * label, double * value) {
 } // ocl_host_read_timer_f90
 
 /*----------------------------------------------------------------------------*
+ * ocl_add_timer_list_f90
+ *----------------------------------------------------------------------------*/
+
+int32_t ocl_add_timer_list_f90(const char * label,
+	const ocl_allocation_t * list) {
+	return ocl_add_timer_list(label, (ocl_event_wait_list_t *)list->data);
+} // ocl_add_timer_list_f90
+
+/*----------------------------------------------------------------------------*
  * ocl_add_timer_f90
  *----------------------------------------------------------------------------*/
 

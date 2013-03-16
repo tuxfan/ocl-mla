@@ -673,6 +673,20 @@ interface
    end function ocl_host_read_timer_f90
 
    !---------------------------------------------------------------------------!
+   ! ocl_add_timer_list_f90
+   !---------------------------------------------------------------------------!
+
+   function ocl_add_timer_list_f90(label, list) &
+      result(ierr) bind(C, name="ocl_add_timer_list_f90")
+      use, intrinsic :: ISO_C_BINDING
+      use :: ocl_data
+      implicit none
+      character(kind=c_char), dimension(*) :: label
+      type(ocl_allocation_t) :: list
+      integer(int32_t) :: ierr
+   end function ocl_add_timer_list_f90
+
+   !---------------------------------------------------------------------------!
    ! ocl_add_timer_f90
    !---------------------------------------------------------------------------!
 
