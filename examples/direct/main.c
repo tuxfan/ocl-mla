@@ -175,9 +175,8 @@ int main(int argc,char **argv)
 	ocl_add_from_string(kernels_PPSTR, &source, 0);
 
 /* ATI */
-	char * compile_options =
 //		"-cl-fast-relaxed-math -DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=8 -DUSE_CONDITIONAL";
-		"-DBLSZ=64 -DUSE_LOCAL_MEMORY";
+//		"-DBLSZ=64 -DUSE_LOCAL_MEMORY";
 //		"-DBLSZ=64 -DUSE_RSQRT";
 //		"-DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=8";
 //		"-DBLSZ=128 -DUSE_RSQRT";
@@ -189,14 +188,53 @@ int main(int argc,char **argv)
 //		"-DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32 -DUSE_CONDITIONAL";
 /* NVIDIA */
 //	char * compile_options =
-//		"-DBLSZ=1024";
-//		"-DBLSZ=1024 -DUSE_RSQRT -DUSE_CONDITIONAL";
 //		"-cl-mad-enable -cl-fast-relaxed-math -DBLSZ=1024 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32 -DUSE_CONDITIONAL";
 
-	kd->local_size = 1024;
-//	kd->local_size = 256;
-//	kd->local_size = 128;
-//	kd->local_size = 64;
+	char * compile_options =
+
+		/* 1024 */
+#if 0
+//		"-DBLSZ=1024 -DUSE_RSQRT";
+
+		// k10xm best
+		"-DBLSZ=1024 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32";
+//		"-DBLSZ=1024";
+
+		kd->local_size = 1024;
+#endif
+
+		/* 512 */
+#if 0
+		"-DBLSZ=512 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=32";
+//		"-DBLSZ=512 -DUSE_RSQRT -DUNROLL_LOOPS=8";
+		kd->local_size = 512;
+#endif
+
+		/* 256 */
+#if 0
+		"-DBLSZ=256";
+		kd->local_size = 256;
+#endif
+
+		/* 128 */
+#if 0
+		"-DBLSZ=128";
+		kd->local_size = 128;
+#endif
+
+		/* 64 */
+#if 0
+		"-DBLSZ=64 -DUSE_RSQRT";
+//		"-DBLSZ=64 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=2";
+		kd->local_size = 64;
+#endif
+
+		/* 32 */
+#if 1
+		"-DBLSZ=32";
+//		"-DBLSZ=32 -DUSE_RSQRT -DUNROLL_LOOPS -DUNROLL_FACTOR=2";
+		kd->local_size = 32;
+#endif
 
 	ocl_add_program(OCL_DEFAULT_DEVICE, "direct", source,
 		compile_options);
