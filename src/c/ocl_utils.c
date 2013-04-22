@@ -152,7 +152,9 @@ void print_device_info(ocl_device_info_t * info, const char * label) {
 		info->local_mem_size);
 
 	message("\tDevice Extensions: \n");
-	char * token = strtok(info->device_extensions, " ");
+	char extensions[16*1024];
+	strcpy(extensions, info->device_extensions);
+	char * token = strtok(extensions, " ");
 
 	while(token != NULL) {
 		message("\t\t%s\n", token);
@@ -162,6 +164,24 @@ void print_device_info(ocl_device_info_t * info, const char * label) {
 	message("\n");
 
 } // print_device_info
+
+int32_t device_has_extension(uint32_t device_id, const char * extension) {
+	ocl_device_instance_t * _instance = ocl_device_instance(device_id);
+
+	char extensions[16*1024];
+	strcpy(extensions, _instance->info.device_extensions);
+	char * token = strtok(extensions, " ");
+
+	while(token != NULL) {
+		if(strcmp(extension, token) == 0) {
+			return 1;
+		} // if
+
+		token = strtok(NULL, " ");
+	} // while
+
+	return 0;
+} // device_has_extension
 
 /*----------------------------------------------------------------------------*
  * Add to free allocations.

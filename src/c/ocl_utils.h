@@ -84,6 +84,12 @@ const char * error_to_string(int err);
 void print_device_info(ocl_device_info_t * info, const char * label);
 
 /*------------------------------------------------------------------------------
+ * Query a device to see if it supports an extension
+ *----------------------------------------------------------------------------*/
+
+int32_t device_has_extension(uint32_t device_id, const char * extension);
+
+/*------------------------------------------------------------------------------
  * Add to free allocations.
  *----------------------------------------------------------------------------*/
 
