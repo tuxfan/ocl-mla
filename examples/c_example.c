@@ -39,10 +39,12 @@ int main(int argc, char ** argv) {
 	// initialize the OpenCL layer
 	ocl_init();
 
+#if 0
 	if(device_has_extension(OCL_DEFAULT_DEVICE,
 		"cl_khr_local_int32_base_atomics")) {
 		fprintf(stderr, "Device supports base int32 atomics\n");
 	} // if
+#endif
 
 	// step (4)
 	// create a device-side buffer
