@@ -126,6 +126,7 @@ typedef struct ocl_device_info_ {
 	cl_uint max_work_item_dimensions;
 	size_t max_work_item_sizes[3];
 	cl_ulong local_mem_size;
+	char device_extensions[16*1024];
 } ocl_device_info_t;
 
 /*------------------------------------------------------------------------------

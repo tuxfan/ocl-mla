@@ -31,7 +31,7 @@ typedef struct acceleration_ {
  * while 'a' stores acceleration and potential.
  *----------------------------------------------------------------------------*/
 
-STATIC inline float4 interactPlummer(float4 bi, float4 bj, float4 a) {
+inline float4 interactPlummer(float4 bi, float4 bj, float4 a) {
 	float4 r;
 
 #if !defined(USE_CONDITIONAL)

@@ -151,6 +151,14 @@ void print_device_info(ocl_device_info_t * info, const char * label) {
 	message("\tLocal Memory Size: %" CL_ULONG_FMT "\n",
 		info->local_mem_size);
 
+	message("\tDevice Extensions: \n");
+	char * token = strtok(info->device_extensions, " ");
+
+	while(token != NULL) {
+		message("\t\t%s\n", token);
+		token = strtok(NULL, " ");
+	} // while
+
 	message("\n");
 
 } // print_device_info

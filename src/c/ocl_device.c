@@ -188,6 +188,11 @@ int32_t ocl_init_generic_device(ocl_device_instance_t * instance,
 			CL_CHECKerr(clGetDeviceInfo,
 				devices[device_id], CL_DEVICE_LOCAL_MEM_SIZE,
 				sizeof(cl_ulong), &instance->info.local_mem_size, NULL);
+
+			CL_CHECKerr(clGetDeviceInfo,
+				devices[device_id], CL_DEVICE_EXTENSIONS,
+				sizeof(instance->info.device_extensions),
+				instance->info.device_extensions, NULL);
 		}
 		else {
 			CL_ABORTsanity("No devices found");
