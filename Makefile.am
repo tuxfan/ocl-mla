@@ -20,9 +20,8 @@ EXTRA_DIST = utils/stringify_kernel_files utils/make_devices
 #------------------------------------------------------------------------------#
 
 links:
-	@(cd ${top_srcdir}/src; [ -d include ] && rm -rf include; \
-		mkdir include && cd include; \
-		for file in `find .. -type f -regex '.*\.h*'` ; do \
+	@(cd local; \
+		for file in `find ${abs_top_srcdir}/src -type f -regex '.*\.h*'` ; do \
 			link=`echo $$file`; \
 			ln -s $$link .; \
 		done)

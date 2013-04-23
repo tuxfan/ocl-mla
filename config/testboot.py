@@ -82,7 +82,6 @@ for dir in subdirs:
 					m.write(' \\\n\t%s' % src)
 				m.write('\n')
 				m.write('\n%s_CPPFLAGS = \\\n' % (test.exe))
-				m.write('\t-I${top_srcdir}/src/include \\\n')
 				m.write('\t-I${top_builddir}/local \\\n')
 				m.write('\t@EXTRA_CPPFLAGS@\n')
 				m.write('\n%s_LDFLAGS = @EXTRA_LDFLAGS@\n' % (test.exe))

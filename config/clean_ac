@@ -14,8 +14,10 @@ rm -rf config/depcomp
 rm -rf config/install-sh
 rm -rf config/ltmain.sh
 rm -rf config/missing
+rm -rf config/build_utils.pyc
 rm -rf lib/Makefile.am
 rm -rf test/Makefile.am
+rm -rf `find test -type f -name "Makefile.am" | grep -v ".git"`
 rm -rf `find . -type f -name "Makefile.in" | grep -v ".git"`
 rm -rf `find . -type f -name "Makefile" | grep -v ".git"`
 rm -rf `find test -type f -name "testsuite.at" | grep -v ".git"`

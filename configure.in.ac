@@ -49,6 +49,15 @@ AC_CONFIG_FILES([Makefile DEVEL_TARGETS \
 AC_SUBST(DEVDIRS, ["DEVEL_DIRS"])
 
 #------------------------------------------------------------------------------#
+# Defualt device configuration
+#------------------------------------------------------------------------------#
+
+if test -z "$OCL_DEVICES" ; then
+	AC_SUBST(OCL_DEVICES,
+		["OCL_PERFORMANCE_DEVICE,Intel(R) OpenCL,ocl_init_generic_cpu"])
+fi
+
+#------------------------------------------------------------------------------#
 # Direct flags
 #------------------------------------------------------------------------------#
 
@@ -69,6 +78,10 @@ AC_CONFIG_TESTDIR([test/fc])
 #------------------------------------------------------------------------------#
 # Program options
 #------------------------------------------------------------------------------#
+
+if test -z "$CFLAGS" ; then
+	AC_SUBST(CFLAGS, ["-std=c99"])
+fi
 
 AC_PROG_CC
 AC_PROG_FC
@@ -95,6 +108,22 @@ CONFIG_GENERIC_ENABLE(ocl_compiler_log, OCL_COMPILER_LOG)
 # OpenCL
 #------------------------------------------------------------------------------#
 
+if test -z "$OPENCL_CPPFLAGS" ; then
+	AC_SUBST(OPENCL_CPPFLAGS, ["-I/usr/include"])
+fi
+
+if test -z "$OPENCL_LDFLAGS" ; then
+	AC_SUBST(OPENCL_LDFLAGS, ["-L/usr/lib64"])
+fi
+
+if test -z "$OPENCL_LIBS" ; then
+	AC_SUBST(OPENCL_LIBS, ["-lOpenCL"])
+fi
+
+if test -z "$OPENCL_CHECKHEADER" ; then
+	AC_SUBST(OPENCL_CHECKHEADER, ["CL/opencl.h"])
+fi
+
 CONFIG_GENERIC_LIB(opencl, OPENCL, [clReleaseMemObject ((cl_mem) 0)], C)
 
 EXTRA_CPPFLAGS="$EXTRA_CPPFLAGS $OPENCL_CPPFLAGS"
@@ -104,6 +133,22 @@ EXTRA_LIBS="$EXTRA_LIBS $OPENCL_LIBS"
 #------------------------------------------------------------------------------#
 # HashMark
 #------------------------------------------------------------------------------#
+
+if test -z "$HM_CPPFLAGS" ; then
+	AC_SUBST(HM_CPPFLAGS, ["-I/usr/include"])
+fi
+
+if test -z "$HM_LDFLAGS" ; then
+	AC_SUBST(HM_LDFLAGS, ["-L/usr/lib"])
+fi
+
+if test -z "$HM_LIBS" ; then
+	AC_SUBST(HM_LIBS, ["-lhm"])
+fi
+
+if test -z "$HM_CHECKHEADER" ; then
+	AC_SUBST(HM_CHECKHEADER, ["hash_mark.h"])
+fi
 
 CONFIG_GENERIC_LIB(hm, HM,
 	[hm_add ((size_t) 0, (const char *) 0, (void *) 0)], C)
