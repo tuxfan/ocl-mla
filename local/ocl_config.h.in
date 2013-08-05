@@ -1,0 +1,15 @@
+/*
+ * local/ocl_config.h.in.
+ */
+
+/* Define if you want OCL_ASSERTIONS */
+#undef ENABLE_OCL_ASSERTIONS
+
+/* Define if you want OCL_COMPILER_LOG */
+#undef ENABLE_OCL_COMPILER_LOG
+
+/* Define if you want OCL_VERBOSE */
+#undef ENABLE_OCL_VERBOSE
+
+/* Define if you want OPENCL_PROFILING */
+#undef ENABLE_OPENCL_PROFILING
