@@ -108,16 +108,18 @@ CONFIG_GENERIC_ENABLE(ocl_compiler_log, OCL_COMPILER_LOG)
 # OpenCL
 #------------------------------------------------------------------------------#
 
-if test -z "$OPENCL_CPPFLAGS" ; then
-	AC_SUBST(OPENCL_CPPFLAGS, ["-I/usr/include"])
-fi
+if test -z "$OPENCL_FRAMEWORK" ; then
+	if test -z "$OPENCL_CPPFLAGS" ; then
+		AC_SUBST(OPENCL_CPPFLAGS, ["-I/usr/include"])
+	fi
 
-if test -z "$OPENCL_LDFLAGS" ; then
-	AC_SUBST(OPENCL_LDFLAGS, ["-L/usr/lib64"])
-fi
+	if test -z "$OPENCL_LDFLAGS" ; then
+		AC_SUBST(OPENCL_LDFLAGS, ["-L/usr/lib64"])
+	fi
 
-if test -z "$OPENCL_LIBS" ; then
-	AC_SUBST(OPENCL_LIBS, ["-lOpenCL"])
+	if test -z "$OPENCL_LIBS" ; then
+		AC_SUBST(OPENCL_LIBS, ["-lOpenCL"])
+	fi
 fi
 
 if test -z "$OPENCL_CHECKHEADER" ; then
